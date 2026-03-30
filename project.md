@@ -22,6 +22,7 @@ A single-page application that randomly selects from a set of configurable URLs.
 - **Configuration Mode**: Complete selectee management interface
   - Add/remove selectees with display names
   - Inline editing: click to edit names or URLs in place
+  - Right-click context menu: Check URL, Open URL, Duplicate, Mark Done
   - Visual indication of used vs. available selectees
   - Compact list view for maximum visibility
   - Scrollable list with pinned controls
@@ -35,6 +36,11 @@ A single-page application that randomly selects from a set of configurable URLs.
 - **Default Config**: Automatically loads from `default-config.json` on first use
 - **Reset to Defaults**: Restore original configuration from `default-config.json`
 - **Clear All**: Remove all URLs with confirmation
+- **Context Menu**: Right-click any entry for quick actions
+  - Check URL to verify accessibility
+  - Open URL in new tab for testing
+  - Duplicate entry with auto-numbered unique name
+  - Mark Done to manually toggle used/available status
 
 ### Fun & Interactive UI
 - **Click-to-Select**: Click the large display box or press Enter to trigger selection
@@ -44,6 +50,7 @@ A single-page application that randomly selects from a set of configurable URLs.
 - **Sound Effects**: Optional spin beeps and celebration chord
 - **Keyboard Shortcuts**: Enter to select/skip animation, Escape to cancel editing
 - **Inline Editing**: Click any name or URL to edit in place with validation
+- **Context Menu**: Right-click for quick actions (check, open, duplicate, mark done)
 - **Smooth Transitions**: Fade animations when switching between modes
 - **Compact Layout**: More entries visible with efficient spacing
 - **Modern Design**: Purple gradient theme with clean, accessible interface

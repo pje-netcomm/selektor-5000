@@ -18,6 +18,11 @@ All notable changes to Selektor 5000 will be documented in this file.
   - Input validation for empty values and invalid URLs
   - Hover effects to show clickable fields
 - **Enter Key in Selection Mode**: Press Enter to start random selection
+- **Context Menu**: Right-click on display names or URLs for quick actions
+  - Check URL: Verify URL is accessible
+  - Open URL: Open in new tab for testing
+  - Duplicate: Create copy with numbered unique name
+  - Mark Done: Manually toggle used/available status
 
 ### Changed
 - **Session-Only Tracking**: Used URLs no longer persist across page reloads (fresh start each session)
@@ -30,6 +35,7 @@ All notable changes to Selektor 5000 will be documented in this file.
 - Added isSelecting flag to prevent double-trigger
 - Flexbox layout for config section with overflow scrolling
 - Click-to-edit functionality with autofocus inputs
+- Custom context menu with position tracking
 
 ## v3 - 2026-03-30
 
