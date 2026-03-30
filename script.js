@@ -155,7 +155,7 @@ class TeamMeter {
         const availableUrls = this.urls.filter(url => !this.usedUrls.has(url.id));
         
         if (availableUrls.length === 0) {
-            alert('No URLs available! Add some URLs or reset to start over.');
+            alert('No selectees available! Add some selectees or reset to start over.');
             return;
         }
 
@@ -261,7 +261,7 @@ class TeamMeter {
         const urlList = document.getElementById('urlList');
         
         if (this.urls.length === 0) {
-            urlList.innerHTML = '<div class="empty-state"><p>📝 No URLs configured yet. Add some to get started!</p></div>';
+            urlList.innerHTML = '<div class="empty-state"><p>📝 No selectees configured yet. Add some to get started!</p></div>';
             return;
         }
         
@@ -301,11 +301,11 @@ class TeamMeter {
         const availableCount = this.urls.filter(url => !this.usedUrls.has(url.id)).length;
         
         if (this.urls.length === 0) {
-            displayText.textContent = 'Add some URLs to get started!';
+            displayText.textContent = 'Add some selectees to get started!';
         } else if (availableCount === 0) {
-            displayText.textContent = 'All URLs used! Reset to start over.';
+            displayText.textContent = 'All selectees used! Reset to start over.';
         } else {
-            displayText.textContent = 'Select Random URL';
+            displayText.textContent = 'Select Random Selectee';
         }
     }
 
