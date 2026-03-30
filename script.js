@@ -353,7 +353,6 @@ class TeamMeter {
     saveToStorage() {
         const data = {
             urls: this.urls,
-            usedUrls: Array.from(this.usedUrls),
             soundEnabled: this.soundEnabled
         };
         localStorage.setItem('selektor5000Data', JSON.stringify(data));
@@ -365,7 +364,7 @@ class TeamMeter {
             try {
                 const data = JSON.parse(stored);
                 this.urls = data.urls || [];
-                this.usedUrls = new Set(data.usedUrls || []);
+                this.usedUrls = new Set();
                 this.soundEnabled = data.soundEnabled !== undefined ? data.soundEnabled : true;
             } catch (e) {
                 console.error('Failed to load data from storage:', e);
