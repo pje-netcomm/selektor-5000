@@ -7,6 +7,7 @@ class TeamMeter {
         this.urlTabWindow = null;
         this.editingId = null;
         this.editingField = null;
+        this.contextMenuTarget = null;
         this.init();
     }
 
@@ -56,6 +57,13 @@ class TeamMeter {
         document.getElementById('copyStateBtn').addEventListener('click', () => this.copyDebugState());
         document.getElementById('clearStorageBtn').addEventListener('click', () => this.clearBrowserStorage());
         document.getElementById('reloadPageBtn').addEventListener('click', () => location.reload());
+
+        // Context menu listeners
+        document.addEventListener('click', () => this.hideContextMenu());
+        document.getElementById('contextCheckUrl').addEventListener('click', () => this.checkUrl());
+        document.getElementById('contextOpenUrl').addEventListener('click', () => this.openUrl());
+        document.getElementById('contextDuplicate').addEventListener('click', () => this.duplicateEntry());
+        document.getElementById('contextMarkDone').addEventListener('click', () => this.markDone());
     }
 
     switchMode(mode) {
@@ -328,15 +336,15 @@ class TeamMeter {
             const editingUrl = this.editingId === url.id && this.editingField === 'url';
             
             return `
-                <div class="url-item ${isUsed ? 'used' : ''}">
+                <div class="url-item ${isUsed ? 'used' : ''}" data-url-id="${url.id}">
                     <div class="url-info">
-                        <div class="url-display-name" ${!editingName ? `onclick="app.startEdit(${url.id}, 'name')"` : ''}>
+                        <div class="url-display-name" ${!editingName ? `onclick="app.startEdit(${url.id}, 'name')" oncontextmenu="app.showContextMenu(event, ${url.id}); return false;"` : ''}>
                             ${editingName 
                                 ? `<input type="text" id="edit-name-${url.id}" value="${this.escapeHtml(url.displayName)}" class="edit-input" onblur="app.saveEdit(${url.id}, 'name')" onkeydown="app.handleEditKeydown(event, ${url.id}, 'name')" autofocus>`
                                 : (isUsed ? '✓ ' : '') + this.escapeHtml(url.displayName)
                             }
                         </div>
-                        <div class="url-address" ${!editingUrl ? `onclick="app.startEdit(${url.id}, 'url')"` : ''}>
+                        <div class="url-address" ${!editingUrl ? `onclick="app.startEdit(${url.id}, 'url')" oncontextmenu="app.showContextMenu(event, ${url.id}); return false;"` : ''}>
                             ${editingUrl
                                 ? `<input type="url" id="edit-url-${url.id}" value="${this.escapeHtml(url.url)}" class="edit-input" onblur="app.saveEdit(${url.id}, 'url')" onkeydown="app.handleEditKeydown(event, ${url.id}, 'url')" autofocus>`
                                 : this.escapeHtml(url.url)
@@ -651,6 +659,80 @@ class TeamMeter {
             this.editingField = null;
             this.renderUrlList();
         }
+    }
+
+    showContextMenu(event, id) {
+        event.preventDefault();
+        this.contextMenuTarget = id;
+        
+        const menu = document.getElementById('contextMenu');
+        menu.style.display = 'block';
+        menu.style.left = event.pageX + 'px';
+        menu.style.top = event.pageY + 'px';
+    }
+
+    hideContextMenu() {
+        document.getElementById('contextMenu').style.display = 'none';
+    }
+
+    async checkUrl() {
+        this.hideContextMenu();
+        const urlObj = this.urls.find(u => u.id === this.contextMenuTarget);
+        if (!urlObj) return;
+
+        try {
+            const response = await fetch(urlObj.url, { method: 'HEAD', mode: 'no-cors' });
+            alert(`✓ URL appears to be accessible:\n${urlObj.url}`);
+        } catch (e) {
+            alert(`⚠️ Could not verify URL (may still work):\n${urlObj.url}\n\nNote: CORS restrictions may prevent verification.`);
+        }
+    }
+
+    openUrl() {
+        this.hideContextMenu();
+        const urlObj = this.urls.find(u => u.id === this.contextMenuTarget);
+        if (urlObj) {
+            window.open(urlObj.url, '_blank');
+        }
+    }
+
+    duplicateEntry() {
+        this.hideContextMenu();
+        const urlObj = this.urls.find(u => u.id === this.contextMenuTarget);
+        if (!urlObj) return;
+
+        // Find a unique name by appending a number
+        let baseName = urlObj.displayName;
+        let counter = 2;
+        let newName = `${baseName} ${counter}`;
+        
+        while (this.urls.some(u => u.displayName === newName)) {
+            counter++;
+            newName = `${baseName} ${counter}`;
+        }
+
+        const duplicate = {
+            id: Date.now() + Math.random(),
+            displayName: newName,
+            url: urlObj.url
+        };
+
+        this.urls.push(duplicate);
+        this.saveToStorage();
+        this.render();
+    }
+
+    markDone() {
+        this.hideContextMenu();
+        const urlObj = this.urls.find(u => u.id === this.contextMenuTarget);
+        if (!urlObj) return;
+
+        if (this.usedUrls.has(urlObj.id)) {
+            this.usedUrls.delete(urlObj.id);
+        } else {
+            this.usedUrls.add(urlObj.id);
+        }
+        this.render();
     }
 }
 
