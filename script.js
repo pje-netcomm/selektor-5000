@@ -16,7 +16,7 @@ class TeamMeter {
 
     setupEventListeners() {
         document.getElementById('addUrlBtn').addEventListener('click', () => this.addUrl());
-        document.getElementById('selectBtn').addEventListener('click', () => this.selectRandomUrl());
+        document.getElementById('displayBox').addEventListener('click', () => this.selectRandomUrl());
         document.getElementById('resetBtn').addEventListener('click', () => this.reset());
         document.getElementById('selectionModeBtn').addEventListener('click', () => this.switchMode('selection'));
         document.getElementById('configModeBtn').addEventListener('click', () => this.switchMode('config'));
@@ -158,8 +158,13 @@ class TeamMeter {
             return;
         }
 
-        const selectBtn = document.getElementById('selectBtn');
-        selectBtn.disabled = true;
+        const displayBox = document.getElementById('displayBox');
+        if (displayBox.classList.contains('disabled')) {
+            return;
+        }
+        
+        displayBox.classList.add('disabled');
+        displayBox.classList.remove('clickable');
 
         const selectedUrl = availableUrls[Math.floor(Math.random() * availableUrls.length)];
 
@@ -186,7 +191,6 @@ class TeamMeter {
         
         setTimeout(() => {
             this.render();
-            selectBtn.disabled = false;
         }, 1500);
     }
 
@@ -278,8 +282,14 @@ class TeamMeter {
         const remainingCount = document.getElementById('remainingCount');
         remainingCount.textContent = `${availableCount} remaining`;
         
-        const selectBtn = document.getElementById('selectBtn');
-        selectBtn.disabled = availableCount === 0 && this.urls.length > 0;
+        const displayBox = document.getElementById('displayBox');
+        if (availableCount === 0 && this.urls.length > 0) {
+            displayBox.classList.remove('clickable');
+            displayBox.classList.add('disabled');
+        } else if (availableCount > 0) {
+            displayBox.classList.add('clickable');
+            displayBox.classList.remove('disabled');
+        }
     }
 
     updateDisplay() {
@@ -290,10 +300,8 @@ class TeamMeter {
             displayText.textContent = 'Add some URLs to get started!';
         } else if (availableCount === 0) {
             displayText.textContent = 'All URLs used! Reset to start over.';
-        } else if (availableCount === this.urls.length) {
-            displayText.textContent = 'Press the button to start!';
         } else {
-            displayText.textContent = 'Ready to select!';
+            displayText.textContent = 'Select Random URL';
         }
     }
 
