@@ -4,6 +4,7 @@ class TeamMeter {
         this.usedUrls = new Set();
         this.currentMode = 'selection';
         this.soundEnabled = true;
+        this.urlTabWindow = null;
         this.init();
     }
 
@@ -187,7 +188,12 @@ class TeamMeter {
         this.usedUrls.add(selectedUrl.id);
         this.saveToStorage();
         
-        window.open(selectedUrl.url, '_blank', 'noopener,noreferrer');
+        if (this.urlTabWindow && !this.urlTabWindow.closed) {
+            this.urlTabWindow.location.href = selectedUrl.url;
+            this.urlTabWindow.focus();
+        } else {
+            this.urlTabWindow = window.open(selectedUrl.url, '_blank', 'noopener,noreferrer');
+        }
         
         setTimeout(() => {
             this.render();
