@@ -5,6 +5,8 @@ class TeamMeter {
         this.currentMode = 'selection';
         this.soundEnabled = true;
         this.urlTabWindow = null;
+        this.editingId = null;
+        this.editingField = null;
         this.init();
     }
 
@@ -322,11 +324,24 @@ class TeamMeter {
         
         urlList.innerHTML = this.urls.map(url => {
             const isUsed = this.usedUrls.has(url.id);
+            const editingName = this.editingId === url.id && this.editingField === 'name';
+            const editingUrl = this.editingId === url.id && this.editingField === 'url';
+            
             return `
                 <div class="url-item ${isUsed ? 'used' : ''}">
                     <div class="url-info">
-                        <div class="url-display-name">${isUsed ? '✓ ' : ''}${this.escapeHtml(url.displayName)}</div>
-                        <div class="url-address">${this.escapeHtml(url.url)}</div>
+                        <div class="url-display-name" ${!editingName ? `onclick="app.startEdit(${url.id}, 'name')"` : ''}>
+                            ${editingName 
+                                ? `<input type="text" id="edit-name-${url.id}" value="${this.escapeHtml(url.displayName)}" class="edit-input" onblur="app.saveEdit(${url.id}, 'name')" onkeydown="app.handleEditKeydown(event, ${url.id}, 'name')" autofocus>`
+                                : (isUsed ? '✓ ' : '') + this.escapeHtml(url.displayName)
+                            }
+                        </div>
+                        <div class="url-address" ${!editingUrl ? `onclick="app.startEdit(${url.id}, 'url')"` : ''}>
+                            ${editingUrl
+                                ? `<input type="url" id="edit-url-${url.id}" value="${this.escapeHtml(url.url)}" class="edit-input" onblur="app.saveEdit(${url.id}, 'url')" onkeydown="app.handleEditKeydown(event, ${url.id}, 'url')" autofocus>`
+                                : this.escapeHtml(url.url)
+                            }
+                        </div>
                     </div>
                     <div class="url-actions">
                         <button class="btn-remove" onclick="app.removeUrl(${url.id})">Remove</button>
@@ -583,6 +598,58 @@ class TeamMeter {
             localStorage.removeItem('selektor5000Data');
             alert('Browser storage cleared! The page will now reload.');
             location.reload();
+        }
+    }
+
+    startEdit(id, field) {
+        this.editingId = id;
+        this.editingField = field;
+        this.renderUrlList();
+    }
+
+    saveEdit(id, field) {
+        const inputId = `edit-${field}-${id}`;
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        
+        const newValue = input.value.trim();
+        if (!newValue) {
+            alert('Value cannot be empty');
+            this.editingId = null;
+            this.editingField = null;
+            this.renderUrlList();
+            return;
+        }
+        
+        if (field === 'url' && !this.isValidUrl(newValue)) {
+            alert('Please enter a valid URL');
+            return;
+        }
+        
+        const urlObj = this.urls.find(u => u.id === id);
+        if (urlObj) {
+            if (field === 'name') {
+                urlObj.displayName = newValue;
+            } else if (field === 'url') {
+                urlObj.url = newValue;
+            }
+            this.saveToStorage();
+        }
+        
+        this.editingId = null;
+        this.editingField = null;
+        this.renderUrlList();
+    }
+
+    handleEditKeydown(event, id, field) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.saveEdit(id, field);
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            this.editingId = null;
+            this.editingField = null;
+            this.renderUrlList();
         }
     }
 }

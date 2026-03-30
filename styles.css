@@ -306,6 +306,12 @@ h1 {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.url-display-name:hover {
+    color: #667eea;
 }
 
 .url-address {
@@ -315,6 +321,28 @@ h1 {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.url-address:hover {
+    color: #667eea;
+}
+
+.edit-input {
+    width: 100%;
+    padding: 4px 8px;
+    border: 2px solid #667eea;
+    border-radius: 4px;
+    font-size: inherit;
+    font-family: inherit;
+    outline: none;
+    background: white;
+}
+
+.edit-input:focus {
+    border-color: #5568d3;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .url-actions {
