@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selektor 5000</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Selektor 5000</h1>
+            <p class="subtitle">The anti-procrastination dev selector</p>
+        </header>
+
+        <div class="mode-toggle">
+            <button id="selectionModeBtn" class="mode-btn active">
+                <span class="btn-icon">🎲</span>
+                Select
+            </button>
+            <button id="configModeBtn" class="mode-btn">
+                <span class="btn-icon">⚙️</span>
+                Setup
+            </button>
+        </div>
+
+        <!-- Selection Mode -->
+        <main id="selectionMode" class="mode-content active">
+            <div class="display-section">
+                <div id="displayBox" class="display-box">
+                    <span id="displayText">Press the button to start!</span>
+                </div>
+                <div class="stats">
+                    <span id="remainingCount" class="stat-badge">0 remaining</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="selectBtn" class="btn btn-primary" disabled>
+                    <span class="btn-icon">🎲</span>
+                    Select Random URL
+                </button>
+                <button id="resetBtn" class="btn btn-secondary">
+                    <span class="btn-icon">🔄</span>
+                    Reset
+                </button>
+            </div>
+        </main>
+
+        <!-- Configuration Mode -->
+        <main id="configMode" class="mode-content">
+            <div class="config-section">
+                <h2>Configure URLs</h2>
+                <div id="urlList" class="url-list"></div>
+                <div class="add-url-form">
+                    <input type="text" id="displayNameInput" placeholder="Display Name" class="input">
+                    <input type="url" id="urlInput" placeholder="https://example.com" class="input">
+                    <button id="addUrlBtn" class="btn btn-add">
+                        <span class="btn-icon">➕</span>
+                        Add URL
+                    </button>
+                </div>
+                <div class="config-actions">
+                    <button id="exportConfigBtn" class="btn btn-config">
+                        <span class="btn-icon">💾</span>
+                        Export Config
+                    </button>
+                    <button id="importConfigBtn" class="btn btn-config">
+                        <span class="btn-icon">📂</span>
+                        Import Config
+                    </button>
+                    <button id="resetToDefaultsBtn" class="btn btn-config">
+                        <span class="btn-icon">🔄</span>
+                        Reset to Defaults
+                    </button>
+                    <button id="clearAllBtn" class="btn btn-config btn-danger">
+                        <span class="btn-icon">🗑️</span>
+                        Clear All
+                    </button>
+                </div>
+                <input type="file" id="importFileInput" accept=".json" style="display: none;">
+            </div>
+        </main>
+
+        <footer>
+            <p>URLs are stored locally in your browser</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

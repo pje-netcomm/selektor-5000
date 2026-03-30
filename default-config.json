@@ -1,0 +1,16 @@
+{
+  "urls": [
+    {
+      "displayName": "Example Site",
+      "url": "https://example.com"
+    },
+    {
+      "displayName": "GitHub",
+      "url": "https://github.com"
+    },
+    {
+      "displayName": "Stack Overflow",
+      "url": "https://stackoverflow.com"
+    }
+  ]
+}
