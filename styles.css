@@ -273,9 +273,9 @@ h1 {
 
 .url-item {
     background: #f9f9f9;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 10px;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -295,19 +295,26 @@ h1 {
 
 .url-info {
     flex: 1;
+    min-width: 0;
 }
 
 .url-display-name {
     font-weight: bold;
     color: #333;
-    margin-bottom: 5px;
-    font-size: 1.1em;
+    margin-bottom: 3px;
+    font-size: 1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .url-address {
     color: #666;
-    font-size: 0.9em;
+    font-size: 0.85em;
     word-break: break-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .url-actions {
@@ -319,11 +326,13 @@ h1 {
     background: #ff6b6b;
     color: white;
     border: none;
-    padding: 8px 15px;
+    padding: 6px 12px;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
+    font-size: 0.9em;
     transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .btn-remove:hover {
