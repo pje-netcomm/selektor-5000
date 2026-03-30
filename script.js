@@ -192,7 +192,7 @@ class TeamMeter {
             this.urlTabWindow.location.href = selectedUrl.url;
             this.urlTabWindow.focus();
         } else {
-            this.urlTabWindow = window.open(selectedUrl.url, '_blank', 'noopener,noreferrer');
+            this.urlTabWindow = window.open(selectedUrl.url, 'selektor5000_tab');
         }
         
         setTimeout(() => {
