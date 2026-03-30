@@ -207,11 +207,22 @@ class TeamMeter {
         const spinCount = 20;
         const baseDelay = 50;
         
+        const funnyHints = [
+            '🤔 Maybe...', '👀 Could it be...', '🎯 Is it...', '✨ Perhaps...',
+            '🔮 Possibly...', '💫 What about...', '🎪 How about...',
+            '🌟 Definitely...', '🎲 Surely...', '🎨 Certainly...',
+            '🎭 Absolutely...', '🎪 Totally...', '💥 Obviously...',
+            '🌈 Clearly...', '⚡ Undoubtedly...', '🎯 Without a doubt...',
+            '✨ This has to be...', '🔥 This must be...', '💎 The chosen one:',
+            '🏆 The winner is...'
+        ];
+        
         for (let i = 0; i < spinCount; i++) {
             if (this.skipAnimation) break;
             
             const randomUrl = availableUrls[Math.floor(Math.random() * availableUrls.length)];
-            displayText.textContent = randomUrl.displayName;
+            const hint = funnyHints[Math.floor(Math.random() * funnyHints.length)];
+            displayText.textContent = `${hint} ${randomUrl.displayName}`;
             displayBox.classList.add('spinning');
             
             this.spinSound();
