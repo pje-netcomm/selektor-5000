@@ -3,12 +3,14 @@ class TeamMeter {
         this.urls = [];
         this.usedUrls = new Set();
         this.currentMode = 'selection';
+        this.soundEnabled = true;
         this.init();
     }
 
     init() {
         this.loadFromStorage();
         this.setupEventListeners();
+        this.createSounds();
         this.render();
     }
 
@@ -22,6 +24,7 @@ class TeamMeter {
         document.getElementById('importConfigBtn').addEventListener('click', () => this.importConfig());
         document.getElementById('resetToDefaultsBtn').addEventListener('click', () => this.resetToDefaults());
         document.getElementById('clearAllBtn').addEventListener('click', () => this.clearAll());
+        document.getElementById('soundToggle').addEventListener('change', (e) => this.toggleSound(e.target.checked));
         
         document.getElementById('importFileInput').addEventListener('change', (e) => this.handleFileImport(e));
         
@@ -46,7 +49,57 @@ class TeamMeter {
         } else {
             document.getElementById('configModeBtn').classList.add('active');
             document.getElementById('configMode').classList.add('active');
+            document.getElementById('soundToggle').checked = this.soundEnabled;
         }
+    }
+
+    createSounds() {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        this.spinSound = () => {
+            if (!this.soundEnabled) return;
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 400;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.05);
+        };
+        
+        this.celebrationSound = () => {
+            if (!this.soundEnabled) return;
+            const notes = [523.25, 659.25, 783.99];
+            notes.forEach((freq, index) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = freq;
+                oscillator.type = 'sine';
+                
+                const startTime = audioContext.currentTime + (index * 0.1);
+                gainNode.gain.setValueAtTime(0.15, startTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.3);
+                
+                oscillator.start(startTime);
+                oscillator.stop(startTime + 0.3);
+            });
+        };
+    }
+
+    toggleSound(enabled) {
+        this.soundEnabled = enabled;
+        this.saveToStorage();
     }
 
     addUrl() {
@@ -139,6 +192,8 @@ class TeamMeter {
             displayText.textContent = randomUrl.displayName;
             displayBox.classList.add('spinning');
             
+            this.spinSound();
+            
             const delay = baseDelay + (i * 15);
             await this.sleep(delay);
             
@@ -153,6 +208,8 @@ class TeamMeter {
         
         displayText.textContent = `🎉 ${selectedUrl.displayName} 🎉`;
         displayBox.classList.add('selected');
+        
+        this.celebrationSound();
         
         await this.sleep(600);
         displayBox.classList.remove('selected');
@@ -237,7 +294,8 @@ class TeamMeter {
     saveToStorage() {
         const data = {
             urls: this.urls,
-            usedUrls: Array.from(this.usedUrls)
+            usedUrls: Array.from(this.usedUrls),
+            soundEnabled: this.soundEnabled
         };
         localStorage.setItem('selektor5000Data', JSON.stringify(data));
     }
@@ -249,6 +307,7 @@ class TeamMeter {
                 const data = JSON.parse(stored);
                 this.urls = data.urls || [];
                 this.usedUrls = new Set(data.usedUrls || []);
+                this.soundEnabled = data.soundEnabled !== undefined ? data.soundEnabled : true;
             } catch (e) {
                 console.error('Failed to load data from storage:', e);
             }
@@ -268,6 +327,9 @@ class TeamMeter {
                         id: Date.now() + Math.random()
                     }));
                     this.usedUrls.clear();
+                    if (config.soundEnabled !== undefined) {
+                        this.soundEnabled = config.soundEnabled;
+                    }
                 }
             }
         } catch (e) {
@@ -277,7 +339,8 @@ class TeamMeter {
 
     exportConfig() {
         const config = {
-            urls: this.urls.map(({ displayName, url }) => ({ displayName, url }))
+            urls: this.urls.map(({ displayName, url }) => ({ displayName, url })),
+            soundEnabled: this.soundEnabled
         };
         
         const dataStr = JSON.stringify(config, null, 2);
@@ -312,6 +375,9 @@ class TeamMeter {
                             id: Date.now() + Math.random()
                         }));
                         this.usedUrls.clear();
+                        if (config.soundEnabled !== undefined) {
+                            this.soundEnabled = config.soundEnabled;
+                        }
                         this.saveToStorage();
                         this.render();
                     }
@@ -343,6 +409,9 @@ class TeamMeter {
                         id: Date.now() + Math.random()
                     }));
                     this.usedUrls.clear();
+                    if (config.soundEnabled !== undefined) {
+                        this.soundEnabled = config.soundEnabled;
+                    }
                     this.saveToStorage();
                     this.render();
                 } else {

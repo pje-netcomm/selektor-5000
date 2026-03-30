@@ -314,6 +314,35 @@ h1 {
     margin-bottom: 20px;
 }
 
+.sound-setting {
+    padding: 15px 0;
+    margin-bottom: 10px;
+}
+
+.sound-toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1em;
+    cursor: pointer;
+    user-select: none;
+}
+
+.sound-toggle-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.sound-toggle-label span {
+    color: #333;
+    font-weight: 500;
+}
+
+.sound-toggle-label:hover span {
+    color: #667eea;
+}
+
 .config-actions {
     display: flex;
     gap: 10px;
