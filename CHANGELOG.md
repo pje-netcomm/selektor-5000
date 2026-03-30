@@ -2,6 +2,26 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v2 - 2026-03-30
+
+### Added
+- **Sound Effects**: Spin sound during animation and celebration sound on selection
+- **Sound Toggle**: Enable/disable sound effects in Configuration Mode
+- **Skip Animation**: Press Enter during animation to skip straight to selection
+- **Click-to-Select**: Display box is now clickable to trigger selection (removed button)
+
+### Changed
+- **Simplified UI**: Removed "Select Random URL" button in favor of clicking the display box
+- **Display Text**: Changed from "Press the button to start!" to "Select Random URL"
+- **Smart Animation**: When only 1 URL remains, skip spinning animation
+- **Visual Feedback**: Display box scales on hover and click for better interactivity
+
+### Technical
+- Web Audio API for synthesized sound effects (no external files)
+- Sound preference saved in localStorage and exported configs
+- Backward compatible config imports (old configs default sound to enabled)
+- Enter key listener added/removed cleanly during selection
+
 ## v1 - 2026-03-30
 
 ### Initial Release

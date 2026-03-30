@@ -5,21 +5,24 @@ A single-page application that randomly selects from a set of configurable URLs.
 ## Features
 
 ### Core Functionality
-- **Random URL Selection**: Randomly select from configured URLs with one click
+- **Random URL Selection**: Randomly select from configured URLs with one click on the display box
 - **Smart Tracking**: Selected URLs are marked as used and won't be chosen again
 - **Auto-Open**: Selected URLs automatically open in a new browser tab
 - **Reset System**: Clear used URLs to start over with the full list
+- **Sound Effects**: Optional spin and celebration sounds during selection
+- **Skip Animation**: Press Enter during animation to jump straight to selection
 
 ### Dual Display Modes
 - **Selection Mode**: Clean, focused interface for the random selection experience
-  - Large display box with animations
+  - Large clickable display box (click to select)
   - Remaining URL counter
-  - Select and Reset buttons
+  - Reset button
 - **Configuration Mode**: Complete URL management interface
   - Add/remove URLs with display names
   - Visual indication of used vs. available URLs
   - Import/export configuration
   - Reset to defaults or clear all
+  - Sound effects toggle
 
 ### Configuration Management
 - **Export Config**: Download current configuration as JSON file
@@ -29,12 +32,15 @@ A single-page application that randomly selects from a set of configurable URLs.
 - **Clear All**: Remove all URLs with confirmation
 
 ### Fun & Interactive UI
-- **Spinning Animation**: Cycles through available URL names before selection
+- **Click-to-Select**: Click the large display box to trigger selection
+- **Spinning Animation**: Cycles through available URL names before selection (skips if only 1 remains)
 - **Celebration Effect**: Animated fanfare when URL is selected
+- **Sound Effects**: Optional spin beeps and celebration chord
+- **Keyboard Shortcut**: Press Enter to skip animation
 - **Smooth Transitions**: Fade animations when switching between modes
 - **Modern Design**: Purple gradient theme with clean, accessible interface
 - **Responsive**: Works great on desktop and mobile devices
-- **Visual Feedback**: Emoji icons and color coding for better UX
+- **Visual Feedback**: Hover effects, emoji icons and color coding for better UX
 
 ### Technical Features
 - **No Backend Required**: Pure client-side application (HTML, CSS, JavaScript)
@@ -74,4 +80,4 @@ Then open: `http://localhost:8000/`
 
 ## Version
 
-Current version: **v1**
+Current version: **v2**
