@@ -8,8 +8,8 @@ class TeamMeter {
         this.init();
     }
 
-    init() {
-        this.loadFromStorage();
+    async init() {
+        await this.loadFromStorage();
         this.setupEventListeners();
         this.createSounds();
         this.setupDebugMode();
@@ -366,7 +366,7 @@ class TeamMeter {
         localStorage.setItem('selektor5000Data', JSON.stringify(data));
     }
 
-    loadFromStorage() {
+    async loadFromStorage() {
         const stored = localStorage.getItem('selektor5000Data');
         if (stored) {
             try {
@@ -378,7 +378,7 @@ class TeamMeter {
                 console.error('Failed to load data from storage:', e);
             }
         } else {
-            this.loadDefaults();
+            await this.loadDefaults();
         }
     }
 
