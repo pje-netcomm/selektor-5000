@@ -38,6 +38,16 @@ class TeamMeter {
             if (e.key === 'Enter') this.addUrl();
         });
 
+        // Global Enter key for selection mode
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && this.currentMode === 'selection' && !this.isSelecting) {
+                const displayBox = document.getElementById('displayBox');
+                if (!displayBox.classList.contains('disabled')) {
+                    this.selectRandomUrl();
+                }
+            }
+        });
+
         // Debug mode listeners
         document.getElementById('closeDebugBtn').addEventListener('click', () => this.closeDebugView());
         document.getElementById('copyConfigBtn').addEventListener('click', () => this.copyDebugConfig());
@@ -168,10 +178,11 @@ class TeamMeter {
         }
 
         const displayBox = document.getElementById('displayBox');
-        if (displayBox.classList.contains('disabled')) {
+        if (displayBox.classList.contains('disabled') || this.isSelecting) {
             return;
         }
         
+        this.isSelecting = true;
         displayBox.classList.add('disabled');
         displayBox.classList.remove('clickable');
 
@@ -204,6 +215,7 @@ class TeamMeter {
         }
         
         setTimeout(() => {
+            this.isSelecting = false;
             this.render();
         }, 1500);
     }
