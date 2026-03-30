@@ -5,21 +5,21 @@ A single-page application that randomly selects from a set of configurable URLs.
 ## Features
 
 ### Core Functionality
-- **Random URL Selection**: Randomly select from configured URLs with one click on the display box
-- **Smart Tracking**: Selected URLs are marked as used and won't be chosen again
-- **Auto-Open**: Selected URLs automatically open in a new browser tab
-- **Reset System**: Clear used URLs to start over with the full list
+- **Random Selection**: Randomly select from configured selectees with one click on the display box
+- **Smart Tracking**: Selected items are marked as used and won't be chosen again
+- **Auto-Open**: Selected URLs automatically open in a new browser tab (reuses same tab)
+- **Reset System**: Clear used items to start over with the full list (no confirmation needed)
 - **Sound Effects**: Optional spin and celebration sounds during selection
 - **Skip Animation**: Press Enter during animation to jump straight to selection
 
 ### Dual Display Modes
 - **Selection Mode**: Clean, focused interface for the random selection experience
   - Large clickable display box (click to select)
-  - Remaining URL counter
+  - Remaining selectee counter
   - Reset button
-- **Configuration Mode**: Complete URL management interface
-  - Add/remove URLs with display names
-  - Visual indication of used vs. available URLs
+- **Configuration Mode**: Complete selectee management interface
+  - Add/remove selectees with display names
+  - Visual indication of used vs. available selectees
   - Import/export configuration
   - Reset to defaults or clear all
   - Sound effects toggle
@@ -33,8 +33,8 @@ A single-page application that randomly selects from a set of configurable URLs.
 
 ### Fun & Interactive UI
 - **Click-to-Select**: Click the large display box to trigger selection
-- **Spinning Animation**: Cycles through available URL names before selection (skips if only 1 remains)
-- **Celebration Effect**: Animated fanfare when URL is selected
+- **Spinning Animation**: Cycles through available selectee names before selection (skips if only 1 remains)
+- **Celebration Effect**: Animated fanfare when a selectee is chosen
 - **Sound Effects**: Optional spin beeps and celebration chord
 - **Keyboard Shortcut**: Press Enter to skip animation
 - **Smooth Transitions**: Fade animations when switching between modes
@@ -80,4 +80,4 @@ Then open: `http://localhost:8000/`
 
 ## Version
 
-Current version: **v2**
+Current version: **v3**

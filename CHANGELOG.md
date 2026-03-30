@@ -2,6 +2,17 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v3 - 2026-03-30
+
+### Changed
+- **Tab Reuse**: Opened URLs now reuse the same browser tab instead of creating new tabs each time
+- **No Reset Confirmation**: Reset button no longer prompts for confirmation
+- **UI Terminology**: Changed all references from "URL" to "Selectee" in user-facing text
+
+### Technical
+- Use named window target for tab reuse instead of '_blank'
+- Removed confirmation dialog from reset function
+
 ## v2 - 2026-03-30
 
 ### Added
