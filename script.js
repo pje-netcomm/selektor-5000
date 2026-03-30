@@ -108,9 +108,11 @@ class TeamMeter {
         const selectBtn = document.getElementById('selectBtn');
         selectBtn.disabled = true;
 
-        await this.animateSelection(availableUrls);
-
         const selectedUrl = availableUrls[Math.floor(Math.random() * availableUrls.length)];
+
+        if (availableUrls.length > 1) {
+            await this.animateSelection(availableUrls);
+        }
         
         await this.showSelection(selectedUrl);
 
