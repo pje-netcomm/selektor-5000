@@ -214,7 +214,31 @@ class TeamMeter {
             '🎭 Absolutely...', '🎪 Totally...', '💥 Obviously...',
             '🌈 Clearly...', '⚡ Undoubtedly...', '🎯 Without a doubt...',
             '✨ This has to be...', '🔥 This must be...', '💎 The chosen one:',
-            '🏆 The winner is...'
+            '🏆 The winner is...', '🎉 It\'s definitely...', '🌟 No way, it\'s...',
+            '🎊 Drumroll for...', '🎈 Lucky you...', '🎁 The gift goes to...',
+            '⭐ Star of the show:', '🚀 Launching...', '💫 Behold...', 
+            '🎪 Ladies and gentlemen...', '🔔 Ding ding ding:', '📢 Announcing...',
+            '🎺 Fanfare for...', '🎸 Rock on with...', '🎤 Spotlight on...',
+            '👑 Crown goes to...', '🏅 Gold medal for...', '🥇 First place:',
+            '💝 With love, it\'s...', '🌺 Blooming for...', '🦄 Magical choice:',
+            '🐉 Dragon picks...', '🦸 Hero of the hour:', '🧙 The wizard chooses...',
+            '🎮 Player 1...', '🕹️ High score goes to...', '👾 Game on with...',
+            '🍕 Slice of luck for...', '🍰 Sweetness is...', '🍀 Lucky clover points to...',
+            '🌮 Taco Tuesday picks...', '☕ Fresh brew for...', '🍩 Donut miss...',
+            '🎲 Snake eyes on...', '🃏 Wild card:', '🎰 Jackpot...',
+            '🔥 Hot pick:', '❄️ Cool choice:', '⚡ Electric selection:',
+            '🌪️ Whirlwind winner:', '🌊 Wave of destiny:', '🌋 Erupting with...',
+            '🧨 Explosive choice:', '💣 Boom! It\'s...', '🎆 Fireworks for...',
+            '🎇 Sparkler says...', '✨ Shimmer and shine:', '💥 Kaboom...',
+            '🎪 Center ring for...', '🎡 Ferris wheel stops at...', '🎢 Rollercoaster picks...',
+            '🎠 Merry-go-round lands on...', '🎯 Bullseye on...', '🎱 8-ball says...',
+            '🏹 Arrow points to...', '⚔️ Sword chooses...', '🛡️ Shield protects...',
+            '🔱 Trident selects...', '🪄 Magic wand picks...', '🔮 Crystal ball reveals...',
+            '📜 The prophecy speaks:', '🗝️ The key unlocks...', '🧭 Compass points to...',
+            '⏰ Time\'s up for...', '⏳ Hourglass settles on...', '🔔 Bell rings for...',
+            '📯 Horn sounds for...', '🎺 Trumpet announces...', '🥁 Drums beat for...',
+            '🎸 Guitar solo for...', '🎹 Piano plays for...', '🎻 Violin serenades...',
+            '🎼 The score goes to...', '🎵 Musical notes spell...', '🎶 The melody is...'
         ];
         
         for (let i = 0; i < spinCount; i++) {
