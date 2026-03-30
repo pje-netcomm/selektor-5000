@@ -2,6 +2,35 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v4 - 2026-03-30
+
+### Added
+- **Funny Hints During Spin**: 80+ humorous phrases appear before each selectee name during animation
+  - Categories: gaming, food, nature, explosions, carnival, fantasy, music, time/destiny
+  - Examples: "🎯 Is it...", "🔥 Hot pick:", "🎸 Guitar solo for..."
+- **Hidden Debug View**: Secret developer tools (click footer 5 times within 2 seconds)
+  - View configuration JSON and copy to clipboard
+  - View in-browser state (localStorage + current session)
+  - Clear localStorage with confirmation
+  - Reload page button
+- **Inline Editing**: Click display names or URLs to edit in place
+  - Enter to save, Escape to cancel
+  - Input validation for empty values and invalid URLs
+  - Hover effects to show clickable fields
+- **Enter Key in Selection Mode**: Press Enter to start random selection
+
+### Changed
+- **Session-Only Tracking**: Used URLs no longer persist across page reloads (fresh start each session)
+- **Compact List View**: Reduced padding/margins by 30-40%, smaller fonts, text truncation for more visible entries
+- **Always-Visible Controls**: Config buttons and add form stay pinned at bottom with scrollable URL list
+- **Default Config Loading**: Properly awaits default-config.json on first use (fixed race condition)
+
+### Technical
+- Made init() async to properly load defaults before rendering
+- Added isSelecting flag to prevent double-trigger
+- Flexbox layout for config section with overflow scrolling
+- Click-to-edit functionality with autofocus inputs
+
 ## v3 - 2026-03-30
 
 ### Changed
