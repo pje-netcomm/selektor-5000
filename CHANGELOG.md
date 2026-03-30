@@ -2,6 +2,36 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v5 - 2026-03-30
+
+### Added
+- **Context Menu**: Right-click on display names or URLs for quick actions
+  - Check URL: Verify URL is accessible
+  - Open URL: Open in new tab for testing
+  - Duplicate: Create copy with numbered unique name
+  - Mark Done: Manually toggle used/available status
+
+### Documentation
+- **STANDALONE-APP-GUIDE.md**: Comprehensive guide for packaging as desktop app
+  - 5 different approaches (Electron, Tauri, NW.js, Python+WebView, PWA)
+  - Code examples and build instructions
+  - Distribution strategies and installation guides
+  - Recommends Electron for best balance
+- **CONTEXT-MENU-IDEAS.md**: Exploration of 26 potential context menu enhancements
+  - Categorized by implementation difficulty
+  - Top 5 most valuable additions identified
+  - UX considerations and menu structure suggestions
+- **FUTURE-FEATURES.md**: Brainstorm of 46+ potential features
+  - 11 categories from gamification to mobile apps
+  - Prioritization framework (Easy Wins vs High Effort)
+  - Recommended next steps
+  - Scope creep warnings
+
+### Technical
+- Custom context menu with position tracking
+- Right-click event handlers on list items
+- Auto-numbering for duplicated entries
+
 ## v4 - 2026-03-30
 
 ### Added
@@ -18,11 +48,6 @@ All notable changes to Selektor 5000 will be documented in this file.
   - Input validation for empty values and invalid URLs
   - Hover effects to show clickable fields
 - **Enter Key in Selection Mode**: Press Enter to start random selection
-- **Context Menu**: Right-click on display names or URLs for quick actions
-  - Check URL: Verify URL is accessible
-  - Open URL: Open in new tab for testing
-  - Duplicate: Create copy with numbered unique name
-  - Mark Done: Manually toggle used/available status
 
 ### Changed
 - **Session-Only Tracking**: Used URLs no longer persist across page reloads (fresh start each session)

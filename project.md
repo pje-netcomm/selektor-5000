@@ -98,4 +98,4 @@ Then open: `http://localhost:8000/`
 
 ## Version
 
-Current version: **v4**
+Current version: **v5**
