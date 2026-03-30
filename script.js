@@ -246,11 +246,9 @@ class TeamMeter {
             return;
         }
         
-        if (confirm('Reset and make all URLs available again?')) {
-            this.usedUrls.clear();
-            this.saveToStorage();
-            this.render();
-        }
+        this.usedUrls.clear();
+        this.saveToStorage();
+        this.render();
     }
 
     render() {
