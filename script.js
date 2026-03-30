@@ -12,6 +12,7 @@ class TeamMeter {
         this.loadFromStorage();
         this.setupEventListeners();
         this.createSounds();
+        this.setupDebugMode();
         this.render();
     }
 
@@ -36,6 +37,13 @@ class TeamMeter {
         document.getElementById('urlInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.addUrl();
         });
+
+        // Debug mode listeners
+        document.getElementById('closeDebugBtn').addEventListener('click', () => this.closeDebugView());
+        document.getElementById('copyConfigBtn').addEventListener('click', () => this.copyDebugConfig());
+        document.getElementById('copyStateBtn').addEventListener('click', () => this.copyDebugState());
+        document.getElementById('clearStorageBtn').addEventListener('click', () => this.clearBrowserStorage());
+        document.getElementById('reloadPageBtn').addEventListener('click', () => location.reload());
     }
 
     switchMode(mode) {
@@ -489,6 +497,80 @@ class TeamMeter {
             this.usedUrls.clear();
             this.saveToStorage();
             this.render();
+        }
+    }
+
+    setupDebugMode() {
+        let clickCount = 0;
+        let clickTimer = null;
+        
+        document.querySelector('footer').addEventListener('click', () => {
+            clickCount++;
+            
+            if (clickCount === 1) {
+                clickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, 2000);
+            }
+            
+            if (clickCount === 5) {
+                clearTimeout(clickTimer);
+                clickCount = 0;
+                this.openDebugView();
+            }
+        });
+    }
+
+    openDebugView() {
+        const debugView = document.getElementById('debugView');
+        debugView.style.display = 'flex';
+        this.updateDebugView();
+    }
+
+    closeDebugView() {
+        document.getElementById('debugView').style.display = 'none';
+    }
+
+    updateDebugView() {
+        const configJson = {
+            urls: this.urls.map(({ displayName, url }) => ({ displayName, url })),
+            soundEnabled: this.soundEnabled
+        };
+        
+        document.getElementById('debugConfigJson').textContent = JSON.stringify(configJson, null, 2);
+        
+        const browserState = {
+            localStorage: localStorage.getItem('selektor5000Data') ? JSON.parse(localStorage.getItem('selektor5000Data')) : null,
+            currentSession: {
+                urls: this.urls,
+                usedUrls: Array.from(this.usedUrls),
+                soundEnabled: this.soundEnabled,
+                currentMode: this.currentMode
+            }
+        };
+        
+        document.getElementById('debugBrowserState').textContent = JSON.stringify(browserState, null, 2);
+    }
+
+    copyDebugConfig() {
+        const text = document.getElementById('debugConfigJson').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Configuration JSON copied to clipboard!');
+        });
+    }
+
+    copyDebugState() {
+        const text = document.getElementById('debugBrowserState').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Browser state copied to clipboard!');
+        });
+    }
+
+    clearBrowserStorage() {
+        if (confirm('⚠️ Warning: This will delete all stored data including your URL list!\n\nAre you sure you want to clear browser storage?')) {
+            localStorage.removeItem('selektor5000Data');
+            alert('Browser storage cleared! The page will now reload.');
+            location.reload();
         }
     }
 }
