@@ -17,15 +17,6 @@ All notable changes to Selektor 5000 will be documented in this file.
   - Code examples and build instructions
   - Distribution strategies and installation guides
   - Recommends Electron for best balance
-- **CONTEXT-MENU-IDEAS.md**: Exploration of 26 potential context menu enhancements
-  - Categorized by implementation difficulty
-  - Top 5 most valuable additions identified
-  - UX considerations and menu structure suggestions
-- **FUTURE-FEATURES.md**: Brainstorm of 46+ potential features
-  - 11 categories from gamification to mobile apps
-  - Prioritization framework (Easy Wins vs High Effort)
-  - Recommended next steps
-  - Scope creep warnings
 
 ### Technical
 - Custom context menu with position tracking
