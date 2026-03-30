@@ -163,9 +163,19 @@ class TeamMeter {
 
         const selectedUrl = availableUrls[Math.floor(Math.random() * availableUrls.length)];
 
+        this.skipAnimation = false;
+        const skipHandler = (e) => {
+            if (e.key === 'Enter') {
+                this.skipAnimation = true;
+            }
+        };
+        document.addEventListener('keydown', skipHandler);
+
         if (availableUrls.length > 1) {
             await this.animateSelection(availableUrls);
         }
+        
+        document.removeEventListener('keydown', skipHandler);
         
         await this.showSelection(selectedUrl);
 
@@ -188,6 +198,8 @@ class TeamMeter {
         const baseDelay = 50;
         
         for (let i = 0; i < spinCount; i++) {
+            if (this.skipAnimation) break;
+            
             const randomUrl = availableUrls[Math.floor(Math.random() * availableUrls.length)];
             displayText.textContent = randomUrl.displayName;
             displayBox.classList.add('spinning');
