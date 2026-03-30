@@ -252,16 +252,23 @@ h1 {
 
 .config-section {
     padding-top: 0;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 300px);
 }
 
 .config-section h2 {
     color: #667eea;
     margin-bottom: 20px;
     font-size: 1.8em;
+    flex-shrink: 0;
 }
 
 .url-list {
     margin-bottom: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+    min-height: 0;
 }
 
 .url-item {
@@ -329,11 +336,13 @@ h1 {
     gap: 10px;
     flex-wrap: wrap;
     margin-bottom: 20px;
+    flex-shrink: 0;
 }
 
 .sound-setting {
     padding: 15px 0;
     margin-bottom: 10px;
+    flex-shrink: 0;
 }
 
 .sound-toggle-label {
@@ -366,6 +375,7 @@ h1 {
     flex-wrap: wrap;
     padding-top: 20px;
     border-top: 2px solid #f0f0f0;
+    flex-shrink: 0;
 }
 
 .btn-config {
