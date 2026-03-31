@@ -137,5 +137,8 @@ Current version: **v6**
 - Layout of profile editing looks bad; make profile settings come up in a separate modal view, similar to the debug view, and make it look more polished overall.
 - add change log to the debug view
 - There are multiple confirmaations when resetting to defaults, we need only one.
-- 
+- in debug view, make json config view a tree view that can be expanded and collapsed, and add syntax highlighting.
+- Add configuration options for animation duration and sound effect volume, and persist those in the profile config as well.
+- Option to force use of default-config only for URL list and titles.  Only use localStorage for superficial UX settings like sound and animation preferences, and used item tracking.  This way users can maintain a shared default config for URLs and titles, but still have their own local settings and tracking.  This could be by detecting presence of a "fixed-config.json" file in the same location as the default-config.json
+
 
