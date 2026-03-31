@@ -182,5 +182,5 @@ Current version: **v6.3**
 
 # Things to do (not yet, when I'm ready)
 - [more-settings] Add configuration options for animation duration and sound effect volume, and persist those in the profile config as well.
-- [config-versioning] localStorage configuration must be tolerant of breaking changes.  If an old format configuration is seen it should import with reasonable defaults. if a "too new" version is seen, alert that the configuration is not compatible and offer to reset to defaults.  If rejected, changes to localStorage are blocked.
+- [config-versioning] localStorage configuration must be tolerant of breaking changes.  If an old format configuration is seen it should import with reasonable behaviour for new or altered config parameters. if a "too new" version is seen, alert that the configuration is not compatible and offer to reset to defaults.  If rejected, changes to localStorage are blocked, and the app is unable to run.
 
