@@ -1,6 +1,117 @@
-# Configuration Guide - Selektor 5000 v6
+# Configuration Guide - Selektor 5000 v6.3
 
-Selektor 5000 supports **multiple configuration profiles**, each with its own settings, branding, and selectee list.
+Selektor 5000 supports **multiple configuration profiles**, each with its own settings, branding, and selectee list. It also supports **fixed configuration mode** for team deployments.
+
+## Configuration Modes
+
+### Normal Mode (Default)
+- Users have full control over profiles, URLs, and settings
+- All data stored in localStorage
+- Profiles can be created, edited, and deleted
+- URLs can be added, removed, and modified
+
+### Fixed Configuration Mode
+- URLs and branding are **read-only** (locked)
+- Deployed via `fixed-config.json` file
+- Perfect for **team environments**
+- Admin maintains centralized URL list
+- Users still have personal settings and tracking
+
+---
+
+## Fixed Configuration Mode
+
+### When to Use Fixed Mode
+
+**Perfect for teams** where:
+- ✅ Admin wants to maintain a centralized URL list
+- ✅ Users shouldn't modify the URLs
+- ✅ Everyone uses the same branding (title, subtitle, topic)
+- ✅ Individual users need personal tracking
+- ✅ Personal preferences (sound, tabs) should be saved locally
+
+**Example scenarios:**
+- Company team selector (admin manages team members)
+- Shared restaurant list (owner manages venues)
+- Training resources (admin curates learning materials)
+- Code review rotation (manager sets team list)
+
+### Setting Up Fixed Mode
+
+1. **Create fixed-config.json**
+
+```json
+{
+  "name": "Company Team",
+  "title": "Team Member Selector",
+  "subtitle": "Fair and random team member selection",
+  "topic": "Team Member",
+  "urls": [
+    {
+      "displayName": "Alice (Frontend Lead)",
+      "url": "https://github.com/alice"
+    },
+    {
+      "displayName": "Bob (Backend Developer)",
+      "url": "https://github.com/bob"
+    }
+  ]
+}
+```
+
+2. **Deploy with Application**
+   - Place `fixed-config.json` in same directory as `index.html`
+   - Serve via HTTP server (required for file loading)
+   - App automatically detects and loads on startup
+
+3. **Users See Read-Only Interface**
+   - 🔒 Fixed Config Mode indicator in header (orange badge)
+   - Notice: "URLs and branding are read-only"
+   - URLs shown with 🔒 read-only badges
+   - Add/Edit/Delete controls disabled
+   - Personal settings still editable
+
+### What's Locked in Fixed Mode
+
+❌ **Cannot modify:**
+- URL list (add/remove/edit)
+- Display names
+- URL addresses
+- Title, subtitle, topic
+- Profile branding customization
+- Clear all URLs
+
+✅ **Can still customize:**
+- Sound effects (ON/OFF)
+- Open in new tab (ON/OFF)
+- Track used items (personal)
+- Reset used items (personal)
+- Switch modes (Selection/Setup)
+
+### Visual Indicators
+
+Fixed mode displays:
+- **Header**: Orange "🔒 Fixed Config Mode" badge
+- **URL List**: Notice about read-only configuration
+- **URL Items**: Orange left border with 🔒 badges
+- **Controls**: Disabled/grayed add, edit, delete buttons
+- **Edit Panel**: "Edit Profile" button disabled
+
+### Benefits
+
+👥 **For Teams:**
+- Centralized URL management
+- Consistent branding across users
+- Individual progress tracking
+- Personal preference settings
+
+🔧 **For Admins:**
+- Update `fixed-config.json` to change URLs for everyone
+- No user-side maintenance needed
+- Prevents accidental modifications
+- Easy deployment (just one file)
+
+---
 
 ## Profile System
 

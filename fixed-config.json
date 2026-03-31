@@ -1,0 +1,32 @@
+{
+  "name": "Company Team",
+  "title": "Team Member Selector",
+  "subtitle": "Fair and random team member selection",
+  "topic": "Team Member",
+  "urls": [
+    {
+      "displayName": "Alice (Frontend Lead)",
+      "url": "https://github.com/alice"
+    },
+    {
+      "displayName": "Bob (Backend Developer)",
+      "url": "https://github.com/bob"
+    },
+    {
+      "displayName": "Carol (DevOps Engineer)",
+      "url": "https://github.com/carol"
+    },
+    {
+      "displayName": "Dave (QA Specialist)",
+      "url": "https://github.com/dave"
+    },
+    {
+      "displayName": "Eve (Product Manager)",
+      "url": "https://github.com/eve"
+    },
+    {
+      "displayName": "Frank (Designer)",
+      "url": "https://github.com/frank"
+    }
+  ]
+}

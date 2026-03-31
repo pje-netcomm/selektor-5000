@@ -2,6 +2,46 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v6.3 - Fixed Configuration Mode (2026-03-31)
+
+### Major Feature
+- **Fixed Configuration Mode**: Deploy read-only configs for shared/team environments
+  - Place `fixed-config.json` alongside app files
+  - URLs and branding become read-only (locked)
+  - Users can still customize personal settings (sound, tab behavior)
+  - Individual tracking of used items persists locally
+  - Perfect for teams: admin manages URLs, users have personal tracking
+
+### How It Works
+- App auto-detects `fixed-config.json` on startup
+- If found, switches to fixed mode automatically
+- URL list locked with 🔒 indicators
+- Add/Remove/Edit URL controls disabled
+- Profile customization disabled
+- Settings and used items still saved per user
+
+### Read-Only Elements
+- URLs (cannot add/remove/edit)
+- Title, subtitle, topic (cannot customize)
+- Profile branding (edit button disabled)
+
+### User-Specific Elements
+- Sound effects toggle (saved locally)
+- Open in new tab toggle (saved locally)
+- Used items tracking (saved locally)
+- Current mode (Selection vs Setup)
+
+### Improvements
+- Visual indicators show fixed mode (🔒 badges, orange theme)
+- Fixed mode notice displayed in config view
+- Disabled controls for locked features
+- Orange gradient indicator in header
+
+### Bug Fixes
+- Removed duplicate confirmation dialog when resetting to defaults
+
+---
+
 ## v6.2 - Interactive JSON Tree View (2026-03-31)
 
 ### Added

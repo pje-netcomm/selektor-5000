@@ -6,6 +6,8 @@ class TeamMeter {
         this.editingId = null;
         this.editingField = null;
         this.contextMenuTarget = null;
+        this.fixedConfig = null;
+        this.isFixedMode = false;
         this.init();
     }
 
@@ -16,8 +18,14 @@ class TeamMeter {
         return this.profiles[this.currentProfileId];
     }
 
-    get urls() { return this.currentProfile.urls; }
-    set urls(val) { this.currentProfile.urls = val; }
+    get urls() { 
+        return this.isFixedMode ? (this.fixedConfig.urls || []) : this.currentProfile.urls;
+    }
+    set urls(val) { 
+        if (!this.isFixedMode) {
+            this.currentProfile.urls = val;
+        }
+    }
     get usedUrls() { return this.currentProfile.usedUrls; }
     set usedUrls(val) { this.currentProfile.usedUrls = val; }
     get currentMode() { return this.currentProfile.currentMode; }
@@ -26,13 +34,30 @@ class TeamMeter {
     set soundEnabled(val) { this.currentProfile.soundEnabled = val; }
     get openInNewTab() { return this.currentProfile.openInNewTab; }
     set openInNewTab(val) { this.currentProfile.openInNewTab = val; }
-    get title() { return this.currentProfile.title; }
-    set title(val) { this.currentProfile.title = val; }
-    get subtitle() { return this.currentProfile.subtitle; }
-    set subtitle(val) { this.currentProfile.subtitle = val; }
-    get topic() { return this.currentProfile.topic; }
-    set topic(val) { this.currentProfile.topic = val; }
-
+    get title() { 
+        return this.isFixedMode ? (this.fixedConfig.title || 'Selektor 5000') : this.currentProfile.title;
+    }
+    set title(val) { 
+        if (!this.isFixedMode) {
+            this.currentProfile.title = val;
+        }
+    }
+    get subtitle() { 
+        return this.isFixedMode ? (this.fixedConfig.subtitle || 'The anti-procrastination dev selector') : this.currentProfile.subtitle;
+    }
+    set subtitle(val) { 
+        if (!this.isFixedMode) {
+            this.currentProfile.subtitle = val;
+        }
+    }
+    get topic() { 
+        return this.isFixedMode ? (this.fixedConfig.topic || 'Selectee') : this.currentProfile.topic;
+    }
+    set topic(val) { 
+        if (!this.isFixedMode) {
+            this.currentProfile.topic = val;
+        }
+    }
     createDefaultProfile(id, name = 'Default Profile') {
         return {
             id: id,
@@ -49,6 +74,7 @@ class TeamMeter {
     }
 
     async init() {
+        await this.loadFixedConfig();
         await this.loadFromStorage();
         this.setupEventListeners();
         this.createSounds();
@@ -215,6 +241,11 @@ class TeamMeter {
     }
 
     addUrl() {
+        if (this.isFixedMode) {
+            alert('Cannot add URLs in fixed configuration mode. URLs are read-only.');
+            return;
+        }
+        
         const displayNameInput = document.getElementById('displayNameInput');
         const urlInput = document.getElementById('urlInput');
         
@@ -256,6 +287,10 @@ class TeamMeter {
     }
 
     removeUrl(id) {
+        if (this.isFixedMode) {
+            alert('Cannot remove URLs in fixed configuration mode. URLs are read-only.');
+            return;
+        }
         this.urls = this.urls.filter(url => url.id !== id);
         this.usedUrls.delete(id);
         this.saveToStorage();
@@ -416,10 +451,29 @@ class TeamMeter {
         document.querySelector('header h1').textContent = `🎯 ${this.title}`;
         document.querySelector('header .subtitle').textContent = this.subtitle;
         
+        // Show/hide fixed mode indicator
+        const existingIndicator = document.querySelector('.fixed-mode-indicator');
+        if (this.isFixedMode && !existingIndicator) {
+            const indicator = document.createElement('div');
+            indicator.className = 'fixed-mode-indicator';
+            indicator.innerHTML = '🔒 Fixed Config Mode';
+            indicator.title = 'URLs and branding are read-only';
+            document.querySelector('header').appendChild(indicator);
+        } else if (!this.isFixedMode && existingIndicator) {
+            existingIndicator.remove();
+        }
+        
         // Update topic references
         document.getElementById('topicLabel').textContent = `${this.topic}s`;
         document.getElementById('addUrlBtn').innerHTML = `<span class="btn-icon">➕</span> Add ${this.topic}`;
         document.getElementById('displayNameInput').placeholder = `${this.topic} Name`;
+        
+        // Disable/enable edit controls in fixed mode
+        document.getElementById('addUrlBtn').disabled = this.isFixedMode;
+        document.getElementById('displayNameInput').disabled = this.isFixedMode;
+        document.getElementById('urlInput').disabled = this.isFixedMode;
+        document.getElementById('editProfileBtn').disabled = this.isFixedMode;
+        document.getElementById('clearAllBtn').disabled = this.isFixedMode;
         
         // Update settings checkboxes to match current profile
         document.getElementById('soundToggle').checked = this.soundEnabled;
@@ -445,6 +499,32 @@ class TeamMeter {
             return;
         }
         
+        if (this.isFixedMode) {
+            urlList.innerHTML = `
+                <div class="fixed-mode-notice">
+                    🔒 <strong>Fixed Configuration Mode</strong><br>
+                    URLs and branding are read-only. Only settings and tracking are saved locally.
+                </div>
+            ` + this.urls.map(url => {
+                const isUsed = this.usedUrls.has(url.id);
+                return `
+                    <div class="url-item ${isUsed ? 'used' : ''} fixed-item">
+                        <div class="url-info">
+                            <div class="url-display-name">
+                                ${isUsed ? '✓ ' : ''}${this.escapeHtml(url.displayName)}
+                            </div>
+                            <div class="url-address">
+                                ${this.escapeHtml(url.url)}
+                            </div>
+                        </div>
+                        <div class="url-actions">
+                            <span class="fixed-badge">🔒 Read-only</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            return;
+        }        
         urlList.innerHTML = this.urls.map(url => {
             const isUsed = this.usedUrls.has(url.id);
             const editingName = this.editingId === url.id && this.editingField === 'name';
@@ -597,6 +677,29 @@ class TeamMeter {
         }
     }
 
+    async loadFixedConfig() {
+        try {
+            const response = await fetch('fixed-config.json');
+            if (response.ok) {
+                const config = await response.json();
+                this.fixedConfig = {
+                    name: config.name || 'Fixed Configuration',
+                    title: config.title || 'Selektor 5000',
+                    subtitle: config.subtitle || 'The anti-procrastination dev selector',
+                    topic: config.topic || 'Selectee',
+                    urls: (config.urls || []).map(url => ({
+                        ...url,
+                        id: Date.now() + Math.random()
+                    }))
+                };
+                this.isFixedMode = true;
+                console.log('Fixed configuration loaded. URLs and branding are read-only.');
+            }
+        } catch (e) {
+            this.isFixedMode = false;
+        }
+    }
+
     exportConfig() {
         const config = {
             name: this.currentProfile.name,
@@ -706,6 +809,10 @@ class TeamMeter {
     }
 
     clearAll() {
+        if (this.isFixedMode) {
+            alert('Cannot clear URLs in fixed configuration mode.');
+            return;
+        }
         if (confirm('Clear all URLs? This action cannot be undone.')) {
             this.urls = [];
             this.usedUrls.clear();
@@ -770,6 +877,11 @@ class TeamMeter {
     }
 
     openEditPanel() {
+        if (this.isFixedMode) {
+            alert('Profile customization is disabled in fixed configuration mode.');
+            return;
+        }
+        
         const panel = document.getElementById('profileEditPanel');
         const profile = this.currentProfile;
         

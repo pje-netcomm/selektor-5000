@@ -38,6 +38,19 @@ body {
 header {
     text-align: center;
     margin-bottom: 30px;
+    position: relative;
+}
+
+.fixed-mode-indicator {
+    background: linear-gradient(135deg, #ff9800 0%, #ff6b6b 100%);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 10px;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
 }
 
 .mode-toggle {
@@ -460,6 +473,38 @@ h1 {
 .url-item.used {
     opacity: 0.5;
     background: #e8e8e8;
+}
+
+.url-item.fixed-item {
+    background: #fff8f0;
+    border-left: 4px solid #ff9800;
+}
+
+.url-item.fixed-item:hover {
+    background: #fff0e0;
+}
+
+.fixed-badge {
+    background: #ff9800;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.fixed-mode-notice {
+    background: linear-gradient(135deg, #fff8f0 0%, #ffe8d0 100%);
+    border: 2px solid #ff9800;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #d84315;
+}
+
+.fixed-mode-notice strong {
+    font-size: 1.1em;
 }
 
 .url-info {

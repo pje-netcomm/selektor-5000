@@ -48,6 +48,11 @@ A single-page application that randomly selects from a set of configurable URLs.
 ### Configuration Management
 - **Profile Operations**: Create, switch, rename, and delete profiles
 - **Customize Profile**: Set custom title, subtitle, and topic name per profile
+- **Fixed Configuration Mode**: Deploy read-only configs for shared environments
+  - Place `fixed-config.json` alongside app files
+  - URLs and branding become read-only
+  - Users can still customize sound effects, tab behavior, and track used items
+  - Perfect for teams - admin sets URLs, users have personal tracking
 - **Export Config**: Download current profile configuration as JSON file
 - **Import Config**: Upload previously exported profile configurations
 - **Default Config**: Automatically loads from `default-config.json` on first use
@@ -57,7 +62,7 @@ A single-page application that randomly selects from a set of configurable URLs.
 - **Context Menu**: Right-click any entry for quick actions
   - Check URL to verify accessibility
   - Open URL in new tab for testing
-  - Duplicate entry with auto-numbered unique name
+  - Duplicate entry with auto-numbered unique name (disabled in fixed mode)
   - Mark Done to manually toggle used/available status
 
 ### Fun & Interactive UI
@@ -80,6 +85,10 @@ A single-page application that randomly selects from a set of configurable URLs.
 - **Persistent Storage**: All profiles, configurations, used items, and settings saved in browser localStorage
 - **State Persistence**: All state persists across page reloads for seamless experience
 - **Profile System**: Multiple independent profiles with separate configurations
+- **Fixed Configuration Mode**: Read-only config deployment for shared/team environments
+  - Detects `fixed-config.json` file automatically
+  - URLs and branding locked, settings and tracking stay local
+  - Enables centralized URL management with personal tracking
 - **Automatic Migration**: Seamlessly migrates old single-profile data to new multi-profile format
 - **Single Page Application**: Fast, responsive, no page reloads
 - **Export Format**: Standard JSON format for easy sharing and backup (per-profile)
@@ -102,6 +111,41 @@ With the profile system, you can create different configurations for different c
 - **Task Assignment**: Randomly assign tasks or responsibilities
 - **Learning Queue**: Work through tutorials or courses in random order
 - **Multiple Teams**: Separate profiles for different teams or projects
+- **Shared Team Config**: Use fixed-config.json for team-wide URL list while each user tracks their own progress
+
+## Fixed Configuration Mode
+
+Deploy `fixed-config.json` alongside the app to enable read-only mode:
+
+### Use Case
+Perfect for **teams** or **shared environments** where:
+- Admin maintains a centralized list of URLs
+- Users cannot modify the URL list or branding
+- Each user still has personal tracking of used items
+- Individual sound/tab preferences saved locally
+
+### How It Works
+1. Create `fixed-config.json` with your URLs and branding
+2. Deploy it with the app files
+3. App auto-detects and loads it on startup
+4. URL list becomes read-only (🔒 indicators shown)
+5. Users can still:
+   - Toggle sound effects (personal preference)
+   - Change tab opening behavior (personal preference)
+   - Track which items they've used (personal state)
+   - Reset their used items
+
+### What's Locked
+- ❌ Cannot add/remove/edit URLs
+- ❌ Cannot change title, subtitle, or topic
+- ❌ Cannot clear all URLs
+- ❌ Cannot customize profile branding
+
+### What's Personal
+- ✅ Sound effect preference (saved locally)
+- ✅ Open in new tab preference (saved locally)
+- ✅ Used items tracking (saved locally)
+- ✅ Current mode (Selection vs Setup)
 
 ## Requirements
 
@@ -134,12 +178,9 @@ Then open: `http://localhost:8000/`
 
 ## Version
 
-Current version: **v6.2**
+Current version: **v6.3**
 
 # Things to do (not yet, when I'm ready)
-- There are multiple confirmaations when resetting to defaults, we need only one.
-- in debug view, make json config view a tree view that can be expanded and collapsed, and add syntax highlighting.
-- Add configuration options for animation duration and sound effect volume, and persist those in the profile config as well.
-- Option to force use of default-config only for URL list and titles.  Only use localStorage for superficial UX settings like sound and animation preferences, and used item tracking.  This way users can maintain a shared default config for URLs and titles, but still have their own local settings and tracking.  This could be by detecting presence of a "fixed-config.json" file in the same location as the default-config.json
-
+- [more-settings] Add configuration options for animation duration and sound effect volume, and persist those in the profile config as well.
+- [config-versioning] localStorage configuration must be tolerant of breaking changes.  If an old format configuration is seen it should import with reasonable defaults. if a "too new" version is seen, alert that the configuration is not compatible and offer to reset to defaults.  If rejected, changes to localStorage are blocked.
 
