@@ -6,7 +6,7 @@ Order Deny,Allow
 Deny from all
 
 # Allow access to main application files
-<FilesMatch "^(index\.html|script\.js|styles\.css)$">
+<FilesMatch "^(|index\.html|script\.js|styles\.css)$">
     Allow from all
 </FilesMatch>
 
@@ -15,24 +15,9 @@ Deny from all
     Allow from all
 </FilesMatch>
 
-# Allow example configuration files (optional - remove if you don't want these public)
-<FilesMatch "^(example-.*-config\.json)$">
+# And other files.
+<FilesMatch "^(CHANGELOG\.md)$">
     Allow from all
-</FilesMatch>
-
-# Allow documentation files (optional - comment out to hide)
-<FilesMatch "^(README\.md|CHANGELOG\.md|LICENSE)$">
-    Allow from all
-</FilesMatch>
-
-# Explicitly deny access to sensitive files
-<FilesMatch "^(project\.md|CONFIG\.md|PUBLISH\.md|STANDALONE-APP-GUIDE\.md|\.git.*|.*~|\.DS_Store)$">
-    Deny from all
-</FilesMatch>
-
-# Deny access to backup files
-<FilesMatch "\.(bak|backup|swp|swo|tmp)$">
-    Deny from all
 </FilesMatch>
 
 # Set default document
