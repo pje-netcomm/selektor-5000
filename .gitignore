@@ -1,4 +1,21 @@
+# Editor backups and temporary files
 *~
 *.bak
 *.backup
 .DS_Store
+
+# IDE and editor folders
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+Thumbs.db
+desktop.ini
+
+# Node modules (if ever added)
+node_modules/
+
+# Local testing
+.http-server-*
