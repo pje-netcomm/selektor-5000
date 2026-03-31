@@ -706,6 +706,44 @@ footer {
     flex-grow: 1;
 }
 
+.debug-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.debug-tab {
+    background: transparent;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    font-size: 1em;
+}
+
+.debug-tab:hover {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.debug-tab.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+}
+
+.debug-tab-content {
+    display: none;
+}
+
+.debug-tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in;
+}
+
 .debug-section {
     margin-bottom: 30px;
 }
@@ -787,6 +825,97 @@ footer {
 
 .context-menu-item:active {
     background: #e0e0e0;
+}
+
+/* Changelog Rendering */
+.changelog-content {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.changelog-content h1 {
+    color: #667eea;
+    font-size: 2em;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 10px;
+}
+
+.changelog-content h2 {
+    color: #764ba2;
+    font-size: 1.6em;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
+}
+
+.changelog-content h3 {
+    color: #667eea;
+    font-size: 1.3em;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.changelog-content ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.changelog-content li {
+    margin-bottom: 8px;
+    padding-left: 25px;
+    position: relative;
+}
+
+.changelog-content li:before {
+    content: "•";
+    color: #667eea;
+    font-weight: bold;
+    position: absolute;
+    left: 8px;
+}
+
+.changelog-content strong {
+    color: #764ba2;
+    font-weight: 600;
+}
+
+.changelog-content code {
+    background: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    color: #d63384;
+}
+
+.changelog-content pre {
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    border-left: 4px solid #667eea;
+}
+
+.changelog-content hr {
+    border: none;
+    border-top: 2px solid #e0e0e0;
+    margin: 25px 0;
+}
+
+.changelog-content p {
+    margin-bottom: 12px;
+}
+
+.changelog-content a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.changelog-content a:hover {
+    text-decoration: underline;
 }
 
 .empty-state {

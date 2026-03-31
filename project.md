@@ -85,6 +85,10 @@ A single-page application that randomly selects from a set of configurable URLs.
 - **Export Format**: Standard JSON format for easy sharing and backup (per-profile)
 - **Default Configuration**: JSON-based defaults deployable with the app
 - **Hidden Debug View**: Developer tools accessible via secret activation (5 clicks on footer)
+  - Configuration JSON viewer with copy function
+  - Browser state inspector
+  - Changelog viewer with full markdown rendering
+  - LocalStorage management tools
 - **Async Initialization**: Properly loads defaults before rendering
 
 ## Use Cases
@@ -130,12 +134,11 @@ Then open: `http://localhost:8000/`
 
 ## Version
 
-Current version: **v6**
+Current version: **v6.1**
 
 # Things to do (not yet, when I'm ready)
 - Pressing enter in config view sometimes starts the selection, this should only happen in selection view
 - Layout of profile editing looks bad; make profile settings come up in a separate modal view, similar to the debug view, and make it look more polished overall.
-- add change log to the debug view
 - There are multiple confirmaations when resetting to defaults, we need only one.
 - in debug view, make json config view a tree view that can be expanded and collapsed, and add syntax highlighting.
 - Add configuration options for animation duration and sound effect volume, and persist those in the profile config as well.

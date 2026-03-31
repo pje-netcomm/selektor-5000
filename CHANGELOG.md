@@ -2,6 +2,25 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v6.1 - Enhanced Debug View (2026-03-31)
+
+### Added
+- **Changelog Viewer in Debug Mode**: View full changelog with markdown rendering
+  - Tabbed interface in debug view (Configuration, Browser State, Changelog)
+  - Beautiful markdown rendering with styled headers, lists, and code blocks
+  - Purple theme matching application design
+  - Loads CHANGELOG.md dynamically via fetch
+- **Debug Tab System**: Easy navigation between different debug views
+  - Smooth tab switching with animations
+  - Active tab highlighting
+
+### Improvements
+- Debug view now has organized tabs instead of scrolling sections
+- Better visual hierarchy in debug interface
+- Markdown parser for changelog rendering (headers, lists, bold, code, hr)
+
+---
+
 ## v6 - Profile System (2026-03-31)
 
 ### Major Features

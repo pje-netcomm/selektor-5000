@@ -135,7 +135,7 @@
         </main>
 
         <footer>
-            <p>URLs are stored locally in your browser · v6</p>
+            <p>URLs are stored locally in your browser · v6.1</p>
         </footer>
     </div>
 
@@ -155,16 +155,34 @@
                 <button id="closeDebugBtn" class="btn-close">✕</button>
             </div>
             <div class="debug-body">
-                <div class="debug-section">
-                    <h3>Configuration JSON</h3>
-                    <pre id="debugConfigJson" class="debug-pre"></pre>
-                    <button id="copyConfigBtn" class="btn btn-debug">Copy JSON</button>
+                <div class="debug-tabs">
+                    <button class="debug-tab active" data-tab="config">Configuration</button>
+                    <button class="debug-tab" data-tab="state">Browser State</button>
+                    <button class="debug-tab" data-tab="changelog">📜 Changelog</button>
                 </div>
-                <div class="debug-section">
-                    <h3>In-Browser State</h3>
-                    <pre id="debugBrowserState" class="debug-pre"></pre>
-                    <button id="copyStateBtn" class="btn btn-debug">Copy State</button>
+                
+                <div class="debug-tab-content active" data-content="config">
+                    <div class="debug-section">
+                        <h3>Configuration JSON</h3>
+                        <pre id="debugConfigJson" class="debug-pre"></pre>
+                        <button id="copyConfigBtn" class="btn btn-debug">Copy JSON</button>
+                    </div>
                 </div>
+                
+                <div class="debug-tab-content" data-content="state">
+                    <div class="debug-section">
+                        <h3>In-Browser State</h3>
+                        <pre id="debugBrowserState" class="debug-pre"></pre>
+                        <button id="copyStateBtn" class="btn btn-debug">Copy State</button>
+                    </div>
+                </div>
+                
+                <div class="debug-tab-content" data-content="changelog">
+                    <div class="debug-section">
+                        <div id="changelogContent" class="changelog-content"></div>
+                    </div>
+                </div>
+                
                 <div class="debug-section">
                     <h3>Actions</h3>
                     <button id="clearStorageBtn" class="btn btn-danger-debug">Clear LocalStorage</button>

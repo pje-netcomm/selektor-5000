@@ -124,6 +124,11 @@ class TeamMeter {
         document.getElementById('copyStateBtn').addEventListener('click', () => this.copyDebugState());
         document.getElementById('clearStorageBtn').addEventListener('click', () => this.clearBrowserStorage());
         document.getElementById('reloadPageBtn').addEventListener('click', () => location.reload());
+        
+        // Debug tabs
+        document.querySelectorAll('.debug-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => this.switchDebugTab(e.target.dataset.tab));
+        });
 
         // Context menu listeners
         document.addEventListener('click', () => this.hideContextMenu());
@@ -837,10 +842,72 @@ class TeamMeter {
         const debugView = document.getElementById('debugView');
         debugView.style.display = 'flex';
         this.updateDebugView();
+        this.loadChangelog();
     }
 
     closeDebugView() {
         document.getElementById('debugView').style.display = 'none';
+    }
+
+    switchDebugTab(tabName) {
+        // Update tab buttons
+        document.querySelectorAll('.debug-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.tab === tabName);
+        });
+        
+        // Update tab content
+        document.querySelectorAll('.debug-tab-content').forEach(content => {
+            content.classList.toggle('active', content.dataset.content === tabName);
+        });
+    }
+
+    async loadChangelog() {
+        try {
+            const response = await fetch('CHANGELOG.md');
+            if (response.ok) {
+                const markdown = await response.text();
+                const html = this.markdownToHtml(markdown);
+                document.getElementById('changelogContent').innerHTML = html;
+            } else {
+                document.getElementById('changelogContent').innerHTML = 
+                    '<p style="color: #999;">Changelog not found. Make sure CHANGELOG.md is in the same directory.</p>';
+            }
+        } catch (e) {
+            document.getElementById('changelogContent').innerHTML = 
+                '<p style="color: #999;">Could not load changelog. Serve via HTTP server to view.</p>';
+        }
+    }
+
+    markdownToHtml(markdown) {
+        let html = markdown;
+        
+        // Headers
+        html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+        html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+        html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+        
+        // Horizontal rules
+        html = html.replace(/^\-\-\-$/gim, '<hr>');
+        
+        // Bold
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        // Inline code
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+        
+        // Lists
+        html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
+        html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+        
+        // Paragraphs
+        html = html.split('\n\n').map(para => {
+            if (!para.match(/^<[h|u|l|hr]/)) {
+                return '<p>' + para.replace(/\n/g, '<br>') + '</p>';
+            }
+            return para;
+        }).join('\n');
+        
+        return html;
     }
 
     updateDebugView() {
