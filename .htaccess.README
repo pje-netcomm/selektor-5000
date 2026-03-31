@@ -1,0 +1,88 @@
+# .htaccess Configuration Guide
+
+This .htaccess file provides security and access control for Apache web servers.
+
+## What It Does
+
+### Access Control
+- Denies access to all files by default
+- Explicitly allows only necessary files:
+  - index.html, script.js, styles.css (required)
+  - default-config.json, fixed-config.json (optional configs)
+  - example-*-config.json (example files)
+  - README.md, CHANGELOG.md, LICENSE (documentation)
+
+### Blocks Access To
+- Project documentation (project.md, CONFIG.md, etc.)
+- Git files (.git, .gitignore)
+- Backup files (*~, *.bak, *.backup)
+- Editor temp files (.swp, .swo)
+- Publishing guides (PUBLISH.md)
+
+### Additional Features
+- Disables directory listing (no file browsing)
+- Sets proper MIME types
+- Enables compression (if mod_deflate available)
+- Browser caching for performance
+- Security headers (X-Frame-Options, etc.)
+- Optional HTTPS redirect (commented out)
+
+## Customization
+
+### Hide Documentation
+To prevent public access to README and CHANGELOG, comment out:
+```apache
+# <FilesMatch "^(README\.md|CHANGELOG\.md|LICENSE)$">
+#     Allow from all
+# </FilesMatch>
+```
+
+### Hide Examples
+To hide example configs:
+```apache
+# <FilesMatch "^(example-.*-config\.json)$">
+#     Allow from all
+# </FilesMatch>
+```
+
+### Enable HTTPS Redirect
+Uncomment these lines:
+```apache
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+```
+
+## Server Requirements
+
+Requires Apache with:
+- mod_rewrite (for rewrites)
+- mod_headers (for security headers)
+- mod_deflate (for compression)
+- mod_expires (for caching)
+- mod_mime (for MIME types)
+
+Most shared hosting providers include these by default.
+
+## Testing
+
+After deploying, test access:
+
+```bash
+# Should work (200 OK)
+curl -I https://your-domain.com/index.html
+curl -I https://your-domain.com/script.js
+curl -I https://your-domain.com/default-config.json
+
+# Should be forbidden (403 Forbidden)
+curl -I https://your-domain.com/project.md
+curl -I https://your-domain.com/CONFIG.md
+curl -I https://your-domain.com/.gitignore
+```
+
+## Note
+
+This file only works on **Apache web servers**. For other servers:
+- **Nginx**: Use nginx.conf or location blocks
+- **GitHub Pages**: Use _config.yml (limited options)
+- **Netlify/Vercel**: Use _headers and _redirects files

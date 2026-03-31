@@ -1,0 +1,82 @@
+# Selektor 5000 - Access Control
+# Restrict access to only files needed by the application
+
+# Deny access by default
+Order Deny,Allow
+Deny from all
+
+# Allow access to main application files
+<FilesMatch "^(index\.html|script\.js|styles\.css)$">
+    Allow from all
+</FilesMatch>
+
+# Allow configuration files
+<FilesMatch "^(default-config\.json|fixed-config\.json)$">
+    Allow from all
+</FilesMatch>
+
+# Allow example configuration files (optional - remove if you don't want these public)
+<FilesMatch "^(example-.*-config\.json)$">
+    Allow from all
+</FilesMatch>
+
+# Allow documentation files (optional - comment out to hide)
+<FilesMatch "^(README\.md|CHANGELOG\.md|LICENSE)$">
+    Allow from all
+</FilesMatch>
+
+# Explicitly deny access to sensitive files
+<FilesMatch "^(project\.md|CONFIG\.md|PUBLISH\.md|STANDALONE-APP-GUIDE\.md|\.git.*|.*~|\.DS_Store)$">
+    Deny from all
+</FilesMatch>
+
+# Deny access to backup files
+<FilesMatch "\.(bak|backup|swp|swo|tmp)$">
+    Deny from all
+</FilesMatch>
+
+# Set default document
+DirectoryIndex index.html
+
+# Disable directory browsing
+Options -Indexes
+
+# Optional: Force HTTPS (uncomment if using HTTPS)
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Optional: Set proper MIME types
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType text/css .css
+    AddType application/json .json
+    AddType text/html .html
+</IfModule>
+
+# Optional: Enable compression for better performance
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
+</IfModule>
+
+# Optional: Browser caching for static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/json "access plus 0 seconds"
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # XSS protection
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Referrer policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
