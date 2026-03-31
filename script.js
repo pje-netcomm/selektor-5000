@@ -665,35 +665,35 @@ class TeamMeter {
     }
 
     resetToDefaults() {
-        if (confirm('Reset to default configuration? This will replace your current URLs.')) {
-            this.resetAndLoadDefaults();
-        }
+        this.resetAndLoadDefaults();
     }
 
     async resetAndLoadDefaults() {
+        if (!confirm('Reset to default configuration? This will replace your current profile.')) {
+            return;
+        }
+        
         try {
             const response = await fetch('default-config.json');
             if (response.ok) {
                 const config = await response.json();
                 if (config.urls && Array.isArray(config.urls)) {
-                    if (confirm('Reset to default configuration? This will replace your current profile.')) {
-                        this.urls = config.urls.map(url => ({
-                            ...url,
-                            id: Date.now() + Math.random()
-                        }));
-                        this.usedUrls.clear();
-                        if (config.soundEnabled !== undefined) {
-                            this.soundEnabled = config.soundEnabled;
-                        }
-                        if (config.openInNewTab !== undefined) {
-                            this.openInNewTab = config.openInNewTab;
-                        }
-                        if (config.title) this.title = config.title;
-                        if (config.subtitle) this.subtitle = config.subtitle;
-                        if (config.topic) this.topic = config.topic;
-                        this.saveToStorage();
-                        this.render();
+                    this.urls = config.urls.map(url => ({
+                        ...url,
+                        id: Date.now() + Math.random()
+                    }));
+                    this.usedUrls.clear();
+                    if (config.soundEnabled !== undefined) {
+                        this.soundEnabled = config.soundEnabled;
                     }
+                    if (config.openInNewTab !== undefined) {
+                        this.openInNewTab = config.openInNewTab;
+                    }
+                    if (config.title) this.title = config.title;
+                    if (config.subtitle) this.subtitle = config.subtitle;
+                    if (config.topic) this.topic = config.topic;
+                    this.saveToStorage();
+                    this.render();
                 } else {
                     alert('Invalid default configuration format.');
                 }
