@@ -157,9 +157,16 @@ selektor-5000/
 
 ### Debug Mode
 Click the footer 5 times to access debug mode:
-- **Configuration** tab - View/copy JSON config
-- **Browser State** tab - Inspect localStorage
+- **Configuration** tab - Interactive JSON tree view with syntax highlighting
+- **Browser State** tab - Inspect localStorage with collapsible tree
 - **📜 Changelog** tab - View version history with markdown rendering
+
+Features:
+- VS Code-style dark theme with syntax colors
+- Click triangles to expand/collapse nodes
+- Expand All / Collapse All buttons
+- Auto-expands first 2 levels
+- Copy formatted JSON to clipboard
 
 ### Keyboard Shortcuts
 - **Enter** - Select random item (in selection mode)
@@ -204,7 +211,13 @@ The app uses a purple gradient theme. To customize:
 
 ## 📊 Version History
 
-### v6.1 (Current) - Enhanced Debug View
+### v6.2 (Current) - Interactive JSON Tree View
+- Collapsible tree view with syntax highlighting
+- VS Code dark theme for JSON data
+- Expand/Collapse All controls
+- Better navigation of complex structures
+
+### v6.1 - Enhanced Debug View
 - Changelog viewer with markdown rendering
 - Tabbed debug interface
 - Beautiful styled changelog display
