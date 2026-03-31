@@ -124,6 +124,10 @@ class TeamMeter {
         document.getElementById('copyStateBtn').addEventListener('click', () => this.copyDebugState());
         document.getElementById('clearStorageBtn').addEventListener('click', () => this.clearBrowserStorage());
         document.getElementById('reloadPageBtn').addEventListener('click', () => location.reload());
+        document.getElementById('expandAllConfigBtn').addEventListener('click', () => this.expandAllNodes('debugConfigJson'));
+        document.getElementById('collapseAllConfigBtn').addEventListener('click', () => this.collapseAllNodes('debugConfigJson'));
+        document.getElementById('expandAllStateBtn').addEventListener('click', () => this.expandAllNodes('debugBrowserState'));
+        document.getElementById('collapseAllStateBtn').addEventListener('click', () => this.collapseAllNodes('debugBrowserState'));
         
         // Debug tabs
         document.querySelectorAll('.debug-tab').forEach(tab => {
@@ -921,7 +925,7 @@ class TeamMeter {
             openInNewTab: this.openInNewTab
         };
         
-        document.getElementById('debugConfigJson').textContent = JSON.stringify(configJson, null, 2);
+        document.getElementById('debugConfigJson').innerHTML = this.renderJsonTree(configJson, 'config');
         
         const browserState = {
             localStorage: localStorage.getItem('selektor5000Data') ? JSON.parse(localStorage.getItem('selektor5000Data')) : null,
@@ -942,18 +946,157 @@ class TeamMeter {
             }
         };
         
-        document.getElementById('debugBrowserState').textContent = JSON.stringify(browserState, null, 2);
+        document.getElementById('debugBrowserState').innerHTML = this.renderJsonTree(browserState, 'state');
+    }
+
+    renderJsonTree(obj, prefix, depth = 0, key = null) {
+        const indent = depth * 20;
+        let html = '';
+        
+        if (obj === null) {
+            return `<span class="json-null">null</span>`;
+        }
+        
+        if (typeof obj === 'boolean') {
+            return `<span class="json-boolean">${obj}</span>`;
+        }
+        
+        if (typeof obj === 'number') {
+            return `<span class="json-number">${obj}</span>`;
+        }
+        
+        if (typeof obj === 'string') {
+            return `<span class="json-string">"${this.escapeHtml(obj)}"</span>`;
+        }
+        
+        if (Array.isArray(obj)) {
+            if (obj.length === 0) {
+                return `<span class="json-bracket">[]</span>`;
+            }
+            
+            const itemId = `${prefix}-${depth}-${key || 'root'}`.replace(/[^a-z0-9-]/gi, '-');
+            const isExpanded = depth < 2; // Auto-expand first 2 levels
+            
+            html += `<div class="json-tree-node">`;
+            html += `<span class="json-toggle ${isExpanded ? 'expanded' : ''}" onclick="app.toggleJsonNode('${itemId}')">▶</span>`;
+            html += `<span class="json-bracket">[</span>`;
+            html += `<span class="json-count">${obj.length} items</span>`;
+            html += `<div class="json-children ${isExpanded ? 'expanded' : ''}" id="${itemId}">`;
+            
+            obj.forEach((item, index) => {
+                html += `<div class="json-item" style="padding-left: ${indent + 20}px;">`;
+                html += `<span class="json-key">${index}</span>: `;
+                html += this.renderJsonTree(item, prefix, depth + 1, `arr-${index}`);
+                if (index < obj.length - 1) html += ',';
+                html += `</div>`;
+            });
+            
+            html += `</div>`;
+            html += `<span class="json-bracket" style="padding-left: ${indent}px">]</span>`;
+            html += `</div>`;
+            
+            return html;
+        }
+        
+        if (typeof obj === 'object') {
+            const keys = Object.keys(obj);
+            if (keys.length === 0) {
+                return `<span class="json-bracket">{}</span>`;
+            }
+            
+            const itemId = `${prefix}-${depth}-${key || 'root'}`.replace(/[^a-z0-9-]/gi, '-');
+            const isExpanded = depth < 2; // Auto-expand first 2 levels
+            
+            html += `<div class="json-tree-node">`;
+            html += `<span class="json-toggle ${isExpanded ? 'expanded' : ''}" onclick="app.toggleJsonNode('${itemId}')">▶</span>`;
+            html += `<span class="json-bracket">{</span>`;
+            html += `<span class="json-count">${keys.length} keys</span>`;
+            html += `<div class="json-children ${isExpanded ? 'expanded' : ''}" id="${itemId}">`;
+            
+            keys.forEach((k, index) => {
+                html += `<div class="json-item" style="padding-left: ${indent + 20}px;">`;
+                html += `<span class="json-key">"${this.escapeHtml(k)}"</span>: `;
+                html += this.renderJsonTree(obj[k], prefix, depth + 1, k);
+                if (index < keys.length - 1) html += ',';
+                html += `</div>`;
+            });
+            
+            html += `</div>`;
+            html += `<span class="json-bracket" style="padding-left: ${indent}px">}</span>`;
+            html += `</div>`;
+            
+            return html;
+        }
+        
+        return String(obj);
+    }
+
+    toggleJsonNode(nodeId) {
+        const node = document.getElementById(nodeId);
+        const toggle = node.previousElementSibling.previousElementSibling;
+        
+        if (node && toggle) {
+            node.classList.toggle('expanded');
+            toggle.classList.toggle('expanded');
+        }
+    }
+
+    expandAllNodes(containerId) {
+        const container = document.getElementById(containerId);
+        container.querySelectorAll('.json-children').forEach(child => {
+            child.classList.add('expanded');
+        });
+        container.querySelectorAll('.json-toggle').forEach(toggle => {
+            toggle.classList.add('expanded');
+        });
+    }
+
+    collapseAllNodes(containerId) {
+        const container = document.getElementById(containerId);
+        container.querySelectorAll('.json-children').forEach(child => {
+            child.classList.remove('expanded');
+        });
+        container.querySelectorAll('.json-toggle').forEach(toggle => {
+            toggle.classList.remove('expanded');
+        });
     }
 
     copyDebugConfig() {
-        const text = document.getElementById('debugConfigJson').textContent;
+        const configJson = {
+            name: this.currentProfile.name,
+            title: this.title,
+            subtitle: this.subtitle,
+            topic: this.topic,
+            urls: this.urls.map(({ displayName, url }) => ({ displayName, url })),
+            soundEnabled: this.soundEnabled,
+            openInNewTab: this.openInNewTab
+        };
+        const text = JSON.stringify(configJson, null, 2);
         navigator.clipboard.writeText(text).then(() => {
             alert('Configuration JSON copied to clipboard!');
         });
     }
 
     copyDebugState() {
-        const text = document.getElementById('debugBrowserState').textContent;
+        const browserState = {
+            localStorage: localStorage.getItem('selektor5000Data') ? JSON.parse(localStorage.getItem('selektor5000Data')) : null,
+            currentSession: {
+                currentProfileId: this.currentProfileId,
+                profileNames: Object.keys(this.profiles).map(id => ({ id, name: this.profiles[id].name })),
+                currentProfile: {
+                    name: this.currentProfile.name,
+                    title: this.title,
+                    subtitle: this.subtitle,
+                    topic: this.topic,
+                    urls: this.urls,
+                    usedUrls: Array.from(this.usedUrls),
+                    currentMode: this.currentMode,
+                    soundEnabled: this.soundEnabled,
+                    openInNewTab: this.openInNewTab
+                }
+            }
+        };
+        const text = JSON.stringify(browserState, null, 2);
         navigator.clipboard.writeText(text).then(() => {
             alert('Browser state copied to clipboard!');
         });

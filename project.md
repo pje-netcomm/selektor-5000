@@ -134,11 +134,9 @@ Then open: `http://localhost:8000/`
 
 ## Version
 
-Current version: **v6.1**
+Current version: **v6.2**
 
 # Things to do (not yet, when I'm ready)
-- Pressing enter in config view sometimes starts the selection, this should only happen in selection view
-- Layout of profile editing looks bad; make profile settings come up in a separate modal view, similar to the debug view, and make it look more polished overall.
 - There are multiple confirmaations when resetting to defaults, we need only one.
 - in debug view, make json config view a tree view that can be expanded and collapsed, and add syntax highlighting.
 - Add configuration options for animation duration and sound effect volume, and persist those in the profile config as well.

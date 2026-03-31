@@ -135,7 +135,7 @@
         </main>
 
         <footer>
-            <p>URLs are stored locally in your browser · v6.1</p>
+            <p>URLs are stored locally in your browser · v6.2</p>
         </footer>
     </div>
 
@@ -164,7 +164,11 @@
                 <div class="debug-tab-content active" data-content="config">
                     <div class="debug-section">
                         <h3>Configuration JSON</h3>
-                        <pre id="debugConfigJson" class="debug-pre"></pre>
+                        <div class="debug-controls">
+                            <button id="expandAllConfigBtn" class="btn-tree-control">Expand All</button>
+                            <button id="collapseAllConfigBtn" class="btn-tree-control">Collapse All</button>
+                        </div>
+                        <div id="debugConfigJson" class="json-tree"></div>
                         <button id="copyConfigBtn" class="btn btn-debug">Copy JSON</button>
                     </div>
                 </div>
@@ -172,7 +176,11 @@
                 <div class="debug-tab-content" data-content="state">
                     <div class="debug-section">
                         <h3>In-Browser State</h3>
-                        <pre id="debugBrowserState" class="debug-pre"></pre>
+                        <div class="debug-controls">
+                            <button id="expandAllStateBtn" class="btn-tree-control">Expand All</button>
+                            <button id="collapseAllStateBtn" class="btn-tree-control">Collapse All</button>
+                        </div>
+                        <div id="debugBrowserState" class="json-tree"></div>
                         <button id="copyStateBtn" class="btn btn-debug">Copy State</button>
                     </div>
                 </div>

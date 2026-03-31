@@ -2,6 +2,30 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v6.2 - Interactive JSON Tree View (2026-03-31)
+
+### Added
+- **Interactive JSON Tree View**: Collapsible tree view for debug JSON data
+  - Click to expand/collapse objects and arrays
+  - Syntax highlighting with VS Code dark theme colors
+  - Expand All / Collapse All buttons
+  - Auto-expands first 2 levels for quick overview
+  - Item count badges for arrays and objects
+- **Enhanced Debug Experience**
+  - Dark theme JSON viewer (#1e1e1e background)
+  - Color-coded values: strings (orange), numbers (green), booleans (blue), null (gray)
+  - Smooth expand/collapse animations
+  - Better readability with proper indentation
+
+### Improvements
+- Replaced plain text JSON with interactive tree
+- Visual hierarchy with expandable nodes
+- Professional syntax highlighting
+- Easy navigation of complex nested structures
+- Copy buttons now copy formatted JSON
+
+---
+
 ## v6.1 - Enhanced Debug View (2026-03-31)
 
 ### Added
