@@ -1,9 +1,7 @@
 class TeamMeter {
     constructor() {
-        this.urls = [];
-        this.usedUrls = new Set();
-        this.currentMode = 'selection';
-        this.soundEnabled = true;
+        this.profiles = {};
+        this.currentProfileId = 'default';
         this.urlTabWindow = null;
         this.editingId = null;
         this.editingField = null;
@@ -11,11 +9,51 @@ class TeamMeter {
         this.init();
     }
 
+    get currentProfile() {
+        if (!this.profiles[this.currentProfileId]) {
+            this.profiles[this.currentProfileId] = this.createDefaultProfile('default');
+        }
+        return this.profiles[this.currentProfileId];
+    }
+
+    get urls() { return this.currentProfile.urls; }
+    set urls(val) { this.currentProfile.urls = val; }
+    get usedUrls() { return this.currentProfile.usedUrls; }
+    set usedUrls(val) { this.currentProfile.usedUrls = val; }
+    get currentMode() { return this.currentProfile.currentMode; }
+    set currentMode(val) { this.currentProfile.currentMode = val; }
+    get soundEnabled() { return this.currentProfile.soundEnabled; }
+    set soundEnabled(val) { this.currentProfile.soundEnabled = val; }
+    get openInNewTab() { return this.currentProfile.openInNewTab; }
+    set openInNewTab(val) { this.currentProfile.openInNewTab = val; }
+    get title() { return this.currentProfile.title; }
+    set title(val) { this.currentProfile.title = val; }
+    get subtitle() { return this.currentProfile.subtitle; }
+    set subtitle(val) { this.currentProfile.subtitle = val; }
+    get topic() { return this.currentProfile.topic; }
+    set topic(val) { this.currentProfile.topic = val; }
+
+    createDefaultProfile(id, name = 'Default Profile') {
+        return {
+            id: id,
+            name: name,
+            title: 'Selektor 5000',
+            subtitle: 'The anti-procrastination dev selector',
+            topic: 'Selectee',
+            urls: [],
+            usedUrls: new Set(),
+            currentMode: 'selection',
+            soundEnabled: true,
+            openInNewTab: true
+        };
+    }
+
     async init() {
         await this.loadFromStorage();
         this.setupEventListeners();
         this.createSounds();
         this.setupDebugMode();
+        this.switchMode(this.currentMode);
         this.render();
     }
 
@@ -30,6 +68,15 @@ class TeamMeter {
         document.getElementById('resetToDefaultsBtn').addEventListener('click', () => this.resetToDefaults());
         document.getElementById('clearAllBtn').addEventListener('click', () => this.clearAll());
         document.getElementById('soundToggle').addEventListener('change', (e) => this.toggleSound(e.target.checked));
+        document.getElementById('newTabToggle').addEventListener('change', (e) => this.toggleNewTab(e.target.checked));
+        
+        document.getElementById('profileSelector').addEventListener('change', (e) => this.switchProfile(e.target.value));
+        document.getElementById('newProfileBtn').addEventListener('click', () => this.createNewProfile());
+        document.getElementById('editProfileBtn').addEventListener('click', () => this.openEditPanel());
+        document.getElementById('deleteProfileBtn').addEventListener('click', () => this.deleteProfile());
+        document.getElementById('closeEditPanelBtn').addEventListener('click', () => this.closeEditPanel());
+        document.getElementById('saveProfileBtn').addEventListener('click', () => this.saveProfileEdits());
+        document.getElementById('cancelEditBtn').addEventListener('click', () => this.closeEditPanel());
         
         document.getElementById('importFileInput').addEventListener('change', (e) => this.handleFileImport(e));
         
@@ -48,6 +95,26 @@ class TeamMeter {
                 if (!displayBox.classList.contains('disabled')) {
                     this.selectRandomUrl();
                 }
+            }
+            
+            // Escape key closes edit panel
+            if (e.key === 'Escape') {
+                const panel = document.getElementById('profileEditPanel');
+                if (panel && panel.style.display !== 'none') {
+                    this.closeEditPanel();
+                }
+            }
+        });
+        
+        // Enter key in profile edit fields
+        ['profileNameInput', 'profileTitleInput', 'profileSubtitleInput', 'profileTopicInput'].forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.saveProfileEdits();
+                    }
+                });
             }
         });
 
@@ -79,7 +146,9 @@ class TeamMeter {
             document.getElementById('configModeBtn').classList.add('active');
             document.getElementById('configMode').classList.add('active');
             document.getElementById('soundToggle').checked = this.soundEnabled;
+            document.getElementById('newTabToggle').checked = this.openInNewTab;
         }
+        this.saveToStorage();
     }
 
     createSounds() {
@@ -131,6 +200,11 @@ class TeamMeter {
         this.saveToStorage();
     }
 
+    toggleNewTab(enabled) {
+        this.openInNewTab = enabled;
+        this.saveToStorage();
+    }
+
     addUrl() {
         const displayNameInput = document.getElementById('displayNameInput');
         const urlInput = document.getElementById('urlInput');
@@ -139,7 +213,7 @@ class TeamMeter {
         const url = urlInput.value.trim();
         
         if (!displayName || !url) {
-            alert('Please enter both a display name and URL');
+            alert(`Please enter both a display name and URL for the ${this.topic.toLowerCase()}`);
             return;
         }
         
@@ -217,11 +291,15 @@ class TeamMeter {
         this.usedUrls.add(selectedUrl.id);
         this.saveToStorage();
         
-        if (this.urlTabWindow && !this.urlTabWindow.closed) {
-            this.urlTabWindow.location.href = selectedUrl.url;
-            this.urlTabWindow.focus();
+        if (this.openInNewTab) {
+            if (this.urlTabWindow && !this.urlTabWindow.closed) {
+                this.urlTabWindow.location.href = selectedUrl.url;
+                this.urlTabWindow.focus();
+            } else {
+                this.urlTabWindow = window.open(selectedUrl.url, 'selektor5000_tab');
+            }
         } else {
-            this.urlTabWindow = window.open(selectedUrl.url, 'selektor5000_tab');
+            window.location.href = selectedUrl.url;
         }
         
         setTimeout(() => {
@@ -320,13 +398,41 @@ class TeamMeter {
         this.renderUrlList();
         this.updateStats();
         this.updateDisplay();
+        this.updateProfileSelector();
+        this.updateUI();
+    }
+
+    updateUI() {
+        // Update title and subtitle
+        document.querySelector('header h1').textContent = `🎯 ${this.title}`;
+        document.querySelector('header .subtitle').textContent = this.subtitle;
+        
+        // Update topic references
+        document.getElementById('topicLabel').textContent = `${this.topic}s`;
+        document.getElementById('addUrlBtn').innerHTML = `<span class="btn-icon">➕</span> Add ${this.topic}`;
+        document.getElementById('displayNameInput').placeholder = `${this.topic} Name`;
+        
+        // Update settings checkboxes to match current profile
+        document.getElementById('soundToggle').checked = this.soundEnabled;
+        document.getElementById('newTabToggle').checked = this.openInNewTab;
+        
+        const displayText = document.getElementById('displayText');
+        const availableCount = this.urls.filter(url => !this.usedUrls.has(url.id)).length;
+        
+        if (this.urls.length === 0) {
+            displayText.textContent = `Add some ${this.topic.toLowerCase()}s to get started!`;
+        } else if (availableCount === 0) {
+            displayText.textContent = `All ${this.topic.toLowerCase()}s used! Reset to start over.`;
+        } else if (!this.isSelecting) {
+            displayText.textContent = `Select Random ${this.topic}`;
+        }
     }
 
     renderUrlList() {
         const urlList = document.getElementById('urlList');
         
         if (this.urls.length === 0) {
-            urlList.innerHTML = '<div class="empty-state"><p>📝 No selectees configured yet. Add some to get started!</p></div>';
+            urlList.innerHTML = `<div class="empty-state"><p>📝 No ${this.topic.toLowerCase()}s configured yet. Add some to get started!</p></div>`;
             return;
         }
         
@@ -379,11 +485,11 @@ class TeamMeter {
         const availableCount = this.urls.filter(url => !this.usedUrls.has(url.id)).length;
         
         if (this.urls.length === 0) {
-            displayText.textContent = 'Add some selectees to get started!';
+            displayText.textContent = `Add some ${this.topic.toLowerCase()}s to get started!`;
         } else if (availableCount === 0) {
-            displayText.textContent = 'All selectees used! Reset to start over.';
+            displayText.textContent = `All ${this.topic.toLowerCase()}s used! Reset to start over.`;
         } else {
-            displayText.textContent = 'Select Random Selectee';
+            displayText.textContent = `Select Random ${this.topic}`;
         }
     }
 
@@ -394,9 +500,17 @@ class TeamMeter {
     }
 
     saveToStorage() {
+        const profilesData = {};
+        for (const [id, profile] of Object.entries(this.profiles)) {
+            profilesData[id] = {
+                ...profile,
+                usedUrls: Array.from(profile.usedUrls)
+            };
+        }
+        
         const data = {
-            urls: this.urls,
-            soundEnabled: this.soundEnabled
+            profiles: profilesData,
+            currentProfileId: this.currentProfileId
         };
         localStorage.setItem('selektor5000Data', JSON.stringify(data));
     }
@@ -406,11 +520,35 @@ class TeamMeter {
         if (stored) {
             try {
                 const data = JSON.parse(stored);
-                this.urls = data.urls || [];
-                this.usedUrls = new Set();
-                this.soundEnabled = data.soundEnabled !== undefined ? data.soundEnabled : true;
+                
+                // Check if this is old format (pre-profiles)
+                if (data.urls && !data.profiles) {
+                    // Migrate old format to profiles
+                    const defaultProfile = this.createDefaultProfile('default');
+                    defaultProfile.urls = data.urls || [];
+                    defaultProfile.usedUrls = new Set(data.usedUrls || []);
+                    defaultProfile.currentMode = data.currentMode || 'selection';
+                    defaultProfile.soundEnabled = data.soundEnabled !== undefined ? data.soundEnabled : true;
+                    defaultProfile.openInNewTab = data.openInNewTab !== undefined ? data.openInNewTab : true;
+                    this.profiles = { 'default': defaultProfile };
+                    this.currentProfileId = 'default';
+                    this.saveToStorage(); // Save migrated data
+                } else if (data.profiles) {
+                    // New format with profiles
+                    this.profiles = {};
+                    for (const [id, profileData] of Object.entries(data.profiles)) {
+                        this.profiles[id] = {
+                            ...profileData,
+                            usedUrls: new Set(profileData.usedUrls || [])
+                        };
+                    }
+                    this.currentProfileId = data.currentProfileId || 'default';
+                } else {
+                    await this.loadDefaults();
+                }
             } catch (e) {
                 console.error('Failed to load data from storage:', e);
+                await this.loadDefaults();
             }
         } else {
             await this.loadDefaults();
@@ -422,26 +560,43 @@ class TeamMeter {
             const response = await fetch('default-config.json');
             if (response.ok) {
                 const config = await response.json();
+                const defaultProfile = this.createDefaultProfile('default');
+                
                 if (config.urls && Array.isArray(config.urls)) {
-                    this.urls = config.urls.map(url => ({
+                    defaultProfile.urls = config.urls.map(url => ({
                         ...url,
                         id: Date.now() + Math.random()
                     }));
-                    this.usedUrls.clear();
-                    if (config.soundEnabled !== undefined) {
-                        this.soundEnabled = config.soundEnabled;
-                    }
                 }
+                if (config.soundEnabled !== undefined) {
+                    defaultProfile.soundEnabled = config.soundEnabled;
+                }
+                if (config.openInNewTab !== undefined) {
+                    defaultProfile.openInNewTab = config.openInNewTab;
+                }
+                if (config.title) defaultProfile.title = config.title;
+                if (config.subtitle) defaultProfile.subtitle = config.subtitle;
+                if (config.topic) defaultProfile.topic = config.topic;
+                
+                this.profiles = { 'default': defaultProfile };
+                this.currentProfileId = 'default';
             }
         } catch (e) {
             console.log('No default configuration loaded. If using file:// protocol, serve via HTTP server to load defaults.');
+            this.profiles = { 'default': this.createDefaultProfile('default') };
+            this.currentProfileId = 'default';
         }
     }
 
     exportConfig() {
         const config = {
+            name: this.currentProfile.name,
+            title: this.title,
+            subtitle: this.subtitle,
+            topic: this.topic,
             urls: this.urls.map(({ displayName, url }) => ({ displayName, url })),
-            soundEnabled: this.soundEnabled
+            soundEnabled: this.soundEnabled,
+            openInNewTab: this.openInNewTab
         };
         
         const dataStr = JSON.stringify(config, null, 2);
@@ -450,7 +605,7 @@ class TeamMeter {
         
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'selektor-5000-config.json';
+        link.download = `selektor-5000-${this.currentProfile.name.toLowerCase().replace(/\s+/g, '-')}.json`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -470,7 +625,7 @@ class TeamMeter {
             try {
                 const config = JSON.parse(e.target.result);
                 if (config.urls && Array.isArray(config.urls)) {
-                    if (confirm('Import configuration? This will replace your current URLs.')) {
+                    if (confirm('Import configuration? This will replace your current profile.')) {
                         this.urls = config.urls.map(url => ({
                             ...url,
                             id: Date.now() + Math.random()
@@ -479,6 +634,13 @@ class TeamMeter {
                         if (config.soundEnabled !== undefined) {
                             this.soundEnabled = config.soundEnabled;
                         }
+                        if (config.openInNewTab !== undefined) {
+                            this.openInNewTab = config.openInNewTab;
+                        }
+                        if (config.title) this.title = config.title;
+                        if (config.subtitle) this.subtitle = config.subtitle;
+                        if (config.topic) this.topic = config.topic;
+                        if (config.name) this.currentProfile.name = config.name;
                         this.saveToStorage();
                         this.render();
                     }
@@ -505,16 +667,24 @@ class TeamMeter {
             if (response.ok) {
                 const config = await response.json();
                 if (config.urls && Array.isArray(config.urls)) {
-                    this.urls = config.urls.map(url => ({
-                        ...url,
-                        id: Date.now() + Math.random()
-                    }));
-                    this.usedUrls.clear();
-                    if (config.soundEnabled !== undefined) {
-                        this.soundEnabled = config.soundEnabled;
+                    if (confirm('Reset to default configuration? This will replace your current profile.')) {
+                        this.urls = config.urls.map(url => ({
+                            ...url,
+                            id: Date.now() + Math.random()
+                        }));
+                        this.usedUrls.clear();
+                        if (config.soundEnabled !== undefined) {
+                            this.soundEnabled = config.soundEnabled;
+                        }
+                        if (config.openInNewTab !== undefined) {
+                            this.openInNewTab = config.openInNewTab;
+                        }
+                        if (config.title) this.title = config.title;
+                        if (config.subtitle) this.subtitle = config.subtitle;
+                        if (config.topic) this.topic = config.topic;
+                        this.saveToStorage();
+                        this.render();
                     }
-                    this.saveToStorage();
-                    this.render();
                 } else {
                     alert('Invalid default configuration format.');
                 }
@@ -533,6 +703,113 @@ class TeamMeter {
             this.saveToStorage();
             this.render();
         }
+    }
+
+    // Profile Management Methods
+    updateProfileSelector() {
+        const selector = document.getElementById('profileSelector');
+        selector.innerHTML = '';
+        
+        for (const [id, profile] of Object.entries(this.profiles)) {
+            const option = document.createElement('option');
+            option.value = id;
+            option.textContent = profile.name;
+            option.selected = id === this.currentProfileId;
+            selector.appendChild(option);
+        }
+        
+        // Enable/disable delete button
+        document.getElementById('deleteProfileBtn').disabled = Object.keys(this.profiles).length <= 1;
+    }
+
+    switchProfile(profileId) {
+        if (this.profiles[profileId]) {
+            this.currentProfileId = profileId;
+            this.saveToStorage();
+            this.render();
+        }
+    }
+
+    createNewProfile() {
+        const name = prompt('Enter a name for the new profile:', 'New Profile');
+        if (!name || !name.trim()) return;
+        
+        const id = 'profile_' + Date.now();
+        this.profiles[id] = this.createDefaultProfile(id, name.trim());
+        this.currentProfileId = id;
+        this.saveToStorage();
+        this.closeEditPanel();
+        this.render();
+    }
+
+    deleteProfile() {
+        if (Object.keys(this.profiles).length <= 1) {
+            alert('Cannot delete the last profile.');
+            return;
+        }
+        
+        const profileName = this.currentProfile.name;
+        if (!confirm(`Delete profile "${profileName}"? This cannot be undone.`)) {
+            return;
+        }
+        
+        delete this.profiles[this.currentProfileId];
+        this.currentProfileId = Object.keys(this.profiles)[0];
+        this.closeEditPanel();
+        this.saveToStorage();
+        this.render();
+    }
+
+    openEditPanel() {
+        const panel = document.getElementById('profileEditPanel');
+        const profile = this.currentProfile;
+        
+        // Populate form fields
+        document.getElementById('profileNameInput').value = profile.name;
+        document.getElementById('profileTitleInput').value = profile.title;
+        document.getElementById('profileSubtitleInput').value = profile.subtitle;
+        document.getElementById('profileTopicInput').value = profile.topic;
+        
+        // Show panel
+        panel.style.display = 'block';
+        document.getElementById('profileNameInput').focus();
+    }
+
+    closeEditPanel() {
+        document.getElementById('profileEditPanel').style.display = 'none';
+    }
+
+    saveProfileEdits() {
+        const profile = this.currentProfile;
+        
+        const name = document.getElementById('profileNameInput').value.trim();
+        const title = document.getElementById('profileTitleInput').value.trim();
+        const subtitle = document.getElementById('profileSubtitleInput').value.trim();
+        const topic = document.getElementById('profileTopicInput').value.trim();
+        
+        if (!name) {
+            alert('Profile name cannot be empty');
+            return;
+        }
+        
+        if (!title) {
+            alert('Title cannot be empty');
+            return;
+        }
+        
+        if (!topic) {
+            alert('Topic cannot be empty');
+            return;
+        }
+        
+        profile.name = name;
+        profile.title = title;
+        profile.subtitle = subtitle;
+        profile.topic = topic;
+        
+        this.closeEditPanel();
+        this.saveToStorage();
+        this.render();
     }
 
     setupDebugMode() {
@@ -568,8 +845,13 @@ class TeamMeter {
 
     updateDebugView() {
         const configJson = {
+            name: this.currentProfile.name,
+            title: this.title,
+            subtitle: this.subtitle,
+            topic: this.topic,
             urls: this.urls.map(({ displayName, url }) => ({ displayName, url })),
-            soundEnabled: this.soundEnabled
+            soundEnabled: this.soundEnabled,
+            openInNewTab: this.openInNewTab
         };
         
         document.getElementById('debugConfigJson').textContent = JSON.stringify(configJson, null, 2);
@@ -577,10 +859,19 @@ class TeamMeter {
         const browserState = {
             localStorage: localStorage.getItem('selektor5000Data') ? JSON.parse(localStorage.getItem('selektor5000Data')) : null,
             currentSession: {
-                urls: this.urls,
-                usedUrls: Array.from(this.usedUrls),
-                soundEnabled: this.soundEnabled,
-                currentMode: this.currentMode
+                currentProfileId: this.currentProfileId,
+                profileNames: Object.keys(this.profiles).map(id => ({ id, name: this.profiles[id].name })),
+                currentProfile: {
+                    name: this.currentProfile.name,
+                    title: this.title,
+                    subtitle: this.subtitle,
+                    topic: this.topic,
+                    urls: this.urls,
+                    usedUrls: Array.from(this.usedUrls),
+                    currentMode: this.currentMode,
+                    soundEnabled: this.soundEnabled,
+                    openInNewTab: this.openInNewTab
+                }
             }
         };
         

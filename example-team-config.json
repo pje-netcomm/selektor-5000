@@ -1,0 +1,30 @@
+{
+  "name": "Dev Team",
+  "title": "Team Member Selector",
+  "subtitle": "Fair and random team member selection",
+  "topic": "Team Member",
+  "soundEnabled": true,
+  "openInNewTab": true,
+  "urls": [
+    {
+      "displayName": "Alice (Frontend)",
+      "url": "https://github.com/alice"
+    },
+    {
+      "displayName": "Bob (Backend)",
+      "url": "https://github.com/bob"
+    },
+    {
+      "displayName": "Carol (DevOps)",
+      "url": "https://github.com/carol"
+    },
+    {
+      "displayName": "Dave (QA)",
+      "url": "https://github.com/dave"
+    },
+    {
+      "displayName": "Eve (Product)",
+      "url": "https://github.com/eve"
+    }
+  ]
+}

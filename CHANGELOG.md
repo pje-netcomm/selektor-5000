@@ -2,6 +2,49 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v6 - Profile System (2026-03-31)
+
+### Major Features
+- **Multiple Profile Support**: Create and manage multiple independent profiles
+  - Each profile has its own URLs, settings, and used item tracking
+  - Switch between profiles with dropdown selector
+  - Create, rename, customize, and delete profiles
+- **Customizable Branding**: Configure per-profile
+  - Custom title (e.g., "Team Picker", "Movie Night")
+  - Custom subtitle/tagline
+  - Custom topic/item name (e.g., "Team Member", "Restaurant", "Movie")
+  - UI dynamically updates to use custom terminology
+- **Profile Migration**: Automatically upgrades old single-profile data to new format
+- **Enhanced Export/Import**: Profile configurations include all customization
+
+### UI/UX Improvements
+- **Profile Header Bar**: Clean, prominent profile selector at top of config section
+  - Gradient purple header with inline controls
+  - Compact icon buttons (➕ New, ✏️ Edit, 🗑️ Delete)
+- **Inline Edit Panel**: Replaces modal dialogs with smooth slide-down panel
+  - Edit profile name, title, subtitle, and topic in one place
+  - Keyboard shortcuts: Enter to save, Escape to cancel
+  - Validation before saving
+  - Animated slide-down effect
+- **Better Visual Hierarchy**: Profile management separated from URL configuration
+- **Mobile Responsive**: Stacked layout for profile controls on small screens
+
+### Improvements
+- Profile selector in configuration mode
+- Profile management buttons (New, Rename, Customize, Delete)
+- Dynamic placeholders and labels based on topic
+- Updated debug view to show profile information
+- Automatic profile name in exported filenames
+- Settings persist per profile (sound effects, tab behavior)
+
+### Technical
+- Complete refactor to support profile architecture
+- Backward compatible with old configuration format
+- All state now scoped to profiles
+- Getter/setter properties for clean profile access
+
+---
+
 ## v5 - 2026-03-30
 
 ### Added

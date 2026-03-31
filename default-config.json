@@ -1,4 +1,10 @@
 {
+  "name": "Default Profile",
+  "title": "Selektor 5000",
+  "subtitle": "The anti-procrastination dev selector",
+  "topic": "Selectee",
+  "soundEnabled": true,
+  "openInNewTab": true,
   "urls": [
     {
       "displayName": "Example Site",
@@ -12,6 +18,5 @@
       "displayName": "Stack Overflow",
       "url": "https://stackoverflow.com"
     }
-  ],
-  "soundEnabled": true
+  ]
 }

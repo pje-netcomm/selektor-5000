@@ -46,7 +46,51 @@
         <!-- Configuration Mode -->
         <main id="configMode" class="mode-content">
             <div class="config-section">
-                <h2>Configure Selectees</h2>
+                <!-- Profile Header Bar -->
+                <div class="profile-header">
+                    <div class="profile-current">
+                        <select id="profileSelector" class="profile-select"></select>
+                        <div class="profile-actions-compact">
+                            <button id="newProfileBtn" class="btn-profile-icon" title="New Profile">➕</button>
+                            <button id="editProfileBtn" class="btn-profile-icon" title="Edit Profile">✏️</button>
+                            <button id="deleteProfileBtn" class="btn-profile-icon" title="Delete Profile">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Edit Panel (Hidden by default) -->
+                <div id="profileEditPanel" class="profile-edit-panel" style="display: none;">
+                    <div class="panel-header">
+                        <h3>📝 Edit Profile</h3>
+                        <button id="closeEditPanelBtn" class="btn-close-panel">✕</button>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label>Profile Name</label>
+                            <input type="text" id="profileNameInput" class="input" placeholder="Profile Name">
+                        </div>
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" id="profileTitleInput" class="input" placeholder="Selektor 5000">
+                        </div>
+                        <div class="form-group">
+                            <label>Subtitle</label>
+                            <input type="text" id="profileSubtitleInput" class="input" placeholder="The anti-procrastination dev selector">
+                        </div>
+                        <div class="form-group">
+                            <label>Topic (singular item name)</label>
+                            <input type="text" id="profileTopicInput" class="input" placeholder="Selectee">
+                            <small class="help-text">Used throughout the UI (e.g., "Restaurant", "Team Member")</small>
+                        </div>
+                        <div class="panel-actions">
+                            <button id="saveProfileBtn" class="btn btn-primary">💾 Save Changes</button>
+                            <button id="cancelEditBtn" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Configure <span id="topicLabel">Selectees</span></h2>
+                
                 <div id="urlList" class="url-list"></div>
                 <div class="add-url-form">
                     <input type="text" id="displayNameInput" placeholder="Display Name" class="input">
@@ -60,6 +104,12 @@
                     <label class="sound-toggle-label">
                         <input type="checkbox" id="soundToggle" checked>
                         <span>🔊 Enable sound effects</span>
+                    </label>
+                </div>
+                <div class="sound-setting">
+                    <label class="sound-toggle-label">
+                        <input type="checkbox" id="newTabToggle" checked>
+                        <span>🔗 Open URLs in new tab</span>
                     </label>
                 </div>
                 <div class="config-actions">
@@ -85,7 +135,7 @@
         </main>
 
         <footer>
-            <p>URLs are stored locally in your browser · v5</p>
+            <p>URLs are stored locally in your browser · v6</p>
         </footer>
     </div>
 

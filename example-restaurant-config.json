@@ -1,0 +1,30 @@
+{
+  "name": "Lunch Spots",
+  "title": "Restaurant Roulette",
+  "subtitle": "Can't decide? Let fate choose!",
+  "topic": "Restaurant",
+  "soundEnabled": true,
+  "openInNewTab": true,
+  "urls": [
+    {
+      "displayName": "Pizza Palace",
+      "url": "https://maps.google.com/?q=Pizza+Palace"
+    },
+    {
+      "displayName": "Sushi Express",
+      "url": "https://maps.google.com/?q=Sushi+Express"
+    },
+    {
+      "displayName": "Burger Joint",
+      "url": "https://maps.google.com/?q=Burger+Joint"
+    },
+    {
+      "displayName": "Thai Garden",
+      "url": "https://maps.google.com/?q=Thai+Garden"
+    },
+    {
+      "displayName": "Mexican Cantina",
+      "url": "https://maps.google.com/?q=Mexican+Cantina"
+    }
+  ]
+}
