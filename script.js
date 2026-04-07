@@ -8,6 +8,7 @@ class TeamMeter {
         this.contextMenuTarget = null;
         this.fixedConfig = null;
         this.isFixedMode = false;
+        this.lastSelectedId = null;
         this.init();
     }
 
@@ -40,6 +41,8 @@ class TeamMeter {
     set animationDuration(val) { this.currentProfile.animationDuration = val; }
     get openUrlEnabled() { return this.currentProfile.openUrlEnabled !== undefined ? this.currentProfile.openUrlEnabled : true; }
     set openUrlEnabled(val) { this.currentProfile.openUrlEnabled = val; }
+    get uiType() { return this.currentProfile.uiType || 'default'; }
+    set uiType(val) { this.currentProfile.uiType = val; this.render(); }
     get title() { 
         return this.isFixedMode ? (this.fixedConfig.title || 'Selektor 5000') : this.currentProfile.title;
     }
@@ -78,7 +81,8 @@ class TeamMeter {
             openInNewTab: true,
             soundVolume: 0.5,
             animationDuration: 1,
-            openUrlEnabled: true
+            openUrlEnabled: true,
+            uiType: 'default'
         };
     }
 
@@ -107,6 +111,7 @@ class TeamMeter {
         document.getElementById('newTabToggle').addEventListener('change', (e) => this.toggleNewTab(e.target.checked));
         document.getElementById('openUrlToggle').addEventListener('change', (e) => this.toggleOpenUrl(e.target.checked));
         document.getElementById('animationSpeed').addEventListener('change', (e) => this.updateAnimationSpeed(parseFloat(e.target.value)));
+        document.getElementById('uiTypeSelect').addEventListener('change', (e) => this.updateUIType(e.target.value));
         
         // Collapsible section handlers
         document.getElementById('urlConfigHeader').addEventListener('click', () => this.toggleCollapsible('urlConfig'));
@@ -276,6 +281,11 @@ class TeamMeter {
 
     updateAnimationSpeed(value) {
         this.animationDuration = value;
+        this.saveToStorage();
+    }
+
+    updateUIType(value) {
+        this.uiType = value;
         this.saveToStorage();
     }
 
@@ -516,12 +526,118 @@ class TeamMeter {
         this.render();
     }
 
+    renderCards() {
+        const cardsGrid = document.getElementById('cardsGrid');
+        const availableUrls = this.urls.filter(url => !this.usedUrls.has(url.id));
+        
+        // Shuffle URLs for random order
+        const shuffledUrls = [...this.urls].sort(() => Math.random() - 0.5);
+        
+        cardsGrid.innerHTML = '';
+        
+        shuffledUrls.forEach(url => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            if (this.usedUrls.has(url.id)) {
+                card.classList.add('flipped', 'used');
+            }
+            if (this.lastSelectedId === url.id) {
+                card.classList.add('last-selected');
+            }
+            
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="card-icon">🎴</div>
+                    </div>
+                    <div class="card-back">
+                        <div class="card-name">${this.escapeHtml(url.displayName)}</div>
+                    </div>
+                </div>
+            `;
+            
+            if (!this.usedUrls.has(url.id)) {
+                card.addEventListener('click', () => this.selectCard(url));
+            }
+            
+            cardsGrid.appendChild(card);
+        });
+        
+        // Update remaining count
+        document.getElementById('cardsRemainingCount').textContent = `${availableUrls.length} remaining`;
+    }
+
+    async selectCard(url) {
+        if (this.isSelecting) return;
+        
+        this.isSelecting = true;
+        
+        // Find the card element
+        const cards = document.querySelectorAll('.card');
+        let selectedCard = null;
+        
+        for (let card of cards) {
+            const cardName = card.querySelector('.card-name').textContent;
+            if (cardName === url.displayName) {
+                selectedCard = card;
+                break;
+            }
+        }
+        
+        if (selectedCard) {
+            // Flip the card
+            selectedCard.classList.add('flipped');
+            this.celebrationSound();
+            
+            await this.sleep(600);
+            
+            selectedCard.classList.add('used');
+            this.lastSelectedId = url.id;
+            selectedCard.classList.add('last-selected');
+        }
+        
+        this.usedUrls.add(url.id);
+        this.saveToStorage();
+        
+        // Open URL if enabled
+        if (this.openUrlEnabled) {
+            if (this.openInNewTab) {
+                if (this.urlTabWindow && !this.urlTabWindow.closed) {
+                    this.urlTabWindow.location.href = url.url;
+                    this.urlTabWindow.focus();
+                } else {
+                    this.urlTabWindow = window.open(url.url, 'selektor5000_tab');
+                }
+            } else {
+                window.location.href = url.url;
+            }
+        }
+        
+        setTimeout(() => {
+            this.isSelecting = false;
+            this.renderCards();
+        }, 1000);
+    }
+
     render() {
         this.renderUrlList();
         this.updateStats();
         this.updateDisplay();
         this.updateProfileSelector();
         this.updateUI();
+        
+        // Show/hide UI based on type
+        const defaultUI = document.getElementById('defaultUI');
+        const cardsUI = document.getElementById('cardsUI');
+        
+        if (this.uiType === 'cards') {
+            defaultUI.style.display = 'none';
+            cardsUI.style.display = 'flex';
+            this.renderCards();
+        } else {
+            defaultUI.style.display = 'flex';
+            cardsUI.style.display = 'none';
+        }
     }
 
     updateUI() {
@@ -560,6 +676,7 @@ class TeamMeter {
         document.getElementById('newTabToggle').checked = this.openInNewTab;
         document.getElementById('openUrlToggle').checked = this.openUrlEnabled;
         document.getElementById('animationSpeed').value = this.animationDuration.toString();
+        document.getElementById('uiTypeSelect').value = this.uiType;
         
         const displayText = document.getElementById('displayText');
         const availableCount = this.urls.filter(url => !this.usedUrls.has(url.id)).length;

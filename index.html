@@ -26,12 +26,25 @@
 
         <!-- Selection Mode -->
         <main id="selectionMode" class="mode-content active">
-            <div class="display-section">
-                <div id="displayBox" class="display-box clickable">
-                    <span id="displayText">Select Random Selectee</span>
+            <!-- Default UI -->
+            <div id="defaultUI" class="ui-container">
+                <div class="display-section">
+                    <div id="displayBox" class="display-box clickable">
+                        <span id="displayText">Select Random Selectee</span>
+                    </div>
+                    <div class="stats">
+                        <span id="remainingCount" class="stat-badge">0 remaining</span>
+                    </div>
                 </div>
-                <div class="stats">
-                    <span id="remainingCount" class="stat-badge">0 remaining</span>
+            </div>
+
+            <!-- Cards UI -->
+            <div id="cardsUI" class="ui-container" style="display: none;">
+                <div class="cards-container">
+                    <div id="cardsGrid" class="cards-grid"></div>
+                    <div class="stats">
+                        <span id="cardsRemainingCount" class="stat-badge">0 remaining</span>
+                    </div>
                 </div>
             </div>
 
@@ -151,6 +164,15 @@
                                     </select>
                                 </label>
                             </div>
+                            <div class="sound-setting">
+                                <label class="sound-toggle-label">
+                                    <span>🎴 UI Type</span>
+                                    <select id="uiTypeSelect">
+                                        <option value="default">Default (Animated)</option>
+                                        <option value="cards">Cards (Grid)</option>
+                                    </select>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -178,7 +200,7 @@
         </main>
 
         <footer>
-            <p>URLs are stored locally in your browser · v6.5.0</p>
+            <p>URLs are stored locally in your browser · v6.6.0</p>
         </footer>
     </div>
 

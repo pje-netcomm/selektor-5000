@@ -2,6 +2,34 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v6.6.0 - Alternate UI: Cards (2026-04-07)
+
+### Major Feature
+- **[alternate-ui-cards] Cards Grid UI**: New visual selection interface
+  - Grid of face-down cards representing selectees
+  - Click any card to flip it and reveal the selection
+  - Cards displayed in random order each time
+  - Smooth 3D flip animation
+  - Used cards become semi-transparent
+  - Last selected card pulses with highlight animation
+  - Responsive grid layout adapts to screen size
+
+### Settings Enhancement
+- **UI Type Selector**: Choose between display modes
+  - Default (Animated) - Original spinning animation UI
+  - Cards (Grid) - New card-based selection UI
+  - Setting saved per profile
+  - Switch anytime from Settings section
+
+### Technical
+- All card interactions respect existing settings (sound, URL opening, etc.)
+- Auto-reset works with cards UI (all cards reset when clicked after all used)
+- Cards render in random order for fairness
+- Persistent tracking of last selected item across page reloads
+- Smooth CSS 3D transforms for card flips
+
+---
+
 ## v6.5.0 - UX Improvements 2 (2026-04-07)
 
 ### New Features

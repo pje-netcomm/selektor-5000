@@ -178,7 +178,7 @@ Then open: `http://localhost:8000/`
 
 ## Version
 
-Current version: **v6.5.0**
+Current version: **v6.6.0**
 
 # Things to do (not yet, when I'm ready)
 - [config-versioning]
