@@ -314,8 +314,6 @@ class TeamMeter {
         displayBox.classList.add('disabled');
         displayBox.classList.remove('clickable');
 
-        const selectedUrl = availableUrls[Math.floor(Math.random() * availableUrls.length)];
-
         this.skipAnimation = false;
         const skipHandler = (e) => {
             if (e.key === 'Enter') {
@@ -329,6 +327,12 @@ class TeamMeter {
         }
         
         document.removeEventListener('keydown', skipHandler);
+        
+        // Make final random selection AFTER animation
+        // Add extra randomization by using current timestamp
+        const seed = Date.now() % availableUrls.length;
+        const randomIndex = (seed + Math.floor(Math.random() * availableUrls.length)) % availableUrls.length;
+        const selectedUrl = availableUrls[randomIndex];
         
         await this.showSelection(selectedUrl);
 

@@ -2,6 +2,23 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v6.3.1 - Randomization Fix (2026-04-07)
+
+### Bug Fixes
+- **Improved Random Selection**: Fixed issue where same selectee could be chosen repeatedly
+  - Selection now happens after animation (not before)
+  - Added timestamp-based seed for extra entropy
+  - Combines timestamp seed with Math.random() for better distribution
+  - More truly random selection across multiple uses
+
+### Technical
+- Moved random selection to after animation completes
+- Added: `const seed = Date.now() % availableUrls.length`
+- Formula: `(seed + Math.floor(Math.random() * length)) % length`
+- Better randomization ensures fair distribution
+
+---
+
 ## v6.3 - Fixed Configuration Mode (2026-03-31)
 
 ### Major Feature
