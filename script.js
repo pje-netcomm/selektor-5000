@@ -384,7 +384,7 @@ class TeamMeter {
 
         this.skipAnimation = false;
         const skipHandler = (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' || e.key === ' ') {
                 this.skipAnimation = true;
             }
         };
