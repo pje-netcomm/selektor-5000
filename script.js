@@ -101,6 +101,7 @@ class TeamMeter {
         document.getElementById('addUrlBtn').addEventListener('click', () => this.addUrl());
         document.getElementById('displayBox').addEventListener('click', () => this.selectRandomUrl());
         document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+        document.getElementById('selectCardBtn').addEventListener('click', () => this.selectRandomCard());
         document.getElementById('selectionModeBtn').addEventListener('click', () => this.switchMode('selection'));
         document.getElementById('configModeBtn').addEventListener('click', () => this.switchMode('config'));
         document.getElementById('exportConfigBtn').addEventListener('click', () => this.exportConfig());
@@ -572,7 +573,31 @@ class TeamMeter {
         document.getElementById('cardsRemainingCount').textContent = `${availableUrls.length} remaining`;
     }
 
-    async selectCard(url) {
+    async selectRandomCard() {
+        const availableUrls = this.urls.filter(url => !this.usedUrls.has(url.id));
+        
+        if (availableUrls.length === 0) {
+            // Auto-reset when no selectees are available
+            if (this.urls.length > 0) {
+                this.reset();
+                return;
+            } else {
+                alert('No selectees available! Add some selectees in Setup mode.');
+                return;
+            }
+        }
+
+        if (this.isSelecting) return;
+        
+        // Randomly select from available URLs
+        const seed = Date.now() % availableUrls.length;
+        const randomIndex = (seed + Math.floor(Math.random() * availableUrls.length)) % availableUrls.length;
+        const selectedUrl = availableUrls[randomIndex];
+        
+        await this.selectCard(selectedUrl, true);
+    }
+
+    async selectCard(url, withFanfare = false) {
         if (this.isSelecting) return;
         
         this.isSelecting = true;
@@ -590,7 +615,12 @@ class TeamMeter {
         }
         
         if (selectedCard) {
-            // Flip the card
+            // Add fanfare effect immediately when using button
+            if (withFanfare) {
+                selectedCard.classList.add('fanfare');
+            }
+            
+            // Flip the card and play sound immediately
             selectedCard.classList.add('flipped');
             this.celebrationSound();
             
