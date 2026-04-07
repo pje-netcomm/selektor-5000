@@ -268,7 +268,12 @@ h1 {
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - 300px);
+}
+
+.config-scrollable {
     overflow-y: auto;
+    flex: 1;
+    min-height: 0;
 }
 
 .config-section h2 {
@@ -705,12 +710,9 @@ h1 {
     gap: 10px;
     flex-wrap: wrap;
     padding-top: 20px;
-    margin-top: auto;
     border-top: 2px solid #f0f0f0;
     flex-shrink: 0;
     background: white;
-    position: sticky;
-    bottom: 0;
     padding-bottom: 10px;
 }
 
