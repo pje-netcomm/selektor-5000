@@ -181,7 +181,14 @@ Then open: `http://localhost:8000/`
 Current version: **v6.5.0**
 
 # Things to do (not yet, when I'm ready)
-- [config-versioning] localStorage configuration must be tolerant of breaking changes.  If an old format configuration is seen it should import with reasonable behaviour for new or altered config parameters. if a "too new" version is seen, alert that the configuration is not compatible and offer to reset to defaults.  If rejected, changes to localStorage are blocked, and the app is unable to run.
+- [config-versioning]
+   - localStorage configuration must be tolerant of breaking changes.
+   - If an old format configuration is seen it should import with reasonable
+     behaviour for new or altered config parameters.
+   - if a "too new" version is seen, alert that the configuration is not
+     compatible and offer to reset to defaults.
+   - If user rejects reset to default, changes to localStorage are blocked, and
+     the app is unable to run.
 - [alternate-ui-cards]
    - Display selectees "select" mode as a grid of randomly ordered cards
    - This would be a more visual and engaging way to interact with the selectees
