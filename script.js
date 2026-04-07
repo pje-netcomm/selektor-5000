@@ -101,7 +101,6 @@ class TeamMeter {
         document.getElementById('addUrlBtn').addEventListener('click', () => this.addUrl());
         document.getElementById('displayBox').addEventListener('click', () => this.selectRandomUrl());
         document.getElementById('resetBtn').addEventListener('click', () => this.reset());
-        document.getElementById('resetBtnCards').addEventListener('click', () => this.reset());
         document.getElementById('selectCardBtn').addEventListener('click', () => this.selectRandomCard());
         document.getElementById('selectionModeBtn').addEventListener('click', () => this.switchMode('selection'));
         document.getElementById('configModeBtn').addEventListener('click', () => this.switchMode('config'));
@@ -141,10 +140,17 @@ class TeamMeter {
         // Global Enter/Space key for selection mode
         document.addEventListener('keydown', (e) => {
             if ((e.key === 'Enter' || e.key === ' ') && this.currentMode === 'selection' && !this.isSelecting) {
-                const displayBox = document.getElementById('displayBox');
-                if (!displayBox.classList.contains('disabled')) {
-                    e.preventDefault(); // Prevent space from scrolling page
-                    this.selectRandomUrl();
+                e.preventDefault(); // Prevent space from scrolling page
+                
+                if (this.uiType === 'cards') {
+                    // In cards mode, trigger random card selection
+                    this.selectRandomCard();
+                } else {
+                    // In default mode, trigger display box selection
+                    const displayBox = document.getElementById('displayBox');
+                    if (!displayBox.classList.contains('disabled')) {
+                        this.selectRandomUrl();
+                    }
                 }
             }
             
@@ -679,14 +685,17 @@ class TeamMeter {
         // Show/hide UI based on type
         const defaultUI = document.getElementById('defaultUI');
         const cardsUI = document.getElementById('cardsUI');
+        const selectCardBtn = document.getElementById('selectCardBtn');
         
         if (this.uiType === 'cards') {
             defaultUI.style.display = 'none';
             cardsUI.style.display = 'flex';
+            selectCardBtn.style.display = 'block';
             this.renderCards();
         } else {
             defaultUI.style.display = 'flex';
             cardsUI.style.display = 'none';
+            selectCardBtn.style.display = 'none';
         }
     }
 
