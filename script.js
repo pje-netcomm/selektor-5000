@@ -592,9 +592,18 @@ class TeamMeter {
         const containerHeight = cardsGrid.parentElement.clientHeight - 60; // Subtract stats area
         const containerWidth = cardsGrid.clientWidth - 40; // Subtract padding
         
-        // Minimum card size for readability (width)
-        const minCardWidth = 100;
-        const maxCardWidth = 200;
+        // Calculate minimum width needed for longest text + emojis
+        const longestName = this.urls.reduce((max, url) => 
+            url.displayName.length > max.length ? url.displayName : max, ''
+        );
+        // Account for "🎉 {name} 🎉" format
+        const textWithEmojis = `🎉 ${longestName} 🎉`;
+        const estimatedTextWidth = textWithEmojis.length * 8; // Rough estimate: 8px per character
+        const minCardWidthForText = Math.max(100, Math.min(estimatedTextWidth + 30, 250));
+        
+        // Dynamic minimum and maximum card size
+        const minCardWidth = minCardWidthForText;
+        const maxCardWidth = 250;
         const aspectRatio = 3/4; // height/width
         
         // Calculate how many columns we can fit
