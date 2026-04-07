@@ -181,12 +181,7 @@ Then open: `http://localhost:8000/`
 Current version: **v6.5.0**
 
 # Things to do (not yet, when I'm ready)
-- [more-settings] Add configuration options for animation duration and sound effect volume, and persist those in the profile config as well.
 - [config-versioning] localStorage configuration must be tolerant of breaking changes.  If an old format configuration is seen it should import with reasonable behaviour for new or altered config parameters. if a "too new" version is seen, alert that the configuration is not compatible and offer to reset to defaults.  If rejected, changes to localStorage are blocked, and the app is unable to run.
-- [ux-improvements-2]
-   - Add title near config checkboxes, simlar to the "configure selectees" title; use "Settings"
-   - Use collapsing elements in the config section to allow focus on URL configuration or  app settings.
-   - clicking the main "selection" button in select view once there are no remaining selectees should trigger a reset of used items, rather than doing nothing.
 - [alternate-ui-cards]
    - Display selectees "select" mode as a grid of cards, randomly ordered, initially face down, when selected they flip over to reveal the name, and are marked as used.  This would be a more visual and engaging way to interact with the selectees, and could be toggled on/off in settings.  The last selected card should be highlighted in some way.
 - [alternate-ui-wheel]
