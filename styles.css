@@ -611,6 +611,31 @@ h1 {
     cursor: pointer;
 }
 
+.sound-toggle-label input[type="range"] {
+    flex: 1;
+    min-width: 150px;
+    cursor: pointer;
+}
+
+.sound-toggle-label select {
+    padding: 5px 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.95em;
+    cursor: pointer;
+    background-color: white;
+    transition: border-color 0.3s;
+}
+
+.sound-toggle-label select:hover {
+    border-color: #667eea;
+}
+
+.sound-toggle-label select:focus {
+    outline: none;
+    border-color: #764ba2;
+}
+
 .sound-toggle-label span {
     color: #333;
     font-weight: 500;

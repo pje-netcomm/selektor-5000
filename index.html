@@ -108,8 +108,33 @@
                 </div>
                 <div class="sound-setting">
                     <label class="sound-toggle-label">
+                        <span>🔊 Sound volume</span>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="50" step="5">
+                        <span id="volumeValue">50%</span>
+                    </label>
+                </div>
+                <div class="sound-setting">
+                    <label class="sound-toggle-label">
                         <input type="checkbox" id="newTabToggle" checked>
                         <span>🔗 Open URLs in new tab</span>
+                    </label>
+                </div>
+                <div class="sound-setting">
+                    <label class="sound-toggle-label">
+                        <input type="checkbox" id="openUrlToggle" checked>
+                        <span>🌐 Open URLs automatically</span>
+                    </label>
+                </div>
+                <div class="sound-setting">
+                    <label class="sound-toggle-label">
+                        <span>⏱️ Animation speed</span>
+                        <select id="animationSpeed">
+                            <option value="0">Disabled</option>
+                            <option value="0.5">Fast</option>
+                            <option value="1" selected>Normal</option>
+                            <option value="1.5">Slow</option>
+                            <option value="2">Very Slow</option>
+                        </select>
                     </label>
                 </div>
                 <div class="config-actions">
@@ -135,7 +160,7 @@
         </main>
 
         <footer>
-            <p>URLs are stored locally in your browser · v6.3.1</p>
+            <p>URLs are stored locally in your browser · v6.4.0</p>
         </footer>
     </div>
 

@@ -2,6 +2,38 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v6.4.0 - Enhanced Settings & UX Improvements (2026-04-07)
+
+### New Features
+- **[ux enhancements] Space Bar Trigger**: Space bar now triggers selection in addition to Enter key and clicking
+  - Works seamlessly in selection mode
+  - Prevents page scrolling during selection
+  
+### Settings Enhancements
+- **[more-settings] Sound Volume Control**: Adjust sound effect volume from 0-100%
+  - Slider control with live percentage display
+  - Volume applies to both spin and celebration sounds
+  - Saved per profile
+  
+- **[more-settings] Animation Speed Control**: Customize animation duration
+  - Options: Disabled, Fast (0.5x), Normal (1x), Slow (1.5x), Very Slow (2x)
+  - Set to "Disabled" to skip animation entirely for instant selection
+  - Adjusts both spin count and timing dynamically
+  - Saved per profile
+  
+- **[more-settings] URL Opening Control**: Toggle automatic URL opening
+  - Enable/disable opening URLs after selection
+  - Useful for testing or when you just want to see the selection
+  - Saved per profile
+
+### Technical
+- All new settings persist in profile configuration
+- Backward compatible with existing profiles (sensible defaults applied)
+- Settings: `soundVolume` (0-1), `animationDuration` (0-2), `openUrlEnabled` (boolean)
+- Default values: soundVolume=0.5, animationDuration=1, openUrlEnabled=true
+
+---
+
 ## v6.3.1 - Randomization Fix (2026-04-07)
 
 ### Bug Fixes

@@ -34,6 +34,12 @@ class TeamMeter {
     set soundEnabled(val) { this.currentProfile.soundEnabled = val; }
     get openInNewTab() { return this.currentProfile.openInNewTab; }
     set openInNewTab(val) { this.currentProfile.openInNewTab = val; }
+    get soundVolume() { return this.currentProfile.soundVolume !== undefined ? this.currentProfile.soundVolume : 0.5; }
+    set soundVolume(val) { this.currentProfile.soundVolume = val; }
+    get animationDuration() { return this.currentProfile.animationDuration !== undefined ? this.currentProfile.animationDuration : 1; }
+    set animationDuration(val) { this.currentProfile.animationDuration = val; }
+    get openUrlEnabled() { return this.currentProfile.openUrlEnabled !== undefined ? this.currentProfile.openUrlEnabled : true; }
+    set openUrlEnabled(val) { this.currentProfile.openUrlEnabled = val; }
     get title() { 
         return this.isFixedMode ? (this.fixedConfig.title || 'Selektor 5000') : this.currentProfile.title;
     }
@@ -69,7 +75,10 @@ class TeamMeter {
             usedUrls: new Set(),
             currentMode: 'selection',
             soundEnabled: true,
-            openInNewTab: true
+            openInNewTab: true,
+            soundVolume: 0.5,
+            animationDuration: 1,
+            openUrlEnabled: true
         };
     }
 
@@ -94,7 +103,10 @@ class TeamMeter {
         document.getElementById('resetToDefaultsBtn').addEventListener('click', () => this.resetToDefaults());
         document.getElementById('clearAllBtn').addEventListener('click', () => this.clearAll());
         document.getElementById('soundToggle').addEventListener('change', (e) => this.toggleSound(e.target.checked));
+        document.getElementById('volumeSlider').addEventListener('input', (e) => this.updateVolume(e.target.value));
         document.getElementById('newTabToggle').addEventListener('change', (e) => this.toggleNewTab(e.target.checked));
+        document.getElementById('openUrlToggle').addEventListener('change', (e) => this.toggleOpenUrl(e.target.checked));
+        document.getElementById('animationSpeed').addEventListener('change', (e) => this.updateAnimationSpeed(parseFloat(e.target.value)));
         
         document.getElementById('profileSelector').addEventListener('change', (e) => this.switchProfile(e.target.value));
         document.getElementById('newProfileBtn').addEventListener('click', () => this.createNewProfile());
@@ -114,11 +126,12 @@ class TeamMeter {
             if (e.key === 'Enter') this.addUrl();
         });
 
-        // Global Enter key for selection mode
+        // Global Enter/Space key for selection mode
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && this.currentMode === 'selection' && !this.isSelecting) {
+            if ((e.key === 'Enter' || e.key === ' ') && this.currentMode === 'selection' && !this.isSelecting) {
                 const displayBox = document.getElementById('displayBox');
                 if (!displayBox.classList.contains('disabled')) {
+                    e.preventDefault(); // Prevent space from scrolling page
                     this.selectRandomUrl();
                 }
             }
@@ -181,7 +194,11 @@ class TeamMeter {
             document.getElementById('configModeBtn').classList.add('active');
             document.getElementById('configMode').classList.add('active');
             document.getElementById('soundToggle').checked = this.soundEnabled;
+            document.getElementById('volumeSlider').value = Math.round(this.soundVolume * 100);
+            document.getElementById('volumeValue').textContent = `${Math.round(this.soundVolume * 100)}%`;
             document.getElementById('newTabToggle').checked = this.openInNewTab;
+            document.getElementById('openUrlToggle').checked = this.openUrlEnabled;
+            document.getElementById('animationSpeed').value = this.animationDuration.toString();
         }
         this.saveToStorage();
     }
@@ -200,8 +217,9 @@ class TeamMeter {
             oscillator.frequency.value = 400;
             oscillator.type = 'sine';
             
-            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+            const volume = 0.1 * this.soundVolume;
+            gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, volume * 0.1), audioContext.currentTime + 0.05);
             
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 0.05);
@@ -221,8 +239,9 @@ class TeamMeter {
                 oscillator.type = 'sine';
                 
                 const startTime = audioContext.currentTime + (index * 0.1);
-                gainNode.gain.setValueAtTime(0.15, startTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.3);
+                const volume = 0.15 * this.soundVolume;
+                gainNode.gain.setValueAtTime(volume, startTime);
+                gainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, volume * 0.067), startTime + 0.3);
                 
                 oscillator.start(startTime);
                 oscillator.stop(startTime + 0.3);
@@ -235,8 +254,24 @@ class TeamMeter {
         this.saveToStorage();
     }
 
+    updateVolume(value) {
+        this.soundVolume = value / 100;
+        document.getElementById('volumeValue').textContent = `${value}%`;
+        this.saveToStorage();
+    }
+
     toggleNewTab(enabled) {
         this.openInNewTab = enabled;
+        this.saveToStorage();
+    }
+
+    toggleOpenUrl(enabled) {
+        this.openUrlEnabled = enabled;
+        this.saveToStorage();
+    }
+
+    updateAnimationSpeed(value) {
+        this.animationDuration = value;
         this.saveToStorage();
     }
 
@@ -322,7 +357,8 @@ class TeamMeter {
         };
         document.addEventListener('keydown', skipHandler);
 
-        if (availableUrls.length > 1) {
+        // Skip animation if duration is 0 or if only 1 URL available
+        if (availableUrls.length > 1 && this.animationDuration > 0) {
             await this.animateSelection(availableUrls);
         }
         
@@ -339,15 +375,18 @@ class TeamMeter {
         this.usedUrls.add(selectedUrl.id);
         this.saveToStorage();
         
-        if (this.openInNewTab) {
-            if (this.urlTabWindow && !this.urlTabWindow.closed) {
-                this.urlTabWindow.location.href = selectedUrl.url;
-                this.urlTabWindow.focus();
+        // Open URL if enabled
+        if (this.openUrlEnabled) {
+            if (this.openInNewTab) {
+                if (this.urlTabWindow && !this.urlTabWindow.closed) {
+                    this.urlTabWindow.location.href = selectedUrl.url;
+                    this.urlTabWindow.focus();
+                } else {
+                    this.urlTabWindow = window.open(selectedUrl.url, 'selektor5000_tab');
+                }
             } else {
-                this.urlTabWindow = window.open(selectedUrl.url, 'selektor5000_tab');
+                window.location.href = selectedUrl.url;
             }
-        } else {
-            window.location.href = selectedUrl.url;
         }
         
         setTimeout(() => {
@@ -360,8 +399,10 @@ class TeamMeter {
         const displayBox = document.getElementById('displayBox');
         const displayText = document.getElementById('displayText');
         
-        const spinCount = 20;
-        const baseDelay = 50;
+        // Calculate spin count and delays based on animationDuration
+        // 0 = disabled, 0.5 = fast, 1 = normal, 2 = slow
+        const spinCount = Math.round(20 * this.animationDuration);
+        const baseDelay = Math.round(50 * this.animationDuration);
         
         const funnyHints = [
             '🤔 Maybe...', '👀 Could it be...', '🎯 Is it...', '✨ Perhaps...',
@@ -407,11 +448,11 @@ class TeamMeter {
             
             this.spinSound();
             
-            const delay = baseDelay + (i * 15);
+            const delay = baseDelay + Math.round(i * 15 * this.animationDuration);
             await this.sleep(delay);
             
             displayBox.classList.remove('spinning');
-            await this.sleep(50);
+            await this.sleep(Math.round(50 * this.animationDuration));
         }
     }
 
@@ -481,7 +522,11 @@ class TeamMeter {
         
         // Update settings checkboxes to match current profile
         document.getElementById('soundToggle').checked = this.soundEnabled;
+        document.getElementById('volumeSlider').value = Math.round(this.soundVolume * 100);
+        document.getElementById('volumeValue').textContent = `${Math.round(this.soundVolume * 100)}%`;
         document.getElementById('newTabToggle').checked = this.openInNewTab;
+        document.getElementById('openUrlToggle').checked = this.openUrlEnabled;
+        document.getElementById('animationSpeed').value = this.animationDuration.toString();
         
         const displayText = document.getElementById('displayText');
         const availableCount = this.urls.filter(url => !this.usedUrls.has(url.id)).length;
