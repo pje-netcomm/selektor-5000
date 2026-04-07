@@ -101,6 +101,7 @@ class TeamMeter {
         document.getElementById('addUrlBtn').addEventListener('click', () => this.addUrl());
         document.getElementById('displayBox').addEventListener('click', () => this.selectRandomUrl());
         document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+        document.getElementById('resetBtnCards').addEventListener('click', () => this.reset());
         document.getElementById('selectCardBtn').addEventListener('click', () => this.selectRandomCard());
         document.getElementById('selectionModeBtn').addEventListener('click', () => this.switchMode('selection'));
         document.getElementById('configModeBtn').addEventListener('click', () => this.switchMode('config'));
@@ -602,6 +603,12 @@ class TeamMeter {
         
         this.isSelecting = true;
         
+        // Clear previous highlights from all cards
+        const allCards = document.querySelectorAll('.card');
+        allCards.forEach(card => {
+            card.classList.remove('just-selected', 'fanfare');
+        });
+        
         // Find the card element
         const cards = document.querySelectorAll('.card');
         let selectedCard = null;
@@ -625,6 +632,11 @@ class TeamMeter {
             this.celebrationSound();
             
             await this.sleep(600);
+            
+            // Add celebration emojis to the card back
+            const cardBack = selectedCard.querySelector('.card-back');
+            const cardName = cardBack.querySelector('.card-name');
+            cardName.innerHTML = `🎉 ${this.escapeHtml(url.displayName)} 🎉`;
             
             selectedCard.classList.add('used');
             this.lastSelectedId = url.id;
