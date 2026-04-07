@@ -365,7 +365,7 @@ class TeamMeter {
         if (availableUrls.length === 0) {
             // Auto-reset when no selectees are available
             if (this.urls.length > 0) {
-                this.resetUsed();
+                this.reset();
                 return;
             } else {
                 alert('No selectees available! Add some selectees in Setup mode.');
@@ -567,7 +567,7 @@ class TeamMeter {
         if (this.urls.length === 0) {
             displayText.textContent = `Add some ${this.topic.toLowerCase()}s to get started!`;
         } else if (availableCount === 0) {
-            displayText.textContent = `All ${this.topic.toLowerCase()}s used! Reset to start over.`;
+            displayText.textContent = `🔄 Click to reset and start over`;
         } else if (!this.isSelecting) {
             displayText.textContent = `Select Random ${this.topic}`;
         }
