@@ -242,12 +242,13 @@ h1 {
 .cards-grid {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 15px;
     padding: 20px 10px;
     overflow-y: auto;
     overflow-x: hidden;
     align-content: start;
+    scroll-behavior: smooth;
 }
 
 .card {

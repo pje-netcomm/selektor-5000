@@ -546,11 +546,15 @@ class TeamMeter {
             this.cardOrder = [...this.urls].sort(() => Math.random() - 0.5);
         }
         
+        // Calculate optimal card size
+        this.calculateCardSize(cardsGrid);
+        
         cardsGrid.innerHTML = '';
         
         this.cardOrder.forEach(url => {
             const card = document.createElement('div');
             card.className = 'card';
+            card.dataset.urlId = url.id; // Store ID for scrolling
             if (this.usedUrls.has(url.id)) {
                 card.classList.add('flipped', 'used');
             }
@@ -578,6 +582,46 @@ class TeamMeter {
         
         // Update remaining count
         document.getElementById('cardsRemainingCount').textContent = `${availableUrls.length} remaining`;
+    }
+
+    calculateCardSize(cardsGrid) {
+        const numCards = this.urls.length;
+        if (numCards === 0) return;
+        
+        // Get available space
+        const containerHeight = cardsGrid.parentElement.clientHeight - 60; // Subtract stats area
+        const containerWidth = cardsGrid.clientWidth - 40; // Subtract padding
+        
+        // Minimum card size for readability (width)
+        const minCardWidth = 100;
+        const maxCardWidth = 200;
+        const aspectRatio = 3/4; // height/width
+        
+        // Calculate how many columns we can fit
+        const gap = 15;
+        let cols = Math.floor((containerWidth + gap) / (minCardWidth + gap));
+        if (cols < 1) cols = 1;
+        
+        // Calculate how many rows we need
+        const rows = Math.ceil(numCards / cols);
+        
+        // Calculate card size that fits all cards
+        const availableWidthPerCard = (containerWidth - (gap * (cols - 1))) / cols;
+        const availableHeightPerCard = (containerHeight - (gap * (rows - 1))) / rows;
+        
+        // Determine if we can fit all cards without scrolling
+        const cardWidthByHeight = availableHeightPerCard / aspectRatio;
+        const cardWidthByWidth = availableWidthPerCard;
+        
+        let cardWidth = Math.min(cardWidthByHeight, cardWidthByWidth, maxCardWidth);
+        
+        // If calculated width is below minimum, use minimum and allow scrolling
+        if (cardWidth < minCardWidth) {
+            cardWidth = minCardWidth;
+        }
+        
+        // Apply the calculated size
+        cardsGrid.style.gridTemplateColumns = `repeat(auto-fill, minmax(${cardWidth}px, 1fr))`;
     }
 
     async selectRandomCard() {
@@ -628,6 +672,9 @@ class TeamMeter {
         }
         
         if (selectedCard) {
+            // Scroll to the selected card
+            selectedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
             // Add fanfare effect immediately when using button
             if (withFanfare) {
                 selectedCard.classList.add('fanfare');
