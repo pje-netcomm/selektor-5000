@@ -183,8 +183,25 @@ Current version: **v6.5.0**
 # Things to do (not yet, when I'm ready)
 - [config-versioning] localStorage configuration must be tolerant of breaking changes.  If an old format configuration is seen it should import with reasonable behaviour for new or altered config parameters. if a "too new" version is seen, alert that the configuration is not compatible and offer to reset to defaults.  If rejected, changes to localStorage are blocked, and the app is unable to run.
 - [alternate-ui-cards]
-   - Display selectees "select" mode as a grid of cards, randomly ordered, initially face down, when selected they flip over to reveal the name, and are marked as used.  This would be a more visual and engaging way to interact with the selectees, and could be toggled on/off in settings.  The last selected card should be highlighted in some way.
+   - Display selectees "select" mode as a grid of randomly ordered cards
+   - This would be a more visual and engaging way to interact with the selectees
+   - cards initially face down, when selected they flip over to reveal the name
+   - The last selected card should be highlighted in some way.
+   - Select this display type in settings in addition to existing display types.
 - [alternate-ui-wheel]
-   - Change the "select" mode to be a spinning wheel (like a roulette or prize wheel) with the selectees as segments on the wheel.  When the user clicks to select, the wheel spins and lands on a random segment, which is the selected item.  This would be a fun and visually appealing way to select items, and could also be toggled on/off in settings.  The wheel should have sound effects and animation for extra engagement.
+   - Change the "select" mode to be a spinning wheel (like a roulette or prize
+     wheel) with the selectees as segments on the wheel.  
+   - This would be a fun and visually appealing way to select items
+   - When the user clicks to select, the wheel spins and lands on a random segment
+   - The wheel should have sound effects and animation for extra engagement.
+   - Select this display type in settings in addition to existing display types.
 - [alternate-ui-retro]
-   - Implement a retro 8-bit style "select" mode, where the selectees are displayed as pixelated characters or icons, and the selection process is accompanied by 8-bit sound effects and animations.  This would give the app a nostalgic and playful vibe, and could be toggled on/off in settings.  The selected item could be highlighted with a flashing border or explosion effect for extra fun.
+   - Implement a retro 8-bit style "select" mode, where the selectees are
+     displayed as pixelated characters or icons
+   - The selection process is accompanied by 8-bit sound effects and animations.
+   - This would give the app a nostalgic and playful vibe.
+   - The selected item could be highlighted with a flashing border or explosion effect for extra fun.
+   - Select this display type in settings in addition to existing display types.
+- [alternate-ui-retro]
+
+   - Select this display type in settings in addition to existing display types.
