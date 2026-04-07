@@ -283,8 +283,23 @@ class TeamMeter {
         const header = document.getElementById(`${section}Header`);
         const content = document.getElementById(`${section}Content`);
         
-        header.classList.toggle('active');
-        content.classList.toggle('expanded');
+        // If this section is already active, do nothing (keep at least one open)
+        if (header.classList.contains('active')) {
+            return;
+        }
+        
+        // Close all other collapsibles
+        const allHeaders = ['urlConfig', 'settings'];
+        allHeaders.forEach(s => {
+            const h = document.getElementById(`${s}Header`);
+            const c = document.getElementById(`${s}Content`);
+            h.classList.remove('active');
+            c.classList.remove('expanded');
+        });
+        
+        // Open the selected one
+        header.classList.add('active');
+        content.classList.add('expanded');
     }
 
     addUrl() {
