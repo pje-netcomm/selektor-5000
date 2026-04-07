@@ -244,8 +244,9 @@ h1 {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 15px;
-    padding: 10px 0;
+    padding: 20px 10px;
     overflow-y: auto;
+    overflow-x: hidden;
     align-content: start;
 }
 
@@ -276,10 +277,10 @@ h1 {
         transform: scale(1) rotate(0deg);
     }
     25% {
-        transform: scale(1.15) rotate(-8deg);
+        transform: scale(1.08) rotate(-8deg);
     }
     75% {
-        transform: scale(1.15) rotate(8deg);
+        transform: scale(1.08) rotate(8deg);
     }
 }
 
@@ -289,7 +290,7 @@ h1 {
         box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.5);
     }
     50% {
-        transform: scale(1.15);
+        transform: scale(1.08);
         box-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 215, 0, 0.8);
     }
 }
