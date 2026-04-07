@@ -178,7 +178,7 @@ Then open: `http://localhost:8000/`
 
 ## Version
 
-Current version: **v6.3**
+Current version: **v6.3.1**
 
 # Things to do (not yet, when I'm ready)
 - [more-settings] Add configuration options for animation duration and sound effect volume, and persist those in the profile config as well.
