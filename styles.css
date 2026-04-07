@@ -449,10 +449,8 @@ h1 {
 
 .url-list {
     margin-bottom: 20px;
-    overflow-y: auto;
     flex-grow: 1;
     min-height: 0;
-    max-height: 400px;
 }
 
 .url-item {
@@ -643,8 +641,7 @@ h1 {
 }
 
 .collapsible-content.expanded {
-    max-height: 400px;
-    overflow-y: auto;
+    max-height: none;
     padding: 20px;
 }
 
