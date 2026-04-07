@@ -261,8 +261,20 @@ h1 {
     opacity: 0.6;
 }
 
-.card.last-selected {
-    animation: pulse 1.5s ease-in-out infinite;
+.card.just-selected {
+    animation: highlightPulse 2s ease-in-out 3;
+    z-index: 10;
+}
+
+@keyframes highlightPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.5);
+    }
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 215, 0, 0.8);
+    }
 }
 
 @keyframes pulse {

@@ -9,6 +9,7 @@ class TeamMeter {
         this.fixedConfig = null;
         this.isFixedMode = false;
         this.lastSelectedId = null;
+        this.cardOrder = null;
         this.init();
     }
 
@@ -522,6 +523,8 @@ class TeamMeter {
         }
         
         this.usedUrls.clear();
+        this.lastSelectedId = null;
+        this.cardOrder = null; // Reset card order on reset
         this.saveToStorage();
         this.render();
     }
@@ -530,19 +533,21 @@ class TeamMeter {
         const cardsGrid = document.getElementById('cardsGrid');
         const availableUrls = this.urls.filter(url => !this.usedUrls.has(url.id));
         
-        // Shuffle URLs for random order
-        const shuffledUrls = [...this.urls].sort(() => Math.random() - 0.5);
+        // Create or maintain shuffled order - only shuffle if card order doesn't exist or URL list changed
+        if (!this.cardOrder || this.cardOrder.length !== this.urls.length) {
+            this.cardOrder = [...this.urls].sort(() => Math.random() - 0.5);
+        }
         
         cardsGrid.innerHTML = '';
         
-        shuffledUrls.forEach(url => {
+        this.cardOrder.forEach(url => {
             const card = document.createElement('div');
             card.className = 'card';
             if (this.usedUrls.has(url.id)) {
                 card.classList.add('flipped', 'used');
             }
             if (this.lastSelectedId === url.id) {
-                card.classList.add('last-selected');
+                card.classList.add('just-selected');
             }
             
             card.innerHTML = `
@@ -593,7 +598,10 @@ class TeamMeter {
             
             selectedCard.classList.add('used');
             this.lastSelectedId = url.id;
-            selectedCard.classList.add('last-selected');
+            selectedCard.classList.add('just-selected');
+            
+            // Wait longer to show the highlight before opening URL
+            await this.sleep(1500);
         }
         
         this.usedUrls.add(url.id);
@@ -616,7 +624,7 @@ class TeamMeter {
         setTimeout(() => {
             this.isSelecting = false;
             this.renderCards();
-        }, 1000);
+        }, 500);
     }
 
     render() {
