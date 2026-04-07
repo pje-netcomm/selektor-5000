@@ -283,12 +283,9 @@ class TeamMeter {
         const header = document.getElementById(`${section}Header`);
         const content = document.getElementById(`${section}Content`);
         
-        // If this section is already active, do nothing (keep at least one open)
-        if (header.classList.contains('active')) {
-            return;
-        }
+        const isCurrentlyActive = header.classList.contains('active');
         
-        // Close all other collapsibles
+        // Close all collapsibles
         const allHeaders = ['urlConfig', 'settings'];
         allHeaders.forEach(s => {
             const h = document.getElementById(`${s}Header`);
@@ -297,9 +294,12 @@ class TeamMeter {
             c.classList.remove('expanded');
         });
         
-        // Open the selected one
-        header.classList.add('active');
-        content.classList.add('expanded');
+        // If this section was NOT active, open it (toggle behavior)
+        if (!isCurrentlyActive) {
+            header.classList.add('active');
+            content.classList.add('expanded');
+        }
+        // If it was active, it stays closed (all sections can be collapsed)
     }
 
     addUrl() {
