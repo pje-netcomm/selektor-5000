@@ -643,11 +643,16 @@ class TeamMeter {
         
         const displayBox = document.getElementById('displayBox');
         if (availableCount === 0 && this.urls.length > 0) {
-            displayBox.classList.remove('clickable');
-            displayBox.classList.add('disabled');
+            // Keep clickable to allow auto-reset
+            displayBox.classList.add('clickable');
+            displayBox.classList.remove('disabled');
         } else if (availableCount > 0) {
             displayBox.classList.add('clickable');
             displayBox.classList.remove('disabled');
+        } else {
+            // No URLs configured
+            displayBox.classList.remove('clickable');
+            displayBox.classList.add('disabled');
         }
     }
 
@@ -658,7 +663,7 @@ class TeamMeter {
         if (this.urls.length === 0) {
             displayText.textContent = `Add some ${this.topic.toLowerCase()}s to get started!`;
         } else if (availableCount === 0) {
-            displayText.textContent = `All ${this.topic.toLowerCase()}s used! Reset to start over.`;
+            displayText.textContent = `🔄 Click to reset and start over`;
         } else {
             displayText.textContent = `Select Random ${this.topic}`;
         }
