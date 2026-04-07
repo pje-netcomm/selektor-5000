@@ -451,6 +451,7 @@ h1 {
     overflow-y: auto;
     flex-grow: 1;
     min-height: 0;
+    max-height: 400px;
 }
 
 .url-item {
