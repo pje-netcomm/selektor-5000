@@ -2,6 +2,29 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v6.5.0 - UX Improvements 2 (2026-04-07)
+
+### New Features
+- **[ux-improvements-2] Collapsible Configuration Sections**: Better organization of setup mode
+  - URL Configuration section with collapse/expand
+  - Settings section with collapse/expand
+  - Click headers to toggle visibility
+  - Focus on what you need, hide the rest
+  - Both sections expanded by default
+
+- **[ux-improvements-2] Auto-Reset on Empty**: Smart behavior when no selectees remain
+  - Clicking selection button when all used automatically resets instead of showing alert
+  - More intuitive workflow - no manual reset needed
+  - Still shows alert if no URLs are configured
+
+### UI Enhancements
+- Settings now properly organized under "Settings" collapsible header
+- Visual distinction with gradient headers
+- Smooth expand/collapse animations
+- Arrow icons indicate expanded/collapsed state
+
+---
+
 ## v6.4.0 - Enhanced Settings & UX Improvements (2026-04-07)
 
 ### New Features

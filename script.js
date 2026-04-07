@@ -108,6 +108,10 @@ class TeamMeter {
         document.getElementById('openUrlToggle').addEventListener('change', (e) => this.toggleOpenUrl(e.target.checked));
         document.getElementById('animationSpeed').addEventListener('change', (e) => this.updateAnimationSpeed(parseFloat(e.target.value)));
         
+        // Collapsible section handlers
+        document.getElementById('urlConfigHeader').addEventListener('click', () => this.toggleCollapsible('urlConfig'));
+        document.getElementById('settingsHeader').addEventListener('click', () => this.toggleCollapsible('settings'));
+        
         document.getElementById('profileSelector').addEventListener('change', (e) => this.switchProfile(e.target.value));
         document.getElementById('newProfileBtn').addEventListener('click', () => this.createNewProfile());
         document.getElementById('editProfileBtn').addEventListener('click', () => this.openEditPanel());
@@ -275,6 +279,14 @@ class TeamMeter {
         this.saveToStorage();
     }
 
+    toggleCollapsible(section) {
+        const header = document.getElementById(`${section}Header`);
+        const content = document.getElementById(`${section}Content`);
+        
+        header.classList.toggle('active');
+        content.classList.toggle('expanded');
+    }
+
     addUrl() {
         if (this.isFixedMode) {
             alert('Cannot add URLs in fixed configuration mode. URLs are read-only.');
@@ -336,8 +348,14 @@ class TeamMeter {
         const availableUrls = this.urls.filter(url => !this.usedUrls.has(url.id));
         
         if (availableUrls.length === 0) {
-            alert('No selectees available! Add some selectees or reset to start over.');
-            return;
+            // Auto-reset when no selectees are available
+            if (this.urls.length > 0) {
+                this.resetUsed();
+                return;
+            } else {
+                alert('No selectees available! Add some selectees in Setup mode.');
+                return;
+            }
         }
 
         const displayBox = document.getElementById('displayBox');

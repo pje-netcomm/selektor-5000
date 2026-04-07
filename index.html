@@ -91,52 +91,70 @@
 
                 <h2>Configure <span id="topicLabel">Selectees</span></h2>
                 
-                <div id="urlList" class="url-list"></div>
-                <div class="add-url-form">
-                    <input type="text" id="displayNameInput" placeholder="Display Name" class="input">
-                    <input type="url" id="urlInput" placeholder="https://example.com" class="input">
-                    <button id="addUrlBtn" class="btn btn-add">
-                        <span class="btn-icon">➕</span>
-                        Add Selectee
+                <div class="collapsible-section">
+                    <button class="collapsible-header active" id="urlConfigHeader">
+                        <span class="collapse-icon">▼</span>
+                        <span>URL Configuration</span>
                     </button>
+                    <div class="collapsible-content expanded" id="urlConfigContent">
+                        <div id="urlList" class="url-list"></div>
+                        <div class="add-url-form">
+                            <input type="text" id="displayNameInput" placeholder="Display Name" class="input">
+                            <input type="url" id="urlInput" placeholder="https://example.com" class="input">
+                            <button id="addUrlBtn" class="btn btn-add">
+                                <span class="btn-icon">➕</span>
+                                Add Selectee
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="sound-setting">
-                    <label class="sound-toggle-label">
-                        <input type="checkbox" id="soundToggle" checked>
-                        <span>🔊 Enable sound effects</span>
-                    </label>
+
+                <div class="collapsible-section">
+                    <button class="collapsible-header active" id="settingsHeader">
+                        <span class="collapse-icon">▼</span>
+                        <span>Settings</span>
+                    </button>
+                    <div class="collapsible-content expanded" id="settingsContent">
+                        <div class="sound-setting">
+                            <label class="sound-toggle-label">
+                                <input type="checkbox" id="soundToggle" checked>
+                                <span>🔊 Enable sound effects</span>
+                            </label>
+                        </div>
+                        <div class="sound-setting">
+                            <label class="sound-toggle-label">
+                                <span>🔊 Sound volume</span>
+                                <input type="range" id="volumeSlider" min="0" max="100" value="50" step="5">
+                                <span id="volumeValue">50%</span>
+                            </label>
+                        </div>
+                        <div class="sound-setting">
+                            <label class="sound-toggle-label">
+                                <input type="checkbox" id="newTabToggle" checked>
+                                <span>🔗 Open URLs in new tab</span>
+                            </label>
+                        </div>
+                        <div class="sound-setting">
+                            <label class="sound-toggle-label">
+                                <input type="checkbox" id="openUrlToggle" checked>
+                                <span>🌐 Open URLs automatically</span>
+                            </label>
+                        </div>
+                        <div class="sound-setting">
+                            <label class="sound-toggle-label">
+                                <span>⏱️ Animation speed</span>
+                                <select id="animationSpeed">
+                                    <option value="0">Disabled</option>
+                                    <option value="0.5">Fast</option>
+                                    <option value="1" selected>Normal</option>
+                                    <option value="1.5">Slow</option>
+                                    <option value="2">Very Slow</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
                 </div>
-                <div class="sound-setting">
-                    <label class="sound-toggle-label">
-                        <span>🔊 Sound volume</span>
-                        <input type="range" id="volumeSlider" min="0" max="100" value="50" step="5">
-                        <span id="volumeValue">50%</span>
-                    </label>
-                </div>
-                <div class="sound-setting">
-                    <label class="sound-toggle-label">
-                        <input type="checkbox" id="newTabToggle" checked>
-                        <span>🔗 Open URLs in new tab</span>
-                    </label>
-                </div>
-                <div class="sound-setting">
-                    <label class="sound-toggle-label">
-                        <input type="checkbox" id="openUrlToggle" checked>
-                        <span>🌐 Open URLs automatically</span>
-                    </label>
-                </div>
-                <div class="sound-setting">
-                    <label class="sound-toggle-label">
-                        <span>⏱️ Animation speed</span>
-                        <select id="animationSpeed">
-                            <option value="0">Disabled</option>
-                            <option value="0.5">Fast</option>
-                            <option value="1" selected>Normal</option>
-                            <option value="1.5">Slow</option>
-                            <option value="2">Very Slow</option>
-                        </select>
-                    </label>
-                </div>
+
                 <div class="config-actions">
                     <button id="exportConfigBtn" class="btn btn-config">
                         <span class="btn-icon">💾</span>
@@ -160,7 +178,7 @@
         </main>
 
         <footer>
-            <p>URLs are stored locally in your browser · v6.4.0</p>
+            <p>URLs are stored locally in your browser · v6.5.0</p>
         </footer>
     </div>
 
