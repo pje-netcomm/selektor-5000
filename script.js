@@ -163,6 +163,13 @@ class TeamMeter {
             }
         });
         
+        // Window resize handler for cards UI
+        window.addEventListener('resize', () => {
+            if (this.uiType === 'cards' && this.currentMode === 'selection') {
+                this.renderCards();
+            }
+        });
+        
         // Enter key in profile edit fields
         ['profileNameInput', 'profileTitleInput', 'profileSubtitleInput', 'profileTopicInput'].forEach(id => {
             const input = document.getElementById(id);
@@ -588,49 +595,68 @@ class TeamMeter {
         const numCards = this.urls.length;
         if (numCards === 0) return;
         
-        // Get available space
-        const containerHeight = cardsGrid.parentElement.clientHeight - 60; // Subtract stats area
-        const containerWidth = cardsGrid.clientWidth - 40; // Subtract padding
+        // Get available space for cards grid
+        const cardsContainer = cardsGrid.parentElement;
+        const statsHeight = 40; // Stats area height
+        const controlsHeight = 80; // Controls (buttons) height
+        const padding = 40; // Total padding
         
-        // Calculate minimum width needed for longest text + emojis
+        const availableHeight = cardsContainer.clientHeight - statsHeight;
+        const availableWidth = cardsContainer.clientWidth - padding;
+        
+        // Find longest text with emojis
         const longestName = this.urls.reduce((max, url) => 
             url.displayName.length > max.length ? url.displayName : max, ''
         );
-        // Account for "🎉 {name} 🎉" format
         const textWithEmojis = `🎉 ${longestName} 🎉`;
-        const estimatedTextWidth = textWithEmojis.length * 8; // Rough estimate: 8px per character
-        const minCardWidthForText = Math.max(100, Math.min(estimatedTextWidth + 30, 250));
         
-        // Dynamic minimum and maximum card size
-        const minCardWidth = minCardWidthForText;
-        const maxCardWidth = 250;
-        const aspectRatio = 3/4; // height/width
+        // Calculate minimum width to prevent text wrapping
+        // At 12pt font, average char width is ~7-8px, emojis are ~14px each
+        const avgCharWidth = 8;
+        const emojiWidth = 14;
+        const numEmojis = 2;
+        const numChars = longestName.length;
+        const textWidth = (numChars * avgCharWidth) + (numEmojis * emojiWidth);
+        const minCardWidthForText = Math.ceil(textWidth + 40); // +40 for padding
         
-        // Calculate how many columns we can fit
+        // Absolute minimum for 12pt font readability
+        const absoluteMinWidth = Math.max(120, minCardWidthForText);
+        const maxCardWidth = 300;
+        const aspectRatio = 4/3; // height = width * 4/3
+        
         const gap = 15;
-        let cols = Math.floor((containerWidth + gap) / (minCardWidth + gap));
+        
+        // Calculate how many columns fit with minimum width
+        let cols = Math.floor((availableWidth + gap) / (absoluteMinWidth + gap));
         if (cols < 1) cols = 1;
         
-        // Calculate how many rows we need
-        const rows = Math.ceil(numCards / cols);
+        // Try to fit all cards in available height
+        let cardWidth = absoluteMinWidth;
+        let cardHeight = cardWidth * aspectRatio;
+        let rows = Math.ceil(numCards / cols);
+        let totalHeight = (rows * cardHeight) + ((rows - 1) * gap);
         
-        // Calculate card size that fits all cards
-        const availableWidthPerCard = (containerWidth - (gap * (cols - 1))) / cols;
-        const availableHeightPerCard = (containerHeight - (gap * (rows - 1))) / rows;
-        
-        // Determine if we can fit all cards without scrolling
-        const cardWidthByHeight = availableHeightPerCard / aspectRatio;
-        const cardWidthByWidth = availableWidthPerCard;
-        
-        let cardWidth = Math.min(cardWidthByHeight, cardWidthByWidth, maxCardWidth);
-        
-        // If calculated width is below minimum, use minimum and allow scrolling
-        if (cardWidth < minCardWidth) {
-            cardWidth = minCardWidth;
+        // If we can fit all cards, try to make them larger
+        if (totalHeight <= availableHeight) {
+            // Calculate max width that still fits everything
+            const maxPossibleRows = Math.floor((availableHeight + gap) / (absoluteMinWidth * aspectRatio + gap));
+            if (maxPossibleRows >= rows) {
+                // We have vertical space, try to use it
+                const availableWidthPerCard = (availableWidth - ((cols - 1) * gap)) / cols;
+                const availableHeightPerRow = (availableHeight - ((rows - 1) * gap)) / rows;
+                const maxWidthByHeight = availableHeightPerRow / aspectRatio;
+                
+                cardWidth = Math.min(availableWidthPerCard, maxWidthByHeight, maxCardWidth);
+                cardWidth = Math.max(cardWidth, absoluteMinWidth);
+            }
         }
         
         // Apply the calculated size
-        cardsGrid.style.gridTemplateColumns = `repeat(auto-fill, minmax(${cardWidth}px, 1fr))`;
+        cardsGrid.style.gridTemplateColumns = `repeat(auto-fill, minmax(${Math.floor(cardWidth)}px, 1fr))`;
+        
+        // Set font size to ensure text never wraps
+        const fontSize = Math.max(12, Math.min(16, cardWidth / 10));
+        cardsGrid.style.fontSize = `${fontSize}px`;
     }
 
     async selectRandomCard() {

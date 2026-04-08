@@ -114,7 +114,6 @@ With the profile system, you can create different configurations for different c
 - **Shared Team Config**: Use fixed-config.json for team-wide URL list while each user tracks their own progress
 
 ## Fixed Configuration Mode
-
 Deploy `fixed-config.json` alongside the app to enable read-only mode:
 
 ### Use Case
@@ -148,7 +147,6 @@ Perfect for **teams** or **shared environments** where:
 - ✅ Current mode (Selection vs Setup)
 
 ## Requirements
-
 - Modern web browser with JavaScript enabled
 - HTTP server required for default config loading (due to CORS restrictions with `file://` protocol)
 
@@ -208,4 +206,5 @@ Current version: **v6.6.0**
 - [ux improvements]
     - when importing config, don't overwrite the current profile name.
     - current profile name should be used as browser page title
-    - customise back or card graphic
+    - customise back of card graphic
+
