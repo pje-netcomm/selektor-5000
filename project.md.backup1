@@ -189,6 +189,12 @@ Current version: **v6.6.0**
      compatible and offer to reset to defaults.
    - If user rejects reset to default, changes to localStorage are blocked, and
      the app is unable to run.
+- [alternate-ui-cards]
+   - Display selectees "select" mode as a grid of randomly ordered cards
+   - This would be a more visual and engaging way to interact with the selectees
+   - cards initially face down, when selected they flip over to reveal the name
+   - The last selected card should be highlighted in some way.
+   - Select this display type in settings in addition to existing display types.
 - [alternate-ui-wheel]
    - Change the "select" mode to be a spinning wheel (like a roulette or prize
      wheel) with the selectees as segments on the wheel.  

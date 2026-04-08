@@ -2,17 +2,29 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
-## v6.6.0 - Alternate UI: Cards (2026-04-07)
+## v6.6.0 - Alternate UI: Cards (2026-04-08)
 
 ### Major Feature
 - **[alternate-ui-cards] Cards Grid UI**: New visual selection interface
   - Grid of face-down cards representing selectees
-  - Click any card to flip it and reveal the selection
-  - Cards displayed in random order each time
-  - Smooth 3D flip animation
+  - Click individual cards OR use "Select Random Card" button
+  - Keyboard shortcuts: Space/Enter trigger random selection
+  - Cards displayed in consistent random order (doesn't reshuffle during session)
+  - Smooth 3D flip animation with celebration emojis (🎉)
   - Used cards become semi-transparent
-  - Last selected card pulses with highlight animation
+  - Newly selected card highlighted with golden glow (6 seconds)
+  - Fanfare wobble animation for button/keyboard selections
+  - Auto-scroll to selected card (smooth centering)
   - Responsive grid layout adapts to screen size
+
+### Intelligent Auto-Sizing
+- **Content-Aware Card Sizing**: Automatically sizes cards for optimal display
+  - Analyzes longest display name + celebration emojis
+  - Calculates minimum width needed for readability (100-250px)
+  - Tries to fit all cards on screen without scrolling
+  - Falls back to minimum size + scrolling when needed
+  - Responsive text with clamp(), word-break, and hyphenation
+  - Cards never too small to read
 
 ### Settings Enhancement
 - **UI Type Selector**: Choose between display modes
@@ -21,12 +33,29 @@ All notable changes to Selektor 5000 will be documented in this file.
   - Setting saved per profile
   - Switch anytime from Settings section
 
+### Interaction Modes
+- **Click Cards Directly**: Click any face-down card to select it
+- **Use Button**: "Select Random Card" button picks randomly
+- **Keyboard Shortcuts**: Space or Enter key selects random card
+- **Auto-Reset**: Selecting when all cards used automatically resets
+
+### Visual Effects
+- 3D flip animation (0.6s)
+- Celebration emojis appear on card back
+- Golden highlight pulse (repeats 3x over 6 seconds)
+- Fanfare wobble for button/keyboard selections
+- Smooth scroll to selected card
+- Hover effects on available cards
+- Float animation on card icons
+
 ### Technical
 - All card interactions respect existing settings (sound, URL opening, etc.)
-- Auto-reset works with cards UI (all cards reset when clicked after all used)
-- Cards render in random order for fairness
-- Persistent tracking of last selected item across page reloads
+- Cards maintain consistent order during session (reshuffle on reset/URL changes)
+- Persistent tracking of last selected item
+- Dynamic grid sizing based on content and viewport
 - Smooth CSS 3D transforms for card flips
+- No overflow issues - cards always contained
+- Single clean button layout (Select + Reset)
 
 ---
 
