@@ -2,6 +2,49 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v6.7.0 - Cards UI Enhancements & Polish (2026-04-08)
+
+### Enhancements
+- **Improved Card Sizing Algorithm**: Robust auto-sizing prevents control collisions
+  - Accounts for stats area (40px) and controls (80px) when calculating space
+  - Ensures text never wraps with white-space: nowrap
+  - Minimum font size enforced at 12pt (12-16px range)
+  - Dynamic font scaling based on card width
+  - Proper flexbox constraints (min-height: 0, max-height: 100%)
+  - Scrollbars only appear when truly necessary
+
+- **Window Resize Support**: Cards automatically recalculate size on window resize
+  - Event listener triggers renderCards() on resize
+  - Smooth adaptation to screen size changes
+  - Prevents layout breaking when window dimensions change
+  - Cards always properly sized for viewport
+
+- **Wider Layout**: Increased max-width from 800px to 1200px
+  - 50% more horizontal space on wide screens
+  - More cards per row in cards UI
+  - Better use of modern displays
+  - Improved overall visual experience
+
+- **Double-Click URL Launch**: Quick access to already selected items
+  - Double-click any flipped card to launch its URL
+  - Respects openInNewTab setting
+  - Reuses tab window if already open
+  - Convenient for revisiting selections
+
+- **Fun Favicon**: Added colorful 🎯 target emoji favicon
+  - Purple gradient background (matches app theme)
+  - Visible in browser tabs and bookmarks
+  - SVG data URI (no external file)
+
+### Technical
+- Rewritten calculateCardSize() with precise space calculations
+- Text width calculation accounts for emojis (14px each)
+- Window resize listener for responsive cards
+- launchCardUrl() method for double-click functionality
+- Enhanced CSS with proper overflow handling
+
+---
+
 ## v6.6.0 - Alternate UI: Cards (2026-04-08)
 
 ### Major Feature

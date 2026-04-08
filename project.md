@@ -176,7 +176,7 @@ Then open: `http://localhost:8000/`
 
 ## Version
 
-Current version: **v6.6.0**
+Current version: **v6.7.0**
 
 # Things to do (not yet, when I'm ready)
 - [config-versioning]
@@ -202,7 +202,8 @@ Current version: **v6.6.0**
    - The selected item could be highlighted with a flashing border or explosion effect for extra fun.
    - Select this display type in settings in addition to existing display types.
 - [dark-mode]
-    - Add a "dark mode" toggle for users who prefer a darker interface, with appropriate color scheme adjustments for readability and aesthetics.
+    - Add a "dark mode" toggle for users who prefer a darker interface,
+    - use appropriate color scheme adjustments for readability and aesthetics.
 - [ux improvements]
     - when importing config, don't overwrite the current profile name.
     - current profile name should be used as browser page title
