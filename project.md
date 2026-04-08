@@ -4,7 +4,7 @@ A single-page application that randomly selects from a set of configurable URLs.
 
 ## Features
 
-### Core Functionality
+## Core Functionality
 - **Random Selection**: Randomly select from configured selectees with one click on the display box or Enter key
 - **Smart Tracking**: Selected items are marked as used and won't be chosen again (persisted across page reloads)
 - **Persistent State**: Current mode, used items, and all settings are remembered across page reloads
@@ -15,7 +15,7 @@ A single-page application that randomly selects from a set of configurable URLs.
 - **Skip Animation**: Press Enter during animation to jump straight to selection
 - **Funny Hints**: 80+ humorous phrases appear during spin animation for entertainment
 
-### Multiple Profiles
+## Multiple Profiles
 - **Profile Management**: Create, switch, rename, and delete multiple profiles
 - **Independent Settings**: Each profile has its own URLs, settings, and used item tracking
 - **Customizable Branding**: Configure title, subtitle, and topic/item name per profile
@@ -25,7 +25,7 @@ A single-page application that randomly selects from a set of configurable URLs.
 - **Profile Migration**: Automatically migrates old single-profile data to new format
 - **Profile Export/Import**: Each profile can be exported and imported independently
 
-### Dual Display Modes
+## Dual Display Modes
 - **Selection Mode**: Clean, focused interface for the random selection experience
   - Large clickable display box (click or press Enter to select)
   - Remaining selectee counter
@@ -45,7 +45,7 @@ A single-page application that randomly selects from a set of configurable URLs.
   - Sound effects toggle
   - New tab behavior toggle
 
-### Configuration Management
+## Configuration Management
 - **Profile Operations**: Create, switch, rename, and delete profiles
 - **Customize Profile**: Set custom title, subtitle, and topic name per profile
 - **Fixed Configuration Mode**: Deploy read-only configs for shared environments
@@ -65,7 +65,7 @@ A single-page application that randomly selects from a set of configurable URLs.
   - Duplicate entry with auto-numbered unique name (disabled in fixed mode)
   - Mark Done to manually toggle used/available status
 
-### Fun & Interactive UI
+## Fun & Interactive UI
 - **Click-to-Select**: Click the large display box or press Enter to trigger selection
 - **Funny Hints**: 80+ humorous phrases during spin ("🎯 Is it...", "🔥 Hot pick:", "🎸 Guitar solo for...")
 - **Spinning Animation**: Cycles through available selectee names before selection (skips if only 1 remains)
@@ -80,7 +80,7 @@ A single-page application that randomly selects from a set of configurable URLs.
 - **Responsive**: Works great on desktop and mobile devices
 - **Visual Feedback**: Hover effects, emoji icons and color coding for better UX
 
-### Technical Features
+## Technical Features
 - **No Backend Required**: Pure client-side application (HTML, CSS, JavaScript)
 - **Persistent Storage**: All profiles, configurations, used items, and settings saved in browser localStorage
 - **State Persistence**: All state persists across page reloads for seamless experience
@@ -100,7 +100,7 @@ A single-page application that randomly selects from a set of configurable URLs.
   - LocalStorage management tools
 - **Async Initialization**: Properly loads defaults before rendering
 
-## Use Cases
+# Use Cases
 
 With the profile system, you can create different configurations for different contexts:
 
@@ -113,17 +113,17 @@ With the profile system, you can create different configurations for different c
 - **Multiple Teams**: Separate profiles for different teams or projects
 - **Shared Team Config**: Use fixed-config.json for team-wide URL list while each user tracks their own progress
 
-## Fixed Configuration Mode
+# Fixed Configuration Mode
 Deploy `fixed-config.json` alongside the app to enable read-only mode:
 
-### Use Case
+## Use Case
 Perfect for **teams** or **shared environments** where:
 - Admin maintains a centralized list of URLs
 - Users cannot modify the URL list or branding
 - Each user still has personal tracking of used items
 - Individual sound/tab preferences saved locally
 
-### How It Works
+## How It Works
 1. Create `fixed-config.json` with your URLs and branding
 2. Deploy it with the app files
 3. App auto-detects and loads it on startup
@@ -134,23 +134,23 @@ Perfect for **teams** or **shared environments** where:
    - Track which items they've used (personal state)
    - Reset their used items
 
-### What's Locked
+## What's Locked
 - ❌ Cannot add/remove/edit URLs
 - ❌ Cannot change title, subtitle, or topic
 - ❌ Cannot clear all URLs
 - ❌ Cannot customize profile branding
 
-### What's Personal
+## What's Personal
 - ✅ Sound effect preference (saved locally)
 - ✅ Open in new tab preference (saved locally)
 - ✅ Used items tracking (saved locally)
 - ✅ Current mode (Selection vs Setup)
 
-## Requirements
+# Requirements
 - Modern web browser with JavaScript enabled
 - HTTP server required for default config loading (due to CORS restrictions with `file://` protocol)
 
-### Quick Start with HTTP Server
+## Quick Start with HTTP Server
 
 ```bash
 # Python 3
@@ -165,7 +165,7 @@ npx http-server -p 8000
 
 Then open: `http://localhost:8000/`
 
-## Files
+# Files
 
 - `index.html` - Main application structure
 - `script.js` - Application logic
@@ -174,12 +174,12 @@ Then open: `http://localhost:8000/`
 - `CONFIG.md` - Configuration guide
 - `CHANGELOG.md` - Version history
 
-## Version
+# Version
 
 Current version: **v6.7.0**
 
 # Things to do (not yet, when I'm ready)
-- [config-versioning]
+## [config-versioning]
    - localStorage configuration must be tolerant of breaking changes.
    - If an old format configuration is seen it should import with reasonable
      behaviour for new or altered config parameters.
@@ -187,25 +187,23 @@ Current version: **v6.7.0**
      compatible and offer to reset to defaults.
    - If user rejects reset to default, changes to localStorage are blocked, and
      the app is unable to run.
-- [alternate-ui-wheel]
+## [alternate-ui-wheel]
    - Change the "select" mode to be a spinning wheel (like a roulette or prize
      wheel) with the selectees as segments on the wheel.  
    - This would be a fun and visually appealing way to select items
    - When the user clicks to select, the wheel spins and lands on a random segment
    - The wheel should have sound effects and animation for extra engagement.
    - Select this display type in settings in addition to existing display types.
-- [alternate-ui-retro]
+## [alternate-ui-retro]
    - Implement a retro 8-bit style "select" mode, where the selectees are
      displayed as pixelated characters or icons
    - The selection process is accompanied by 8-bit sound effects and animations.
    - This would give the app a nostalgic and playful vibe.
    - The selected item could be highlighted with a flashing border or explosion effect for extra fun.
    - Select this display type in settings in addition to existing display types.
-- [dark-mode]
+## [dark-mode]
     - Add a "dark mode" toggle for users who prefer a darker interface,
     - use appropriate color scheme adjustments for readability and aesthetics.
-- [ux improvements]
-    - when importing config, don't overwrite the current profile name.
-    - current profile name should be used as browser page title
+## [ux improvements]
     - customise back of card graphic
 
