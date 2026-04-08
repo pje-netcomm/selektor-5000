@@ -582,6 +582,9 @@ class TeamMeter {
             
             if (!this.usedUrls.has(url.id)) {
                 card.addEventListener('click', () => this.selectCard(url));
+            } else {
+                // For flipped/used cards, double-click launches URL
+                card.addEventListener('dblclick', () => this.launchCardUrl(url));
             }
             
             cardsGrid.appendChild(card);
@@ -755,6 +758,20 @@ class TeamMeter {
             this.isSelecting = false;
             this.renderCards();
         }, 500);
+    }
+
+    launchCardUrl(url) {
+        // Double-click on flipped card launches the URL
+        if (this.openInNewTab) {
+            if (this.urlTabWindow && !this.urlTabWindow.closed) {
+                this.urlTabWindow.location.href = url.url;
+                this.urlTabWindow.focus();
+            } else {
+                this.urlTabWindow = window.open(url.url, 'selektor5000_tab');
+            }
+        } else {
+            window.location.href = url.url;
+        }
     }
 
     render() {
