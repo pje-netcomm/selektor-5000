@@ -119,12 +119,11 @@ class TeamMeter {
         document.getElementById('openUrlToggle').addEventListener('change', (e) => this.toggleOpenUrl(e.target.checked));
         document.getElementById('animationSpeed').addEventListener('change', (e) => this.updateAnimationSpeed(parseFloat(e.target.value)));
         document.getElementById('uiTypeSelect').addEventListener('change', (e) => this.updateUIType(e.target.value));
-        document.getElementById('resetCardIconBtn').addEventListener('click', () => this.resetCardIcon());
         
         // Emoji picker modal event listeners
-        document.getElementById('openEmojiPickerBtn').addEventListener('click', () => this.openEmojiPicker());
         document.getElementById('cardIconDisplay').addEventListener('click', () => this.openEmojiPicker());
         document.getElementById('closeEmojiPickerBtn').addEventListener('click', () => this.closeEmojiPicker());
+        document.getElementById('resetCardIconBtn').addEventListener('click', () => this.resetCardIcon());
         document.getElementById('applyCustomEmojiBtn').addEventListener('click', () => this.applyCustomEmoji());
         
         // Close modal on background click
