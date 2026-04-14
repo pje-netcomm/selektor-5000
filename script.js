@@ -567,8 +567,9 @@ class TeamMeter {
         
         this.usedUrls.clear();
         this.lastSelectedId = null;
-        // Shuffle card order on reset
-        this.cardOrder = [...this.urls].sort(() => Math.random() - 0.5);
+        // Shuffle card order on reset - store only IDs
+        const shuffled = [...this.urls].sort(() => Math.random() - 0.5);
+        this.cardOrder = shuffled.map(u => u.id);
         this.saveToStorage();
         this.render();
     }
@@ -582,21 +583,28 @@ class TeamMeter {
         // 2. URL list length changed (URLs added/removed)
         // 3. URL IDs don't match (different URLs)
         const urlIds = this.urls.map(u => u.id).sort().join(',');
-        const orderIds = this.cardOrder.map(u => u.id).sort().join(',');
+        const orderIds = [...this.cardOrder].sort().join(',');
         
         if (!this.cardOrder || this.cardOrder.length === 0 || 
             this.cardOrder.length !== this.urls.length || 
             urlIds !== orderIds) {
-            this.cardOrder = [...this.urls].sort(() => Math.random() - 0.5);
+            // Store only IDs, not full objects
+            const shuffled = [...this.urls].sort(() => Math.random() - 0.5);
+            this.cardOrder = shuffled.map(u => u.id);
             this.saveToStorage();
         }
+        
+        // Reconstruct ordered URL objects from IDs
+        const orderedUrls = this.cardOrder
+            .map(id => this.urls.find(u => u.id === id))
+            .filter(u => u); // Remove any URLs that no longer exist
         
         // Calculate optimal card size
         this.calculateCardSize(cardsGrid);
         
         cardsGrid.innerHTML = '';
         
-        this.cardOrder.forEach(url => {
+        orderedUrls.forEach(url => {
             const card = document.createElement('div');
             card.className = 'card';
             card.dataset.urlId = url.id; // Store ID for scrolling
