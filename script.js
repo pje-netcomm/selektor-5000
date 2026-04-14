@@ -134,6 +134,21 @@ class TeamMeter {
             }
         });
         
+        // Keyboard shortcuts for emoji picker
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('emojiPickerModal');
+            if (!modal.classList.contains('active')) return;
+            
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                this.closeEmojiPicker();
+            } else if (e.key === 'Enter' && e.target.id !== 'emojiPreview') {
+                // Apply on Enter, but not when typing in preview (preview has its own handler)
+                e.preventDefault();
+                this.applyEmojiSelection();
+            }
+        });
+        
         // Preview box - handle paste and input
         const emojiPreview = document.getElementById('emojiPreview');
         
