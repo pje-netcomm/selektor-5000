@@ -1035,13 +1035,13 @@ class TeamMeter {
         const retroText = document.getElementById('retroText');
         const retroPixels = document.getElementById('retroPixels');
         
+        retroText.classList.add('c64-prompt');
         retroText.innerHTML = `
             <div class="c64-line">**** SELEKTOR 5K (VERY)BASIC V2 ****</div>
             <div class="c64-line">&nbsp;&nbsp;64K RAM&nbsp;&nbsp;38911 BASIC BYTES FREE</div>
             <div class="c64-line">READY.</div>
             <div class="c64-line"><span class="c64-cursor">█</span></div>
         `;
-        retroText.classList.add('c64-prompt');
         retroPixels.innerHTML = '';
     }
     
@@ -1049,12 +1049,12 @@ class TeamMeter {
         const retroText = document.getElementById('retroText');
         const retroPixels = document.getElementById('retroPixels');
         
+        retroText.classList.add('c64-prompt');
         retroText.innerHTML = `
             <div class="c64-line">END OF PROGRAM</div>
             <div class="c64-line">READY.</div>
             <div class="c64-line"><span class="c64-cursor">█</span></div>
         `;
-        retroText.classList.add('c64-prompt');
         retroPixels.innerHTML = '';
     }
     
