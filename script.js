@@ -456,10 +456,11 @@ class TeamMeter {
         const randomIndex = (seed + Math.floor(Math.random() * availableUrls.length)) % availableUrls.length;
         const selectedUrl = availableUrls[randomIndex];
         
-        await this.showSelection(selectedUrl);
-
+        // Persist selection IMMEDIATELY before any further animations
         this.usedUrls.add(selectedUrl.id);
         this.saveToStorage();
+        
+        await this.showSelection(selectedUrl);
         
         // Open URL if enabled
         if (this.openUrlEnabled) {
@@ -736,6 +737,10 @@ class TeamMeter {
         
         this.isSelecting = true;
         
+        // Persist selection IMMEDIATELY before any animations
+        this.usedUrls.add(url.id);
+        this.saveToStorage();
+        
         // Clear previous highlights from all cards
         const allCards = document.querySelectorAll('.card');
         allCards.forEach(card => {
@@ -781,9 +786,6 @@ class TeamMeter {
             // Wait longer to show the highlight before opening URL
             await this.sleep(1500);
         }
-        
-        this.usedUrls.add(url.id);
-        this.saveToStorage();
         
         // Open URL if enabled
         if (this.openUrlEnabled) {
