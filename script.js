@@ -997,26 +997,34 @@ class TeamMeter {
     }
 
     saveToStorage() {
-        const profilesData = {};
-        for (const [id, profile] of Object.entries(this.profiles)) {
-            profilesData[id] = {
-                ...profile,
-                usedUrls: Array.from(profile.usedUrls)
+        try {
+            const profilesData = {};
+            for (const [id, profile] of Object.entries(this.profiles)) {
+                profilesData[id] = {
+                    ...profile,
+                    usedUrls: Array.from(profile.usedUrls)
+                };
+            }
+            
+            const data = {
+                profiles: profilesData,
+                currentProfileId: this.currentProfileId
             };
+            const jsonData = JSON.stringify(data);
+            localStorage.setItem('selektor5000Data', jsonData);
+            console.log('Saved to storage:', jsonData.length, 'chars');
+        } catch (e) {
+            console.error('Failed to save to storage:', e);
         }
-        
-        const data = {
-            profiles: profilesData,
-            currentProfileId: this.currentProfileId
-        };
-        localStorage.setItem('selektor5000Data', JSON.stringify(data));
     }
 
     async loadFromStorage() {
         const stored = localStorage.getItem('selektor5000Data');
+        console.log('Loading from storage:', stored ? stored.length + ' chars' : 'empty');
         if (stored) {
             try {
                 const data = JSON.parse(stored);
+                console.log('Parsed data, profiles:', Object.keys(data.profiles || {}));
                 
                 // Check if this is old format (pre-profiles)
                 if (data.urls && !data.profiles) {
