@@ -204,6 +204,6 @@ Current version: **v6.7.0**
 ## [dark-mode]
     - Add a "dark mode" toggle for users who prefer a darker interface,
     - use appropriate color scheme adjustments for readability and aesthetics.
-## [ux improvements]
-    - customise back of card graphic
-
+## [minor improvements]
+- show branch name beside version, if not "master"
+- browser page title not updated when title config is changed.
