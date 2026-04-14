@@ -1065,70 +1065,81 @@ class TeamMeter {
         const retroText = document.getElementById('retroText');
         retroText.classList.add('c64-prompt');
         
-        // First selection - simulate loading program
-        const commands = [
-            'LOAD "SELEKTOR",8,1',
-            '',
-            'SEARCHING FOR SELEKTOR',
-            'LOADING',
-            'READY.',
-            'RUN'
-        ];
+        // Start with the boot screen
+        const bootScreen = `
+            <div class="c64-line">**** SELEKTOR 5K (VERY)BASIC V2 ****</div>
+            <div class="c64-line">&nbsp;&nbsp;64K RAM&nbsp;&nbsp;38911 BASIC BYTES FREE</div>
+            <div class="c64-line">&nbsp;</div>
+            <div class="c64-line">READY.</div>
+        `;
         
-        for (let i = 0; i < commands.length; i++) {
-            const cmd = commands[i];
-            
-            if (cmd === 'LOADING') {
-                // Show dots appearing for loading effect
-                retroText.innerHTML = '<div class="c64-line">LOADING</div>';
-                for (let j = 0; j < 3; j++) {
-                    await this.sleep(200);
-                    retroText.innerHTML = `<div class="c64-line">LOADING${'...'.substring(0, j + 1)}</div>`;
-                }
-                await this.sleep(300);
-            } else if (cmd === 'RUN') {
-                // Type out RUN command with cursor on separate line
-                retroText.innerHTML = `
-                    <div class="c64-line">READY.</div>
-                    <div class="c64-line"><span class="c64-cursor">█</span></div>
-                `;
-                await this.sleep(300);
-                await this.typeC64Command('RUN');
-                await this.sleep(200);
-            } else {
-                retroText.innerHTML = `<div class="c64-line">${cmd}</div>`;
-                if (cmd === 'READY.') {
-                    retroText.innerHTML = `
-                        <div class="c64-line">READY.</div>
-                        <div class="c64-line"><span class="c64-cursor">█</span></div>
-                    `;
-                }
-                await this.sleep(cmd === '' ? 100 : 400);
-            }
+        // Type LOAD command
+        retroText.innerHTML = bootScreen + '<div class="c64-line"><span class="c64-cursor">█</span></div>';
+        await this.sleep(300);
+        
+        // Type LOAD command character by character
+        const loadCmd = 'LOAD "SELEKTOR",8,1';
+        for (let i = 0; i <= loadCmd.length; i++) {
+            retroText.innerHTML = bootScreen + `<div class="c64-line">${loadCmd.substring(0, i)}<span class="c64-cursor">█</span></div>`;
+            await this.sleep(80 + Math.random() * 40);
         }
+        
+        // Press enter (remove cursor, show command)
+        await this.sleep(300);
+        retroText.innerHTML = bootScreen + `<div class="c64-line">${loadCmd}</div>`;
+        await this.sleep(400);
+        
+        // Show SEARCHING message
+        retroText.innerHTML = bootScreen + `
+            <div class="c64-line">${loadCmd}</div>
+            <div class="c64-line">&nbsp;</div>
+            <div class="c64-line">SEARCHING FOR SELEKTOR</div>
+        `;
+        await this.sleep(400);
+        
+        // Show LOADING with dots
+        const loadingBase = bootScreen + `
+            <div class="c64-line">${loadCmd}</div>
+            <div class="c64-line">&nbsp;</div>
+            <div class="c64-line">SEARCHING FOR SELEKTOR</div>
+        `;
+        
+        for (let j = 0; j <= 3; j++) {
+            retroText.innerHTML = loadingBase + `<div class="c64-line">LOADING${'...'.substring(0, j)}</div>`;
+            await this.sleep(200);
+        }
+        await this.sleep(300);
+        
+        // Show READY prompt after loading
+        retroText.innerHTML = loadingBase + `
+            <div class="c64-line">LOADING...</div>
+            <div class="c64-line">READY.</div>
+        `;
+        await this.sleep(400);
+        
+        // Show cursor and type RUN
+        retroText.innerHTML = loadingBase + `
+            <div class="c64-line">LOADING...</div>
+            <div class="c64-line">READY.</div>
+            <div class="c64-line"><span class="c64-cursor">█</span></div>
+        `;
+        await this.sleep(300);
+        
+        // Type RUN command
+        const runCmd = 'RUN';
+        for (let i = 0; i <= runCmd.length; i++) {
+            retroText.innerHTML = loadingBase + `
+                <div class="c64-line">LOADING...</div>
+                <div class="c64-line">READY.</div>
+                <div class="c64-line">${runCmd.substring(0, i)}<span class="c64-cursor">█</span></div>
+            `;
+            await this.sleep(80 + Math.random() * 40);
+        }
+        
+        await this.sleep(200);
         
         // Clear for normal operation
         retroText.classList.remove('c64-prompt');
-    }
-    
-    async typeC64Command(text) {
-        const retroText = document.getElementById('retroText');
-        let typed = '';
-        
-        for (let i = 0; i < text.length; i++) {
-            typed += text[i];
-            retroText.innerHTML = `
-                <div class="c64-line">READY.</div>
-                <div class="c64-line">${typed}<span class="c64-cursor">█</span></div>
-            `;
-            await this.sleep(80 + Math.random() * 40); // Simulate human typing speed
-        }
-        
-        // Remove cursor after command
-        retroText.innerHTML = `
-            <div class="c64-line">READY.</div>
-            <div class="c64-line">${typed}</div>
-        `;
     }
     
     createRetroPixels(count) {
