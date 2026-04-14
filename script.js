@@ -9,7 +9,6 @@ class TeamMeter {
         this.fixedConfig = null;
         this.isFixedMode = false;
         this.lastSelectedId = null;
-        this.cardOrder = null;
         this.init();
     }
 
