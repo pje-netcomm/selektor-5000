@@ -1490,6 +1490,34 @@ footer {
     flex-direction: column;
 }
 
+.emoji-preview-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.emoji-preview-section label {
+    font-weight: 600;
+    color: white;
+    font-size: 1.1em;
+}
+
+.emoji-preview {
+    background: white;
+    border-radius: 12px;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 .emoji-custom-section {
     margin-top: 20px;
     padding-top: 15px;
@@ -1531,13 +1559,16 @@ footer {
     border-top: 2px solid #f0f0f0;
     display: flex;
     gap: 10px;
-    justify-content: flex-end;
+    justify-content: space-between;
     background: #fafafa;
 }
 
 .emoji-modal-footer .btn {
-    flex: 1;
-    max-width: 200px;
+    min-width: 120px;
+}
+
+.emoji-modal-footer .btn-primary {
+    margin-left: auto;
 }
 
 .btn-sm {

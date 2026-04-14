@@ -123,8 +123,9 @@ class TeamMeter {
         // Emoji picker modal event listeners
         document.getElementById('cardIconDisplay').addEventListener('click', () => this.openEmojiPicker());
         document.getElementById('closeEmojiPickerBtn').addEventListener('click', () => this.closeEmojiPicker());
-        document.getElementById('resetCardIconBtn').addEventListener('click', () => this.resetCardIcon());
-        document.getElementById('applyCustomEmojiBtn').addEventListener('click', () => this.applyCustomEmoji());
+        document.getElementById('cancelEmojiBtn').addEventListener('click', () => this.closeEmojiPicker());
+        document.getElementById('resetCardIconBtn').addEventListener('click', () => this.resetCardIconAndClose());
+        document.getElementById('applyEmojiBtn').addEventListener('click', () => this.applyEmojiSelection());
         
         // Close modal on background click
         document.getElementById('emojiPickerModal').addEventListener('click', (e) => {
@@ -133,10 +134,18 @@ class TeamMeter {
             }
         });
         
+        // Custom emoji input - update preview as user types
+        document.getElementById('customEmojiInput').addEventListener('input', (e) => {
+            const value = e.target.value.trim();
+            if (value) {
+                this.updatePreview(value);
+            }
+        });
+        
         // Custom emoji input - apply on Enter
         document.getElementById('customEmojiInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                this.applyCustomEmoji();
+                this.applyEmojiSelection();
             }
         });
         
@@ -147,12 +156,13 @@ class TeamMeter {
             });
         });
         
-        // Emoji selection buttons
+        // Emoji selection buttons - just update preview, don't apply
         document.querySelectorAll('.emoji-option').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const emoji = e.target.dataset.emoji;
-                this.selectEmoji(emoji);
-                this.closeEmojiPicker();
+                this.updatePreview(emoji);
+                // Clear custom input when clicking preset
+                document.getElementById('customEmojiInput').value = '';
             });
         });
         
@@ -366,8 +376,14 @@ class TeamMeter {
         const modal = document.getElementById('emojiPickerModal');
         modal.style.display = 'flex';
         
-        // Highlight current emoji
-        this.updateEmojiSelection(this.cardIcon);
+        // Set preview to current icon
+        const preview = document.getElementById('emojiPreview');
+        if (preview) {
+            preview.textContent = this.cardIcon;
+        }
+        
+        // Highlight current emoji in grid
+        this.updatePreview(this.cardIcon);
         
         // Clear custom input
         document.getElementById('customEmojiInput').value = '';
@@ -398,30 +414,13 @@ class TeamMeter {
         });
     }
 
-    applyCustomEmoji() {
-        const input = document.getElementById('customEmojiInput');
-        const emoji = input.value.trim();
-        
-        if (emoji) {
-            this.selectEmoji(emoji);
-            this.closeEmojiPicker();
-        }
-    }
-
-    selectEmoji(emoji) {
-        this.cardIcon = emoji;
-        
-        // Update display
-        const display = document.getElementById('cardIconDisplay');
-        if (display) {
-            display.textContent = emoji;
+    updatePreview(emoji) {
+        const preview = document.getElementById('emojiPreview');
+        if (preview) {
+            preview.textContent = emoji;
         }
         
-        this.updateEmojiSelection(emoji);
-    }
-
-    updateEmojiSelection(emoji) {
-        // Update visual selection in emoji picker
+        // Update visual selection in emoji grid
         document.querySelectorAll('.emoji-option').forEach(btn => {
             if (btn.dataset.emoji === emoji) {
                 btn.classList.add('selected');
@@ -431,8 +430,41 @@ class TeamMeter {
         });
     }
 
+    applyEmojiSelection() {
+        const preview = document.getElementById('emojiPreview');
+        const emoji = preview.textContent.trim();
+        
+        if (emoji) {
+            this.cardIcon = emoji;
+            
+            // Update display on main UI
+            const display = document.getElementById('cardIconDisplay');
+            if (display) {
+                display.textContent = emoji;
+            }
+            
+            this.closeEmojiPicker();
+        }
+    }
+
+    resetCardIconAndClose() {
+        this.cardIcon = '🎴';
+        
+        // Update display on main UI
+        const display = document.getElementById('cardIconDisplay');
+        if (display) {
+            display.textContent = '🎴';
+        }
+        
+        this.closeEmojiPicker();
+    }
+
     resetCardIcon() {
-        this.selectEmoji('🎴');
+        // This is used when switching modes to update display
+        const display = document.getElementById('cardIconDisplay');
+        if (display) {
+            display.textContent = this.cardIcon;
+        }
     }
 
     toggleCollapsible(section) {
