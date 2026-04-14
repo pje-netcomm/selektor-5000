@@ -2,6 +2,51 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v6.8.0 - UX Improvements: Customizable Icons & Persistent Order (2026-04-14)
+
+### Major Features
+- **Customizable Card Icons**: Per-profile emoji icons for cards
+  - Click card icon in settings to open emoji picker modal
+  - 150+ emojis organized in 10 categories (Games, Stars, Party, Food, Awards, Work, Travel, Hearts, Nature, Animals)
+  - Editable preview box: click emojis or paste/type custom emoji
+  - Apply/Cancel/Use Default workflow prevents accidental changes
+  - Icons persist per profile in localStorage
+  - Default icon: 🎴 (playing card)
+
+- **Persistent Card Order**: Card order maintained across page reloads
+  - Order shuffled on first load, reset, or when URL list changes
+  - Order preserved across page reloads for same profile
+  - Per-profile card order configuration
+  - Prevents cards from re-shuffling unexpectedly
+
+### Enhancements
+- **Keyboard Shortcuts for Emoji Picker**:
+  - ESC key: Cancel and close dialog without applying
+  - Enter key: Apply current selection and close
+  - Works alongside mouse controls for power users
+
+- **Paste Support**: Paste emojis directly into preview box
+  - Supports multi-character emojis (up to 4 characters)
+  - Automatically extracts text from clipboard
+  - Hint text guides users: "Click emoji below or paste here"
+
+- **Improved Data Persistence**:
+  - Selection saved immediately before animations (prevents data loss if browser closes)
+  - Fixed critical storage bugs (property shadowing, stale object references)
+  - Error handling and console logging for storage operations
+  - Automatic migration support for new profile fields
+
+### Technical
+- Modal dialog with smooth animations and backdrop
+- Category tab navigation system
+- Editable contenteditable preview div
+- Card order stored as URL IDs (not full objects) to prevent stale references
+- Fixed getter/setter shadowing bug in constructor
+- Storage persistence moved before animation sequences
+- Character limit enforcement for custom emojis
+
+---
+
 ## v6.7.0 - Cards UI Enhancements & Polish (2026-04-08)
 
 ### Enhancements
