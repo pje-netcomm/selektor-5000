@@ -1783,6 +1783,33 @@ footer {
     font-family: 'Courier New', 'Courier', monospace;
 }
 
+/* C64 BASIC prompt styling */
+.retro-text.c64-prompt {
+    text-align: left;
+    font-size: 20px;
+    letter-spacing: 1px;
+    line-height: 1.6;
+}
+
+.c64-line {
+    margin: 4px 0;
+}
+
+.c64-cursor {
+    display: inline-block;
+    animation: c64blink 1s steps(2) infinite;
+    margin-left: 2px;
+}
+
+@keyframes c64blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
+}
+
 .retro-pixels {
     margin-top: 20px;
     display: flex;

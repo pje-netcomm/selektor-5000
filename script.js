@@ -596,6 +596,12 @@ class TeamMeter {
             displayBox.classList.remove('clickable');
         }
 
+        // C64 BASIC loading simulation on first selection in retro mode
+        const isFirstSelection = this.uiType === 'retro' && this.usedUrls.size === 0;
+        if (isFirstSelection && this.animationDuration > 0) {
+            await this.simulateC64Loading();
+        }
+
         this.skipAnimation = false;
         const skipHandler = (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -997,19 +1003,20 @@ class TeamMeter {
         const availableUrls = this.urls.filter(url => !this.usedUrls.has(url.id));
         
         // Update display based on state
-        if (availableUrls.length === 0) {
-            retroText.textContent = 'ALL DONE!';
-            retroPixels.innerHTML = '';
+        if (availableUrls.length === 0 && this.usedUrls.size > 0) {
+            // All selections made - show C64 "end of program" message
+            this.showC64EndProgram();
         } else if (this.lastSelectedId) {
             const lastUrl = this.urls.find(u => u.id === this.lastSelectedId);
             if (lastUrl) {
                 retroText.textContent = lastUrl.displayName.toUpperCase();
+                retroText.classList.remove('c64-prompt');
                 // Add pixel effect for selected item
                 this.createRetroPixels(6);
             }
         } else {
-            retroText.textContent = 'CLICK TO SELECT';
-            retroPixels.innerHTML = '';
+            // No selections yet - show C64 BASIC prompt
+            this.showC64Prompt();
         }
         
         // Update remaining count
@@ -1022,6 +1029,82 @@ class TeamMeter {
                 this.selectRandomUrl();
             }
         };
+    }
+    
+    showC64Prompt() {
+        const retroText = document.getElementById('retroText');
+        const retroPixels = document.getElementById('retroPixels');
+        
+        retroText.innerHTML = `READY.<span class="c64-cursor">█</span>`;
+        retroText.classList.add('c64-prompt');
+        retroPixels.innerHTML = '';
+    }
+    
+    showC64EndProgram() {
+        const retroText = document.getElementById('retroText');
+        const retroPixels = document.getElementById('retroPixels');
+        
+        retroText.innerHTML = `<div class="c64-line">END OF PROGRAM</div><div class="c64-line">READY.<span class="c64-cursor">█</span></div>`;
+        retroText.classList.add('c64-prompt');
+        retroPixels.innerHTML = '';
+    }
+    
+    async simulateC64Loading() {
+        const retroText = document.getElementById('retroText');
+        retroText.classList.add('c64-prompt');
+        
+        // First selection - simulate loading program
+        const commands = [
+            'LOAD "SELEKTOR",8,1',
+            '',
+            'SEARCHING FOR SELEKTOR',
+            'LOADING',
+            'READY.',
+            'RUN'
+        ];
+        
+        for (let i = 0; i < commands.length; i++) {
+            const cmd = commands[i];
+            
+            if (cmd === 'LOADING') {
+                // Show dots appearing for loading effect
+                retroText.textContent = 'LOADING';
+                for (let j = 0; j < 3; j++) {
+                    await this.sleep(200);
+                    retroText.textContent += '.';
+                }
+                await this.sleep(300);
+            } else if (cmd === 'RUN') {
+                // Type out RUN command
+                retroText.innerHTML = 'READY.<span class="c64-cursor">█</span>';
+                await this.sleep(300);
+                await this.typeC64Command('RUN');
+                await this.sleep(200);
+            } else {
+                retroText.textContent = cmd;
+                if (cmd === 'READY.') {
+                    retroText.innerHTML = cmd + '<span class="c64-cursor">█</span>';
+                }
+                await this.sleep(cmd === '' ? 100 : 400);
+            }
+        }
+        
+        // Clear for normal operation
+        retroText.classList.remove('c64-prompt');
+    }
+    
+    async typeC64Command(text) {
+        const retroText = document.getElementById('retroText');
+        let typed = 'READY.';
+        
+        for (let i = 0; i < text.length; i++) {
+            typed += text[i];
+            retroText.innerHTML = typed + '<span class="c64-cursor">█</span>';
+            await this.sleep(80 + Math.random() * 40); // Simulate human typing speed
+        }
+        
+        // Remove cursor after command
+        retroText.textContent = typed;
     }
     
     createRetroPixels(count) {
