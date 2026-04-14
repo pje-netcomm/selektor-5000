@@ -1039,6 +1039,7 @@ class TeamMeter {
     playRetroSpinAnimation(availableUrls) {
         const retroText = document.getElementById('retroText');
         const retroDisplay = document.getElementById('retroDisplay');
+        const retroScreen = retroDisplay.closest('.retro-screen');
         
         return new Promise((resolve) => {
             // Retro spin effect - cycle through names quickly
@@ -1052,52 +1053,163 @@ class TeamMeter {
             }
             
             retroDisplay.classList.add('spinning');
+            retroScreen.classList.add('retro-shaking');
+            
+            // Add random glitch pixels during spin
+            let glitchInterval;
+            if (this.animationDuration > 0) {
+                glitchInterval = setInterval(() => {
+                    this.createRetroGlitchPixels();
+                }, 300);
+            }
+            
+            // Play spinning sound effects
+            let soundTimer;
+            if (this.soundEnabled) {
+                soundTimer = setInterval(() => {
+                    this.playRetroBlip();
+                }, 200);
+            }
             
             const spinTimer = setInterval(() => {
                 retroText.textContent = availableUrls[currentIndex % availableUrls.length].displayName.toUpperCase();
                 retroText.classList.add('animating');
                 setTimeout(() => retroText.classList.remove('animating'), 100);
                 currentIndex++;
+                
+                // Occasional screen flash
+                if (Math.random() > 0.7) {
+                    retroScreen.classList.add('retro-flash');
+                    setTimeout(() => retroScreen.classList.remove('retro-flash'), 50);
+                }
             }, spinInterval);
             
             setTimeout(() => {
                 clearInterval(spinTimer);
+                if (glitchInterval) clearInterval(glitchInterval);
+                if (soundTimer) clearInterval(soundTimer);
                 retroDisplay.classList.remove('spinning');
+                retroScreen.classList.remove('retro-shaking');
+                // Clear glitch pixels
+                document.getElementById('retroPixels').innerHTML = '';
                 resolve();
             }, spinDuration);
         });
     }
     
+    createRetroGlitchPixels() {
+        const retroPixels = document.getElementById('retroPixels');
+        const count = Math.floor(Math.random() * 4) + 2;
+        
+        // Clear old glitch pixels
+        retroPixels.innerHTML = '';
+        
+        for (let i = 0; i < count; i++) {
+            const pixel = document.createElement('div');
+            pixel.className = 'retro-pixel retro-glitch';
+            pixel.style.animationDelay = `${i * 0.03}s`;
+            // Random positioning
+            pixel.style.opacity = Math.random() * 0.5 + 0.5;
+            retroPixels.appendChild(pixel);
+        }
+    }
+    
+    playRetroBlip() {
+        // Quick blip sound during spinning
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.type = 'square';
+        oscillator.frequency.value = 440; // A4 note
+        
+        const startTime = audioContext.currentTime;
+        const duration = 0.05; // Very short blip
+        
+        gainNode.gain.setValueAtTime(this.soundVolume * 0.1, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+        
+        oscillator.start(startTime);
+        oscillator.stop(startTime + duration);
+    }
+    
     playRetroSelectAnimation(selectedUrl) {
         const retroText = document.getElementById('retroText');
         const retroDisplay = document.getElementById('retroDisplay');
+        const retroScreen = retroDisplay.closest('.retro-screen');
         
         return new Promise((resolve) => {
             // Show selected item with explosion effect
             retroText.textContent = selectedUrl.displayName.toUpperCase();
             retroDisplay.classList.add('selected', 'retro-explosion');
             
-            // Create pixel burst
-            this.createRetroPixels(8);
+            // Initial pixel burst
+            this.createRetroPixels(12);
             
             // Play 8-bit select sound if enabled
             if (this.soundEnabled) {
                 this.playRetroSelectSound();
             }
             
+            // Add pulsing effect
+            setTimeout(() => {
+                retroScreen.classList.add('retro-pulse');
+            }, 200);
+            
+            // Starfield effect - pixels expanding outward
+            setTimeout(() => {
+                this.createRetroStarfield();
+            }, 300);
+            
+            // Final celebration flash
+            setTimeout(() => {
+                retroScreen.classList.add('retro-flash');
+                setTimeout(() => retroScreen.classList.remove('retro-flash'), 100);
+            }, 600);
+            
+            // Multiple pixel bursts for extra effect
+            setTimeout(() => {
+                this.createRetroPixels(16);
+            }, 400);
+            
             setTimeout(() => {
                 retroDisplay.classList.remove('selected', 'retro-explosion');
+                retroScreen.classList.remove('retro-pulse');
                 resolve();
             }, this.animationDuration * 1000);
         });
     }
     
-    playRetroSelectSound() {
-        // Create 8-bit style beep sequence
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const notes = [523.25, 659.25, 783.99]; // C5, E5, G5 - happy chord
+    createRetroStarfield() {
+        const retroPixels = document.getElementById('retroPixels');
+        retroPixels.innerHTML = '';
         
-        notes.forEach((freq, i) => {
+        // Create expanding star pattern
+        for (let i = 0; i < 20; i++) {
+            const pixel = document.createElement('div');
+            pixel.className = 'retro-pixel retro-star';
+            pixel.style.animationDelay = `${i * 0.02}s`;
+            pixel.style.setProperty('--angle', `${(i * 18)}deg`);
+            retroPixels.appendChild(pixel);
+        }
+    }
+    
+    playRetroSelectSound() {
+        // Create 8-bit style victory fanfare
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Victory jingle: C5, E5, G5, C6 (arpeggio up)
+        const notes = [
+            { freq: 523.25, time: 0, duration: 0.15 },      // C5
+            { freq: 659.25, time: 0.1, duration: 0.15 },    // E5
+            { freq: 783.99, time: 0.2, duration: 0.15 },    // G5
+            { freq: 1046.50, time: 0.3, duration: 0.3 }     // C6 (held longer)
+        ];
+        
+        notes.forEach((note) => {
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
             
@@ -1105,18 +1217,35 @@ class TeamMeter {
             gainNode.connect(audioContext.destination);
             
             oscillator.type = 'square'; // 8-bit style square wave
-            oscillator.frequency.value = freq;
+            oscillator.frequency.value = note.freq;
             
-            const startTime = audioContext.currentTime + (i * 0.1);
-            const duration = 0.15;
+            const startTime = audioContext.currentTime + note.time;
             
-            gainNode.gain.setValueAtTime(this.soundVolume * 0.2, startTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+            gainNode.gain.setValueAtTime(this.soundVolume * 0.25, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + note.duration);
             
             oscillator.start(startTime);
-            oscillator.stop(startTime + duration);
+            oscillator.stop(startTime + note.duration);
         });
+        
+        // Add bass note for depth (C3)
+        const bass = audioContext.createOscillator();
+        const bassGain = audioContext.createGain();
+        
+        bass.connect(bassGain);
+        bassGain.connect(audioContext.destination);
+        
+        bass.type = 'square';
+        bass.frequency.value = 130.81; // C3
+        
+        const bassStart = audioContext.currentTime + 0.3;
+        bassGain.gain.setValueAtTime(this.soundVolume * 0.15, bassStart);
+        bassGain.gain.exponentialRampToValueAtTime(0.01, bassStart + 0.4);
+        
+        bass.start(bassStart);
+        bass.stop(bassStart + 0.4);
     }
+
 
     render() {
         this.renderUrlList();
