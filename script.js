@@ -44,6 +44,10 @@ class TeamMeter {
     set openUrlEnabled(val) { this.currentProfile.openUrlEnabled = val; }
     get uiType() { return this.currentProfile.uiType || 'default'; }
     set uiType(val) { this.currentProfile.uiType = val; this.render(); }
+    get cardIcon() { return this.currentProfile.cardIcon || '🎴'; }
+    set cardIcon(val) { this.currentProfile.cardIcon = val; this.saveToStorage(); this.render(); }
+    get cardOrder() { return this.currentProfile.cardOrder || []; }
+    set cardOrder(val) { this.currentProfile.cardOrder = val; this.saveToStorage(); }
     get title() { 
         return this.isFixedMode ? (this.fixedConfig.title || 'Selektor 5000') : this.currentProfile.title;
     }
@@ -83,7 +87,9 @@ class TeamMeter {
             soundVolume: 0.5,
             animationDuration: 1,
             openUrlEnabled: true,
-            uiType: 'default'
+            uiType: 'default',
+            cardIcon: '🎴',
+            cardOrder: []
         };
     }
 
@@ -114,6 +120,8 @@ class TeamMeter {
         document.getElementById('openUrlToggle').addEventListener('change', (e) => this.toggleOpenUrl(e.target.checked));
         document.getElementById('animationSpeed').addEventListener('change', (e) => this.updateAnimationSpeed(parseFloat(e.target.value)));
         document.getElementById('uiTypeSelect').addEventListener('change', (e) => this.updateUIType(e.target.value));
+        document.getElementById('cardIconInput').addEventListener('input', (e) => this.updateCardIcon(e.target.value));
+        document.getElementById('resetCardIconBtn').addEventListener('click', () => this.resetCardIcon());
         
         // Collapsible section handlers
         document.getElementById('urlConfigHeader').addEventListener('click', () => this.toggleCollapsible('urlConfig'));
@@ -224,6 +232,12 @@ class TeamMeter {
             document.getElementById('newTabToggle').checked = this.openInNewTab;
             document.getElementById('openUrlToggle').checked = this.openUrlEnabled;
             document.getElementById('animationSpeed').value = this.animationDuration.toString();
+            document.getElementById('uiTypeSelect').value = this.uiType;
+            document.getElementById('cardIconInput').value = this.cardIcon;
+            
+            // Show/hide card icon setting based on UI type
+            const cardIconSetting = document.getElementById('cardIconSetting');
+            cardIconSetting.style.display = this.uiType === 'cards' ? 'block' : 'none';
         }
         this.saveToStorage();
     }
@@ -302,7 +316,21 @@ class TeamMeter {
 
     updateUIType(value) {
         this.uiType = value;
+        // Show/hide card icon setting based on UI type
+        const cardIconSetting = document.getElementById('cardIconSetting');
+        if (cardIconSetting) {
+            cardIconSetting.style.display = value === 'cards' ? 'block' : 'none';
+        }
         this.saveToStorage();
+    }
+
+    updateCardIcon(value) {
+        this.cardIcon = value || '🎴';
+    }
+
+    resetCardIcon() {
+        this.cardIcon = '🎴';
+        document.getElementById('cardIconInput').value = '🎴';
     }
 
     toggleCollapsible(section) {
@@ -539,7 +567,8 @@ class TeamMeter {
         
         this.usedUrls.clear();
         this.lastSelectedId = null;
-        this.cardOrder = null; // Reset card order on reset
+        // Shuffle card order on reset
+        this.cardOrder = [...this.urls].sort(() => Math.random() - 0.5);
         this.saveToStorage();
         this.render();
     }
@@ -548,9 +577,18 @@ class TeamMeter {
         const cardsGrid = document.getElementById('cardsGrid');
         const availableUrls = this.urls.filter(url => !this.usedUrls.has(url.id));
         
-        // Create or maintain shuffled order - only shuffle if card order doesn't exist or URL list changed
-        if (!this.cardOrder || this.cardOrder.length !== this.urls.length) {
+        // Create or maintain shuffled order - shuffle if:
+        // 1. Card order doesn't exist or is empty
+        // 2. URL list length changed (URLs added/removed)
+        // 3. URL IDs don't match (different URLs)
+        const urlIds = this.urls.map(u => u.id).sort().join(',');
+        const orderIds = this.cardOrder.map(u => u.id).sort().join(',');
+        
+        if (!this.cardOrder || this.cardOrder.length === 0 || 
+            this.cardOrder.length !== this.urls.length || 
+            urlIds !== orderIds) {
             this.cardOrder = [...this.urls].sort(() => Math.random() - 0.5);
+            this.saveToStorage();
         }
         
         // Calculate optimal card size
@@ -572,7 +610,7 @@ class TeamMeter {
             card.innerHTML = `
                 <div class="card-inner">
                     <div class="card-front">
-                        <div class="card-icon">🎴</div>
+                        <div class="card-icon">${this.escapeHtml(this.cardIcon)}</div>
                     </div>
                     <div class="card-back">
                         <div class="card-name">${this.escapeHtml(url.displayName)}</div>
@@ -990,7 +1028,10 @@ class TeamMeter {
                     for (const [id, profileData] of Object.entries(data.profiles)) {
                         this.profiles[id] = {
                             ...profileData,
-                            usedUrls: new Set(profileData.usedUrls || [])
+                            usedUrls: new Set(profileData.usedUrls || []),
+                            // Ensure new fields exist with defaults
+                            cardIcon: profileData.cardIcon || '🎴',
+                            cardOrder: profileData.cardOrder || []
                         };
                     }
                     this.currentProfileId = data.currentProfileId || 'default';
