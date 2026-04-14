@@ -1035,7 +1035,13 @@ class TeamMeter {
         const retroText = document.getElementById('retroText');
         const retroPixels = document.getElementById('retroPixels');
         
-        retroText.innerHTML = `READY.<span class="c64-cursor">█</span>`;
+        retroText.innerHTML = `
+            <div class="c64-line">**** SELEKTOR 5K (VERY)BASIC V2 ****</div>
+            <div class="c64-line">&nbsp;&nbsp;64K RAM SYSTEM&nbsp;&nbsp;38911 BASIC BYTES FREE</div>
+            <div class="c64-line">&nbsp;</div>
+            <div class="c64-line">READY.</div>
+            <div class="c64-line"><span class="c64-cursor">█</span></div>
+        `;
         retroText.classList.add('c64-prompt');
         retroPixels.innerHTML = '';
     }
@@ -1044,7 +1050,13 @@ class TeamMeter {
         const retroText = document.getElementById('retroText');
         const retroPixels = document.getElementById('retroPixels');
         
-        retroText.innerHTML = `<div class="c64-line">END OF PROGRAM</div><div class="c64-line">READY.<span class="c64-cursor">█</span></div>`;
+        retroText.innerHTML = `
+            <div class="c64-line">&nbsp;</div>
+            <div class="c64-line">END OF PROGRAM</div>
+            <div class="c64-line">&nbsp;</div>
+            <div class="c64-line">READY.</div>
+            <div class="c64-line"><span class="c64-cursor">█</span></div>
+        `;
         retroText.classList.add('c64-prompt');
         retroPixels.innerHTML = '';
     }
@@ -1068,22 +1080,28 @@ class TeamMeter {
             
             if (cmd === 'LOADING') {
                 // Show dots appearing for loading effect
-                retroText.textContent = 'LOADING';
+                retroText.innerHTML = '<div class="c64-line">LOADING</div>';
                 for (let j = 0; j < 3; j++) {
                     await this.sleep(200);
-                    retroText.textContent += '.';
+                    retroText.innerHTML = `<div class="c64-line">LOADING${'...'.substring(0, j + 1)}</div>`;
                 }
                 await this.sleep(300);
             } else if (cmd === 'RUN') {
-                // Type out RUN command
-                retroText.innerHTML = 'READY.<span class="c64-cursor">█</span>';
+                // Type out RUN command with cursor on separate line
+                retroText.innerHTML = `
+                    <div class="c64-line">READY.</div>
+                    <div class="c64-line"><span class="c64-cursor">█</span></div>
+                `;
                 await this.sleep(300);
                 await this.typeC64Command('RUN');
                 await this.sleep(200);
             } else {
-                retroText.textContent = cmd;
+                retroText.innerHTML = `<div class="c64-line">${cmd}</div>`;
                 if (cmd === 'READY.') {
-                    retroText.innerHTML = cmd + '<span class="c64-cursor">█</span>';
+                    retroText.innerHTML = `
+                        <div class="c64-line">READY.</div>
+                        <div class="c64-line"><span class="c64-cursor">█</span></div>
+                    `;
                 }
                 await this.sleep(cmd === '' ? 100 : 400);
             }
@@ -1095,16 +1113,22 @@ class TeamMeter {
     
     async typeC64Command(text) {
         const retroText = document.getElementById('retroText');
-        let typed = 'READY.';
+        let typed = '';
         
         for (let i = 0; i < text.length; i++) {
             typed += text[i];
-            retroText.innerHTML = typed + '<span class="c64-cursor">█</span>';
+            retroText.innerHTML = `
+                <div class="c64-line">READY.</div>
+                <div class="c64-line">${typed}<span class="c64-cursor">█</span></div>
+            `;
             await this.sleep(80 + Math.random() * 40); // Simulate human typing speed
         }
         
         // Remove cursor after command
-        retroText.textContent = typed;
+        retroText.innerHTML = `
+            <div class="c64-line">READY.</div>
+            <div class="c64-line">${typed}</div>
+        `;
     }
     
     createRetroPixels(count) {
