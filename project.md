@@ -176,7 +176,7 @@ Then open: `http://localhost:8000/`
 
 # Version
 
-Current version: **v6.7.0**
+Current version: **v7.0.0**
 
 # Things to do (not yet, when I'm ready)
 ## [config-versioning]
@@ -194,16 +194,9 @@ Current version: **v6.7.0**
    - When the user clicks to select, the wheel spins and lands on a random segment
    - The wheel should have sound effects and animation for extra engagement.
    - Select this display type in settings in addition to existing display types.
-## [alternate-ui-retro]
-   - Implement a retro 8-bit style "select" mode, where the selectees are
-     displayed as pixelated characters or icons
-   - The selection process is accompanied by 8-bit sound effects and animations.
-   - This would give the app a nostalgic and playful vibe.
-   - The selected item could be highlighted with a flashing border or explosion effect for extra fun.
-   - Select this display type in settings in addition to existing display types.
 ## [dark-mode]
     - Add a "dark mode" toggle for users who prefer a darker interface,
     - use appropriate color scheme adjustments for readability and aesthetics.
 ## [minor improvements]
-- show branch name beside version, if not "master"
 - browser page title not updated when title config is changed.
+- Allow selectees to be configured without a URL; no URL is configured, just display the name and don't attempt to open a URL when selected.
