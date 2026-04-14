@@ -1038,7 +1038,6 @@ class TeamMeter {
         retroText.innerHTML = `
             <div class="c64-line">**** SELEKTOR 5K (VERY)BASIC V2 ****</div>
             <div class="c64-line">&nbsp;&nbsp;64K RAM&nbsp;&nbsp;38911 BASIC BYTES FREE</div>
-            <div class="c64-line">&nbsp;</div>
             <div class="c64-line">READY.</div>
             <div class="c64-line"><span class="c64-cursor">█</span></div>
         `;
@@ -1051,9 +1050,7 @@ class TeamMeter {
         const retroPixels = document.getElementById('retroPixels');
         
         retroText.innerHTML = `
-            <div class="c64-line">&nbsp;</div>
             <div class="c64-line">END OF PROGRAM</div>
-            <div class="c64-line">&nbsp;</div>
             <div class="c64-line">READY.</div>
             <div class="c64-line"><span class="c64-cursor">█</span></div>
         `;
@@ -1070,7 +1067,6 @@ class TeamMeter {
         let lines = [
             '**** SELEKTOR 5K (VERY)BASIC V2 ****',
             '  64K RAM  38911 BASIC BYTES FREE',
-            ' ',
             'READY.'
         ];
         
@@ -1099,11 +1095,6 @@ class TeamMeter {
         lines.push(loadCmd);
         updateScreen();
         await this.sleep(400);
-        
-        // Add blank line
-        lines.push(' ');
-        updateScreen();
-        await this.sleep(100);
         
         // Show SEARCHING message
         lines.push('SEARCHING FOR SELEKTOR');
