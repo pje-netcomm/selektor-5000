@@ -1136,7 +1136,8 @@ class TeamMeter {
         
         await this.sleep(200);
         
-        // Clear for normal operation
+        // Clear content and class for normal operation
+        retroText.innerHTML = '';
         retroText.classList.remove('c64-prompt');
     }
     
