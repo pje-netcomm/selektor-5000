@@ -1403,3 +1403,69 @@ footer {
         width: 100%;
     }
 }
+
+/* Emoji Picker Styles */
+.emoji-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+    gap: 5px;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.emoji-option {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1.8em;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 45px;
+}
+
+.emoji-option:hover {
+    transform: scale(1.1);
+    border-color: #667eea;
+    background: #f0f0ff;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.emoji-option:active {
+    transform: scale(0.95);
+}
+
+.emoji-option.selected {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    position: relative;
+}
+
+.emoji-option.selected::after {
+    content: '✓';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 0.5em;
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#cardIconInput {
+    pointer-events: none;
+    background: #f5f5f5;
+}
+

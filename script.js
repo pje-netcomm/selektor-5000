@@ -119,8 +119,15 @@ class TeamMeter {
         document.getElementById('openUrlToggle').addEventListener('change', (e) => this.toggleOpenUrl(e.target.checked));
         document.getElementById('animationSpeed').addEventListener('change', (e) => this.updateAnimationSpeed(parseFloat(e.target.value)));
         document.getElementById('uiTypeSelect').addEventListener('change', (e) => this.updateUIType(e.target.value));
-        document.getElementById('cardIconInput').addEventListener('input', (e) => this.updateCardIcon(e.target.value));
         document.getElementById('resetCardIconBtn').addEventListener('click', () => this.resetCardIcon());
+        
+        // Emoji picker event listeners
+        document.querySelectorAll('.emoji-option').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const emoji = e.target.dataset.emoji;
+                this.selectEmoji(emoji);
+            });
+        });
         
         // Collapsible section handlers
         document.getElementById('urlConfigHeader').addEventListener('click', () => this.toggleCollapsible('urlConfig'));
@@ -237,6 +244,15 @@ class TeamMeter {
             // Show/hide card icon setting based on UI type
             const cardIconSetting = document.getElementById('cardIconSetting');
             cardIconSetting.style.display = this.uiType === 'cards' ? 'block' : 'none';
+            
+            // Highlight currently selected emoji in picker
+            document.querySelectorAll('.emoji-option').forEach(btn => {
+                if (btn.dataset.emoji === this.cardIcon) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
         }
         this.saveToStorage();
     }
@@ -323,13 +339,22 @@ class TeamMeter {
         this.saveToStorage();
     }
 
-    updateCardIcon(value) {
-        this.cardIcon = value || '🎴';
+    selectEmoji(emoji) {
+        this.cardIcon = emoji;
+        document.getElementById('cardIconInput').value = emoji;
+        
+        // Update visual selection in emoji picker
+        document.querySelectorAll('.emoji-option').forEach(btn => {
+            if (btn.dataset.emoji === emoji) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
     }
 
     resetCardIcon() {
-        this.cardIcon = '🎴';
-        document.getElementById('cardIconInput').value = '🎴';
+        this.selectEmoji('🎴');
     }
 
     toggleCollapsible(section) {
