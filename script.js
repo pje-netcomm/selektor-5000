@@ -137,7 +137,8 @@ class TeamMeter {
         // Keyboard shortcuts for emoji picker
         document.addEventListener('keydown', (e) => {
             const modal = document.getElementById('emojiPickerModal');
-            if (!modal.classList.contains('active')) return;
+            // Check if modal is visible (display is 'flex' when open)
+            if (modal.style.display !== 'flex') return;
             
             if (e.key === 'Escape') {
                 e.preventDefault();
