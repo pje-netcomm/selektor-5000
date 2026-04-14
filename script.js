@@ -121,11 +121,39 @@ class TeamMeter {
         document.getElementById('uiTypeSelect').addEventListener('change', (e) => this.updateUIType(e.target.value));
         document.getElementById('resetCardIconBtn').addEventListener('click', () => this.resetCardIcon());
         
-        // Emoji picker event listeners
+        // Emoji picker modal event listeners
+        document.getElementById('openEmojiPickerBtn').addEventListener('click', () => this.openEmojiPicker());
+        document.getElementById('cardIconDisplay').addEventListener('click', () => this.openEmojiPicker());
+        document.getElementById('closeEmojiPickerBtn').addEventListener('click', () => this.closeEmojiPicker());
+        document.getElementById('applyCustomEmojiBtn').addEventListener('click', () => this.applyCustomEmoji());
+        
+        // Close modal on background click
+        document.getElementById('emojiPickerModal').addEventListener('click', (e) => {
+            if (e.target.id === 'emojiPickerModal') {
+                this.closeEmojiPicker();
+            }
+        });
+        
+        // Custom emoji input - apply on Enter
+        document.getElementById('customEmojiInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.applyCustomEmoji();
+            }
+        });
+        
+        // Category tabs
+        document.querySelectorAll('.emoji-category-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                this.switchEmojiCategory(e.target.dataset.category);
+            });
+        });
+        
+        // Emoji selection buttons
         document.querySelectorAll('.emoji-option').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const emoji = e.target.dataset.emoji;
                 this.selectEmoji(emoji);
+                this.closeEmojiPicker();
             });
         });
         
@@ -239,20 +267,16 @@ class TeamMeter {
             document.getElementById('openUrlToggle').checked = this.openUrlEnabled;
             document.getElementById('animationSpeed').value = this.animationDuration.toString();
             document.getElementById('uiTypeSelect').value = this.uiType;
-            document.getElementById('cardIconInput').value = this.cardIcon;
+            
+            // Update card icon display
+            const display = document.getElementById('cardIconDisplay');
+            if (display) {
+                display.textContent = this.cardIcon;
+            }
             
             // Show/hide card icon setting based on UI type
             const cardIconSetting = document.getElementById('cardIconSetting');
             cardIconSetting.style.display = this.uiType === 'cards' ? 'block' : 'none';
-            
-            // Highlight currently selected emoji in picker
-            document.querySelectorAll('.emoji-option').forEach(btn => {
-                if (btn.dataset.emoji === this.cardIcon) {
-                    btn.classList.add('selected');
-                } else {
-                    btn.classList.remove('selected');
-                }
-            });
         }
         this.saveToStorage();
     }
@@ -339,10 +363,65 @@ class TeamMeter {
         this.saveToStorage();
     }
 
+    openEmojiPicker() {
+        const modal = document.getElementById('emojiPickerModal');
+        modal.style.display = 'flex';
+        
+        // Highlight current emoji
+        this.updateEmojiSelection(this.cardIcon);
+        
+        // Clear custom input
+        document.getElementById('customEmojiInput').value = '';
+    }
+
+    closeEmojiPicker() {
+        const modal = document.getElementById('emojiPickerModal');
+        modal.style.display = 'none';
+    }
+
+    switchEmojiCategory(category) {
+        // Update tabs
+        document.querySelectorAll('.emoji-category-tab').forEach(tab => {
+            if (tab.dataset.category === category) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+        
+        // Update grids
+        document.querySelectorAll('.emoji-grid').forEach(grid => {
+            if (grid.dataset.category === category) {
+                grid.classList.add('active');
+            } else {
+                grid.classList.remove('active');
+            }
+        });
+    }
+
+    applyCustomEmoji() {
+        const input = document.getElementById('customEmojiInput');
+        const emoji = input.value.trim();
+        
+        if (emoji) {
+            this.selectEmoji(emoji);
+            this.closeEmojiPicker();
+        }
+    }
+
     selectEmoji(emoji) {
         this.cardIcon = emoji;
-        document.getElementById('cardIconInput').value = emoji;
         
+        // Update display
+        const display = document.getElementById('cardIconDisplay');
+        if (display) {
+            display.textContent = emoji;
+        }
+        
+        this.updateEmojiSelection(emoji);
+    }
+
+    updateEmojiSelection(emoji) {
         // Update visual selection in emoji picker
         document.querySelectorAll('.emoji-option').forEach(btn => {
             if (btn.dataset.emoji === emoji) {

@@ -183,61 +183,12 @@
                                 <label class="sound-toggle-label">
                                     <span>🎴 Card Icon</span>
                                 </label>
-                                <div style="margin-top: 10px; margin-bottom: 10px;">
-                                    <input type="text" id="cardIconInput" maxlength="2" style="width: 60px; text-align: center; font-size: 2em; margin-right: 10px;" readonly>
-                                    <button id="resetCardIconBtn" class="btn btn-secondary">Reset to Default</button>
-                                </div>
-                                <div class="emoji-picker" id="emojiPicker">
-                                    <button class="emoji-option" data-emoji="🎴">🎴</button>
-                                    <button class="emoji-option" data-emoji="🃏">🃏</button>
-                                    <button class="emoji-option" data-emoji="🎯">🎯</button>
-                                    <button class="emoji-option" data-emoji="🎲">🎲</button>
-                                    <button class="emoji-option" data-emoji="🎰">🎰</button>
-                                    <button class="emoji-option" data-emoji="🎪">🎪</button>
-                                    <button class="emoji-option" data-emoji="🎭">🎭</button>
-                                    <button class="emoji-option" data-emoji="🎨">🎨</button>
-                                    <button class="emoji-option" data-emoji="🎬">🎬</button>
-                                    <button class="emoji-option" data-emoji="🎮">🎮</button>
-                                    <button class="emoji-option" data-emoji="🎸">🎸</button>
-                                    <button class="emoji-option" data-emoji="🎹">🎹</button>
-                                    <button class="emoji-option" data-emoji="⭐">⭐</button>
-                                    <button class="emoji-option" data-emoji="✨">✨</button>
-                                    <button class="emoji-option" data-emoji="💫">💫</button>
-                                    <button class="emoji-option" data-emoji="🌟">🌟</button>
-                                    <button class="emoji-option" data-emoji="💎">💎</button>
-                                    <button class="emoji-option" data-emoji="🔮">🔮</button>
-                                    <button class="emoji-option" data-emoji="🎁">🎁</button>
-                                    <button class="emoji-option" data-emoji="🎈">🎈</button>
-                                    <button class="emoji-option" data-emoji="🎉">🎉</button>
-                                    <button class="emoji-option" data-emoji="🎊">🎊</button>
-                                    <button class="emoji-option" data-emoji="🔥">🔥</button>
-                                    <button class="emoji-option" data-emoji="⚡">⚡</button>
-                                    <button class="emoji-option" data-emoji="💥">💥</button>
-                                    <button class="emoji-option" data-emoji="🌈">🌈</button>
-                                    <button class="emoji-option" data-emoji="🍕">🍕</button>
-                                    <button class="emoji-option" data-emoji="🍔">🍔</button>
-                                    <button class="emoji-option" data-emoji="🍰">🍰</button>
-                                    <button class="emoji-option" data-emoji="🍩">🍩</button>
-                                    <button class="emoji-option" data-emoji="☕">☕</button>
-                                    <button class="emoji-option" data-emoji="🍺">🍺</button>
-                                    <button class="emoji-option" data-emoji="🏆">🏆</button>
-                                    <button class="emoji-option" data-emoji="🥇">🥇</button>
-                                    <button class="emoji-option" data-emoji="🏅">🏅</button>
-                                    <button class="emoji-option" data-emoji="🎖️">🎖️</button>
-                                    <button class="emoji-option" data-emoji="👑">👑</button>
-                                    <button class="emoji-option" data-emoji="💰">💰</button>
-                                    <button class="emoji-option" data-emoji="🎓">🎓</button>
-                                    <button class="emoji-option" data-emoji="📚">📚</button>
-                                    <button class="emoji-option" data-emoji="💻">💻</button>
-                                    <button class="emoji-option" data-emoji="📱">📱</button>
-                                    <button class="emoji-option" data-emoji="🚀">🚀</button>
-                                    <button class="emoji-option" data-emoji="✈️">✈️</button>
-                                    <button class="emoji-option" data-emoji="🏖️">🏖️</button>
-                                    <button class="emoji-option" data-emoji="🎄">🎄</button>
-                                    <button class="emoji-option" data-emoji="🎃">🎃</button>
-                                    <button class="emoji-option" data-emoji="❤️">❤️</button>
-                                    <button class="emoji-option" data-emoji="💜">💜</button>
-                                    <button class="emoji-option" data-emoji="🧡">🧡</button>
+                                <div style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
+                                    <button id="cardIconDisplay" class="card-icon-display" title="Click to change icon">
+                                        🎴
+                                    </button>
+                                    <button id="openEmojiPickerBtn" class="btn btn-primary">Choose Icon</button>
+                                    <button id="resetCardIconBtn" class="btn btn-secondary">Reset</button>
                                 </div>
                             </div>
                         </div>
@@ -327,6 +278,140 @@
                     <h3>Actions</h3>
                     <button id="clearStorageBtn" class="btn btn-danger-debug">Clear LocalStorage</button>
                     <button id="reloadPageBtn" class="btn btn-debug">Reload Page</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emoji Picker Modal -->
+    <div id="emojiPickerModal" class="emoji-modal" style="display: none;">
+        <div class="emoji-modal-content">
+            <div class="emoji-modal-header">
+                <h3>Choose Card Icon</h3>
+                <button id="closeEmojiPickerBtn" class="btn-close-modal">✕</button>
+            </div>
+            <div class="emoji-modal-body">
+                <div class="emoji-custom-input">
+                    <label>Custom Emoji:</label>
+                    <input type="text" id="customEmojiInput" placeholder="Paste or type emoji here" maxlength="4">
+                    <button id="applyCustomEmojiBtn" class="btn btn-primary btn-sm">Apply</button>
+                </div>
+                
+                <div class="emoji-categories">
+                    <button class="emoji-category-tab active" data-category="games">🎮 Games</button>
+                    <button class="emoji-category-tab" data-category="stars">✨ Stars</button>
+                    <button class="emoji-category-tab" data-category="party">🎉 Party</button>
+                    <button class="emoji-category-tab" data-category="food">🍕 Food</button>
+                    <button class="emoji-category-tab" data-category="awards">🏆 Awards</button>
+                    <button class="emoji-category-tab" data-category="work">💻 Work</button>
+                    <button class="emoji-category-tab" data-category="travel">🚀 Travel</button>
+                    <button class="emoji-category-tab" data-category="hearts">❤️ Hearts</button>
+                </div>
+                
+                <div class="emoji-grid-container">
+                    <div class="emoji-grid active" data-category="games">
+                        <button class="emoji-option" data-emoji="🎴">🎴</button>
+                        <button class="emoji-option" data-emoji="🃏">🃏</button>
+                        <button class="emoji-option" data-emoji="🎯">🎯</button>
+                        <button class="emoji-option" data-emoji="🎲">🎲</button>
+                        <button class="emoji-option" data-emoji="🎰">🎰</button>
+                        <button class="emoji-option" data-emoji="🎮">🎮</button>
+                        <button class="emoji-option" data-emoji="🎪">🎪</button>
+                        <button class="emoji-option" data-emoji="🎭">🎭</button>
+                        <button class="emoji-option" data-emoji="🎨">🎨</button>
+                        <button class="emoji-option" data-emoji="🎬">🎬</button>
+                        <button class="emoji-option" data-emoji="🎸">🎸</button>
+                        <button class="emoji-option" data-emoji="🎹">🎹</button>
+                    </div>
+                    
+                    <div class="emoji-grid" data-category="stars">
+                        <button class="emoji-option" data-emoji="⭐">⭐</button>
+                        <button class="emoji-option" data-emoji="✨">✨</button>
+                        <button class="emoji-option" data-emoji="💫">💫</button>
+                        <button class="emoji-option" data-emoji="🌟">🌟</button>
+                        <button class="emoji-option" data-emoji="💎">💎</button>
+                        <button class="emoji-option" data-emoji="🔮">🔮</button>
+                        <button class="emoji-option" data-emoji="🔥">🔥</button>
+                        <button class="emoji-option" data-emoji="⚡">⚡</button>
+                        <button class="emoji-option" data-emoji="💥">💥</button>
+                        <button class="emoji-option" data-emoji="🌈">🌈</button>
+                    </div>
+                    
+                    <div class="emoji-grid" data-category="party">
+                        <button class="emoji-option" data-emoji="🎉">🎉</button>
+                        <button class="emoji-option" data-emoji="🎊">🎊</button>
+                        <button class="emoji-option" data-emoji="🎁">🎁</button>
+                        <button class="emoji-option" data-emoji="🎈">🎈</button>
+                        <button class="emoji-option" data-emoji="🎀">🎀</button>
+                        <button class="emoji-option" data-emoji="🎆">🎆</button>
+                        <button class="emoji-option" data-emoji="🎇">🎇</button>
+                        <button class="emoji-option" data-emoji="✨">✨</button>
+                    </div>
+                    
+                    <div class="emoji-grid" data-category="food">
+                        <button class="emoji-option" data-emoji="🍕">🍕</button>
+                        <button class="emoji-option" data-emoji="🍔">🍔</button>
+                        <button class="emoji-option" data-emoji="🍰">🍰</button>
+                        <button class="emoji-option" data-emoji="🍩">🍩</button>
+                        <button class="emoji-option" data-emoji="🍪">🍪</button>
+                        <button class="emoji-option" data-emoji="🍦">🍦</button>
+                        <button class="emoji-option" data-emoji="☕">☕</button>
+                        <button class="emoji-option" data-emoji="🍺">🍺</button>
+                        <button class="emoji-option" data-emoji="🥤">🥤</button>
+                        <button class="emoji-option" data-emoji="🍿">🍿</button>
+                    </div>
+                    
+                    <div class="emoji-grid" data-category="awards">
+                        <button class="emoji-option" data-emoji="🏆">🏆</button>
+                        <button class="emoji-option" data-emoji="🥇">🥇</button>
+                        <button class="emoji-option" data-emoji="🥈">🥈</button>
+                        <button class="emoji-option" data-emoji="🥉">🥉</button>
+                        <button class="emoji-option" data-emoji="🏅">🏅</button>
+                        <button class="emoji-option" data-emoji="🎖️">🎖️</button>
+                        <button class="emoji-option" data-emoji="👑">👑</button>
+                        <button class="emoji-option" data-emoji="💰">💰</button>
+                        <button class="emoji-option" data-emoji="💵">💵</button>
+                        <button class="emoji-option" data-emoji="⭐">⭐</button>
+                    </div>
+                    
+                    <div class="emoji-grid" data-category="work">
+                        <button class="emoji-option" data-emoji="💻">💻</button>
+                        <button class="emoji-option" data-emoji="📱">📱</button>
+                        <button class="emoji-option" data-emoji="🎓">🎓</button>
+                        <button class="emoji-option" data-emoji="📚">📚</button>
+                        <button class="emoji-option" data-emoji="📖">📖</button>
+                        <button class="emoji-option" data-emoji="✏️">✏️</button>
+                        <button class="emoji-option" data-emoji="📝">📝</button>
+                        <button class="emoji-option" data-emoji="💼">💼</button>
+                        <button class="emoji-option" data-emoji="📊">📊</button>
+                        <button class="emoji-option" data-emoji="🔬">🔬</button>
+                    </div>
+                    
+                    <div class="emoji-grid" data-category="travel">
+                        <button class="emoji-option" data-emoji="🚀">🚀</button>
+                        <button class="emoji-option" data-emoji="✈️">✈️</button>
+                        <button class="emoji-option" data-emoji="🚁">🚁</button>
+                        <button class="emoji-option" data-emoji="🚂">🚂</button>
+                        <button class="emoji-option" data-emoji="🚗">🚗</button>
+                        <button class="emoji-option" data-emoji="🏖️">🏖️</button>
+                        <button class="emoji-option" data-emoji="🏝️">🏝️</button>
+                        <button class="emoji-option" data-emoji="🗺️">🗺️</button>
+                        <button class="emoji-option" data-emoji="🎄">🎄</button>
+                        <button class="emoji-option" data-emoji="🎃">🎃</button>
+                    </div>
+                    
+                    <div class="emoji-grid" data-category="hearts">
+                        <button class="emoji-option" data-emoji="❤️">❤️</button>
+                        <button class="emoji-option" data-emoji="🧡">🧡</button>
+                        <button class="emoji-option" data-emoji="💛">💛</button>
+                        <button class="emoji-option" data-emoji="💚">💚</button>
+                        <button class="emoji-option" data-emoji="💙">💙</button>
+                        <button class="emoji-option" data-emoji="💜">💜</button>
+                        <button class="emoji-option" data-emoji="🖤">🖤</button>
+                        <button class="emoji-option" data-emoji="🤍">🤍</button>
+                        <button class="emoji-option" data-emoji="🤎">🤎</button>
+                        <button class="emoji-option" data-emoji="💖">💖</button>
+                    </div>
                 </div>
             </div>
         </div>
