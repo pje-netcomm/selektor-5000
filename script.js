@@ -463,15 +463,8 @@ class TeamMeter {
     }
 
     resetCardIconAndClose() {
-        this.cardIcon = '🎴';
-        
-        // Update display on main UI
-        const display = document.getElementById('cardIconDisplay');
-        if (display) {
-            display.textContent = '🎴';
-        }
-        
-        this.closeEmojiPicker();
+        // Just update the preview to default, don't close dialog
+        this.updatePreview('🎴');
     }
 
     resetCardIcon() {
