@@ -2,6 +2,102 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v7.0.0 - Retro 8-Bit UI Mode (2026-04-14)
+
+### Major Feature: Retro UI Mode 🎮
+- **New UI Type**: Retro (8-bit) option added to settings
+  - Authentic Commodore 64 inspired design
+  - Game Boy-style green phosphor screen (#9bbc0f on #0f380f)
+  - CRT-style scanlines overlay
+  - Monospace terminal font (Courier New)
+  - Fixed 300px screen with scrolling (10 visible lines)
+
+### C64 BASIC Simulation 🖥️
+- **Boot Screen**: Authentic C64 startup sequence
+  - "SELEKTOR 5K (VERY)BASIC V2" header
+  - RAM and memory info display
+  - Blinking block cursor (█)
+  - READY prompt
+  
+- **Program Loading Sequence** (first selection only):
+  - Types: `LOAD "SELEKTOR",8,1` character-by-character
+  - Shows: SEARCHING FOR SELEKTOR
+  - Displays: LOADING... (dots appear progressively)
+  - Returns to: READY prompt
+  - Types: RUN command
+  - Human-like typing speed (80-120ms per character)
+  
+- **Terminal Scrolling**:
+  - Text starts at top of screen
+  - New lines scroll up
+  - 10-line viewport (like real C64)
+  - Header lines stay centered
+  - Command lines left-aligned
+
+- **End State**: "END OF PROGRAM" when all selections complete
+
+### Visual Effects ✨
+- **During Spin**:
+  - Screen shake (2px multi-directional vibration)
+  - Glitch pixels (2-4 random pixels appearing/fading)
+  - Random screen flashes (brightness bursts)
+  - Color cycling text animation
+  
+- **After Selection**:
+  - Explosion effect (scale + brightness flash)
+  - Multiple pixel bursts (12, then 16 pixels)
+  - Starfield expansion (20 pixels radial pattern)
+  - Screen pulse (gentle scale + glow)
+  - Flashing border (pulsing green glow)
+  - Celebration flash at 600ms
+
+### 8-Bit Sound Effects 🔊
+- **Spinning Sound**: Rapid blips every 200ms
+  - 440Hz (A4 note) square wave
+  - Low volume (10%) to avoid overwhelming
+  - Classic arcade spinning sound
+  
+- **Victory Fanfare**: 4-note ascending arpeggio
+  - C5 → E5 → G5 → C6 (octave jump)
+  - Final note held longer for impact
+  - Bass note (C3) for depth and richness
+  - Square wave for authentic chip-tune sound
+  - Respects volume settings
+
+### Technical Implementation
+- **Rendering**: `renderRetro()` handles all retro UI states
+- **C64 Simulation**: Character-by-character typing with proper timing
+- **Screen Management**: Fixed-size container with overflow hidden
+- **Scrolling**: Array slicing to keep last 10 lines visible
+- **Alignment**: Centered headers, left-aligned commands
+- **Persistence**: `lastSelectedId` now saved to profile and persists across reloads
+- **Animations**: CSS keyframes for all effects (shake, flash, pulse, starfield)
+- **Sound**: Web Audio API with square wave oscillators
+
+### Accessibility & Settings
+- Respects animation speed setting (0, 0.5x, 1x, 1.5x, 2x)
+- Honors sound volume control
+- Works with sound toggle (on/off)
+- Keyboard shortcuts (ESC/Enter) work in retro mode
+- Clickable screen for selection
+- Smooth transitions between states
+
+### Files Modified
+- `index.html`: +19 lines (retro UI container, settings option)
+- `script.js`: +431 lines (retro logic, C64 simulation, animations, persistence)
+- `styles.css`: +334 lines (retro styling, effects, animations)
+
+### Bug Fixes
+- Fixed text alignment flash during screen transitions
+- Fixed garbled text between loading and selection
+- Fixed virtual screen size to remain constant
+- Fixed header centering during loading sequence
+- Ensured lastSelectedId persists across page reloads
+
+This release brings authentic 8-bit computing nostalgia to Selektor 5000! Perfect for teams who appreciate retro gaming aesthetics. 🎮✨
+
+---
+
 ## v6.8.0 - UX Improvements: Customizable Icons & Persistent Order (2026-04-14)
 
 ### Major Features
