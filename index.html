@@ -49,6 +49,22 @@
                 </div>
             </div>
 
+            <!-- Retro UI -->
+            <div id="retroUI" class="ui-container" style="display: none;">
+                <div class="retro-container">
+                    <div class="retro-screen">
+                        <div class="retro-scanlines"></div>
+                        <div id="retroDisplay" class="retro-display">
+                            <div id="retroText" class="retro-text">READY</div>
+                            <div id="retroPixels" class="retro-pixels"></div>
+                        </div>
+                    </div>
+                    <div class="stats">
+                        <span id="retroRemainingCount" class="stat-badge retro-badge">0 remaining</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Controls - shown for both UIs -->
             <div class="controls">
                 <button id="selectCardBtn" class="btn btn-primary" style="display: none;">
@@ -176,6 +192,7 @@
                                     <select id="uiTypeSelect">
                                         <option value="default">Default (Animated)</option>
                                         <option value="cards">Cards (Grid)</option>
+                                        <option value="retro">Retro (8-bit)</option>
                                     </select>
                                 </label>
                             </div>
@@ -216,7 +233,7 @@
         </main>
 
         <footer>
-            <p>URLs are stored locally in your browser · v6.8.0-dev</p>
+            <p>URLs are stored locally in your browser · v7.0.0-dev</p>
         </footer>
     </div>
 

@@ -586,13 +586,15 @@ class TeamMeter {
         }
 
         const displayBox = document.getElementById('displayBox');
-        if (displayBox.classList.contains('disabled') || this.isSelecting) {
+        if ((displayBox.classList.contains('disabled') || this.isSelecting) && this.uiType !== 'retro') {
             return;
         }
         
         this.isSelecting = true;
-        displayBox.classList.add('disabled');
-        displayBox.classList.remove('clickable');
+        if (this.uiType !== 'retro') {
+            displayBox.classList.add('disabled');
+            displayBox.classList.remove('clickable');
+        }
 
         this.skipAnimation = false;
         const skipHandler = (e) => {
@@ -604,7 +606,11 @@ class TeamMeter {
 
         // Skip animation if duration is 0 or if only 1 URL available
         if (availableUrls.length > 1 && this.animationDuration > 0) {
-            await this.animateSelection(availableUrls);
+            if (this.uiType === 'retro') {
+                await this.playRetroSpinAnimation(availableUrls);
+            } else {
+                await this.animateSelection(availableUrls);
+            }
         }
         
         document.removeEventListener('keydown', skipHandler);
@@ -617,6 +623,7 @@ class TeamMeter {
         
         // Persist selection IMMEDIATELY before any further animations
         this.usedUrls.add(selectedUrl.id);
+        this.lastSelectedId = selectedUrl.id;
         this.saveToStorage();
         
         await this.showSelection(selectedUrl);
@@ -703,16 +710,20 @@ class TeamMeter {
     }
 
     async showSelection(selectedUrl) {
-        const displayBox = document.getElementById('displayBox');
-        const displayText = document.getElementById('displayText');
-        
-        displayText.textContent = `🎉 ${selectedUrl.displayName} 🎉`;
-        displayBox.classList.add('selected');
-        
-        this.celebrationSound();
-        
-        await this.sleep(600);
-        displayBox.classList.remove('selected');
+        if (this.uiType === 'retro') {
+            await this.playRetroSelectAnimation(selectedUrl);
+        } else {
+            const displayBox = document.getElementById('displayBox');
+            const displayText = document.getElementById('displayText');
+            
+            displayText.textContent = `🎉 ${selectedUrl.displayName} 🎉`;
+            displayBox.classList.add('selected');
+            
+            this.celebrationSound();
+            
+            await this.sleep(600);
+            displayBox.classList.remove('selected');
+        }
     }
 
     sleep(ms) {
@@ -980,6 +991,133 @@ class TeamMeter {
         }
     }
 
+    renderRetro() {
+        const retroText = document.getElementById('retroText');
+        const retroPixels = document.getElementById('retroPixels');
+        const availableUrls = this.urls.filter(url => !this.usedUrls.has(url.id));
+        
+        // Update display based on state
+        if (availableUrls.length === 0) {
+            retroText.textContent = 'ALL DONE!';
+            retroPixels.innerHTML = '';
+        } else if (this.lastSelectedId) {
+            const lastUrl = this.urls.find(u => u.id === this.lastSelectedId);
+            if (lastUrl) {
+                retroText.textContent = lastUrl.displayName.toUpperCase();
+                // Add pixel effect for selected item
+                this.createRetroPixels(6);
+            }
+        } else {
+            retroText.textContent = 'CLICK TO SELECT';
+            retroPixels.innerHTML = '';
+        }
+        
+        // Update remaining count
+        document.getElementById('retroRemainingCount').textContent = `${availableUrls.length} remaining`;
+        
+        // Set up click handler
+        const retroDisplay = document.getElementById('retroDisplay');
+        retroDisplay.onclick = () => {
+            if (this.currentMode === 'selection' && availableUrls.length > 0) {
+                this.selectRandomUrl();
+            }
+        };
+    }
+    
+    createRetroPixels(count) {
+        const retroPixels = document.getElementById('retroPixels');
+        retroPixels.innerHTML = '';
+        
+        for (let i = 0; i < count; i++) {
+            const pixel = document.createElement('div');
+            pixel.className = 'retro-pixel';
+            pixel.style.animationDelay = `${i * 0.05}s`;
+            retroPixels.appendChild(pixel);
+        }
+    }
+    
+    playRetroSpinAnimation(availableUrls) {
+        const retroText = document.getElementById('retroText');
+        const retroDisplay = document.getElementById('retroDisplay');
+        
+        return new Promise((resolve) => {
+            // Retro spin effect - cycle through names quickly
+            const spinDuration = this.animationDuration * 1000; // Convert to ms
+            const spinInterval = 100; // 8-bit style fast cycling
+            let currentIndex = 0;
+            
+            if (spinDuration === 0 || availableUrls.length === 1) {
+                resolve();
+                return;
+            }
+            
+            retroDisplay.classList.add('spinning');
+            
+            const spinTimer = setInterval(() => {
+                retroText.textContent = availableUrls[currentIndex % availableUrls.length].displayName.toUpperCase();
+                retroText.classList.add('animating');
+                setTimeout(() => retroText.classList.remove('animating'), 100);
+                currentIndex++;
+            }, spinInterval);
+            
+            setTimeout(() => {
+                clearInterval(spinTimer);
+                retroDisplay.classList.remove('spinning');
+                resolve();
+            }, spinDuration);
+        });
+    }
+    
+    playRetroSelectAnimation(selectedUrl) {
+        const retroText = document.getElementById('retroText');
+        const retroDisplay = document.getElementById('retroDisplay');
+        
+        return new Promise((resolve) => {
+            // Show selected item with explosion effect
+            retroText.textContent = selectedUrl.displayName.toUpperCase();
+            retroDisplay.classList.add('selected', 'retro-explosion');
+            
+            // Create pixel burst
+            this.createRetroPixels(8);
+            
+            // Play 8-bit select sound if enabled
+            if (this.soundEnabled) {
+                this.playRetroSelectSound();
+            }
+            
+            setTimeout(() => {
+                retroDisplay.classList.remove('selected', 'retro-explosion');
+                resolve();
+            }, this.animationDuration * 1000);
+        });
+    }
+    
+    playRetroSelectSound() {
+        // Create 8-bit style beep sequence
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const notes = [523.25, 659.25, 783.99]; // C5, E5, G5 - happy chord
+        
+        notes.forEach((freq, i) => {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'square'; // 8-bit style square wave
+            oscillator.frequency.value = freq;
+            
+            const startTime = audioContext.currentTime + (i * 0.1);
+            const duration = 0.15;
+            
+            gainNode.gain.setValueAtTime(this.soundVolume * 0.2, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+            
+            oscillator.start(startTime);
+            oscillator.stop(startTime + duration);
+        });
+    }
+
     render() {
         this.renderUrlList();
         this.updateStats();
@@ -990,16 +1128,25 @@ class TeamMeter {
         // Show/hide UI based on type
         const defaultUI = document.getElementById('defaultUI');
         const cardsUI = document.getElementById('cardsUI');
+        const retroUI = document.getElementById('retroUI');
         const selectCardBtn = document.getElementById('selectCardBtn');
         
         if (this.uiType === 'cards') {
             defaultUI.style.display = 'none';
             cardsUI.style.display = 'flex';
+            retroUI.style.display = 'none';
             selectCardBtn.style.display = 'block';
             this.renderCards();
+        } else if (this.uiType === 'retro') {
+            defaultUI.style.display = 'none';
+            cardsUI.style.display = 'none';
+            retroUI.style.display = 'flex';
+            selectCardBtn.style.display = 'none';
+            this.renderRetro();
         } else {
             defaultUI.style.display = 'flex';
             cardsUI.style.display = 'none';
+            retroUI.style.display = 'none';
             selectCardBtn.style.display = 'none';
         }
     }
