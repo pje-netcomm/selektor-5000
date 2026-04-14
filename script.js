@@ -1037,7 +1037,7 @@ class TeamMeter {
         
         retroText.innerHTML = `
             <div class="c64-line">**** SELEKTOR 5K (VERY)BASIC V2 ****</div>
-            <div class="c64-line">&nbsp;&nbsp;64K RAM SYSTEM&nbsp;&nbsp;38911 BASIC BYTES FREE</div>
+            <div class="c64-line">&nbsp;&nbsp;64K RAM&nbsp;&nbsp;38911 BASIC BYTES FREE</div>
             <div class="c64-line">&nbsp;</div>
             <div class="c64-line">READY.</div>
             <div class="c64-line"><span class="c64-cursor">█</span></div>
