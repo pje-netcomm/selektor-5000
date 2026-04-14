@@ -8,7 +8,6 @@ class TeamMeter {
         this.contextMenuTarget = null;
         this.fixedConfig = null;
         this.isFixedMode = false;
-        this.lastSelectedId = null;
         this.init();
     }
 
@@ -18,6 +17,9 @@ class TeamMeter {
         }
         return this.profiles[this.currentProfileId];
     }
+
+    get lastSelectedId() { return this.currentProfile.lastSelectedId || null; }
+    set lastSelectedId(val) { this.currentProfile.lastSelectedId = val; this.saveToStorage(); }
 
     get urls() { 
         return this.isFixedMode ? (this.fixedConfig.urls || []) : this.currentProfile.urls;
@@ -88,7 +90,8 @@ class TeamMeter {
             openUrlEnabled: true,
             uiType: 'default',
             cardIcon: '🎴',
-            cardOrder: []
+            cardOrder: [],
+            lastSelectedId: null
         };
     }
 
@@ -1600,7 +1603,8 @@ class TeamMeter {
                             usedUrls: new Set(profileData.usedUrls || []),
                             // Ensure new fields exist with defaults
                             cardIcon: profileData.cardIcon || '🎴',
-                            cardOrder: profileData.cardOrder || []
+                            cardOrder: profileData.cardOrder || [],
+                            lastSelectedId: profileData.lastSelectedId || null
                         };
                     }
                     this.currentProfileId = data.currentProfileId || 'default';
