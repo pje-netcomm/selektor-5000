@@ -1492,8 +1492,8 @@ footer {
 
 .emoji-preview-section {
     display: flex;
-    align-items: center;
-    gap: 15px;
+    flex-direction: column;
+    gap: 10px;
     padding: 15px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 12px;
@@ -1509,14 +1509,37 @@ footer {
 .emoji-preview {
     background: white;
     border-radius: 12px;
-    width: 80px;
-    height: 80px;
+    width: 100%;
+    max-width: 120px;
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3em;
+    font-size: 4em;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    cursor: text;
+    outline: none;
+    transition: all 0.2s;
 }
+
+.emoji-preview:focus {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    transform: scale(1.02);
+}
+
+.emoji-preview:empty:before {
+    content: '?';
+    color: #ccc;
+}
+
+.emoji-preview-hint {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85em;
+    text-align: center;
+    font-style: italic;
+}
+
 
 .emoji-custom-section {
     margin-top: 20px;

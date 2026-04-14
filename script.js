@@ -134,17 +134,37 @@ class TeamMeter {
             }
         });
         
-        // Custom emoji input - update preview as user types
-        document.getElementById('customEmojiInput').addEventListener('input', (e) => {
-            const value = e.target.value.trim();
-            if (value) {
-                this.updatePreview(value);
+        // Preview box - handle paste and input
+        const emojiPreview = document.getElementById('emojiPreview');
+        
+        emojiPreview.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const text = e.clipboardData.getData('text/plain').trim();
+            if (text) {
+                // Extract first emoji or characters (up to 4 chars for multi-char emojis)
+                const emoji = text.substring(0, 4);
+                this.updatePreview(emoji);
             }
         });
         
-        // Custom emoji input - apply on Enter
-        document.getElementById('customEmojiInput').addEventListener('keypress', (e) => {
+        emojiPreview.addEventListener('input', (e) => {
+            const text = e.target.textContent.trim();
+            if (text.length > 4) {
+                // Limit to 4 characters
+                e.target.textContent = text.substring(0, 4);
+                // Move cursor to end
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.selectNodeContents(e.target);
+                range.collapse(false);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        });
+        
+        emojiPreview.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
+                e.preventDefault();
                 this.applyEmojiSelection();
             }
         });
@@ -161,8 +181,6 @@ class TeamMeter {
             btn.addEventListener('click', (e) => {
                 const emoji = e.target.dataset.emoji;
                 this.updatePreview(emoji);
-                // Clear custom input when clicking preset
-                document.getElementById('customEmojiInput').value = '';
             });
         });
         
@@ -384,9 +402,6 @@ class TeamMeter {
         
         // Highlight current emoji in grid
         this.updatePreview(this.cardIcon);
-        
-        // Clear custom input
-        document.getElementById('customEmojiInput').value = '';
     }
 
     closeEmojiPicker() {
