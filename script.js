@@ -1037,8 +1037,8 @@ class TeamMeter {
         
         retroText.classList.add('c64-prompt');
         retroText.innerHTML = `
-            <div class="c64-line">**** SELEKTOR 5K (VERY)BASIC V2 ****</div>
-            <div class="c64-line">&nbsp;&nbsp;64K RAM&nbsp;&nbsp;38911 BASIC BYTES FREE</div>
+            <div class="c64-line c64-center">**** SELEKTOR 5K (VERY)BASIC V2 ****</div>
+            <div class="c64-line c64-center">&nbsp;&nbsp;64K RAM&nbsp;&nbsp;38911 BASIC BYTES FREE</div>
             <div class="c64-line">READY.</div>
             <div class="c64-line"><span class="c64-cursor">█</span></div>
         `;
@@ -1065,15 +1065,18 @@ class TeamMeter {
         // Maximum visible lines (like a C64 screen)
         const maxLines = 10;
         let lines = [
-            '**** SELEKTOR 5K (VERY)BASIC V2 ****',
-            '  64K RAM  38911 BASIC BYTES FREE',
-            'READY.'
+            { text: '**** SELEKTOR 5K (VERY)BASIC V2 ****', centered: true },
+            { text: '  64K RAM  38911 BASIC BYTES FREE', centered: true },
+            { text: 'READY.', centered: false }
         ];
         
         const updateScreen = (addCursor = false, cursorLine = '') => {
             // Keep only last maxLines
             const visibleLines = lines.slice(-maxLines);
-            let html = visibleLines.map(line => `<div class="c64-line">${line}</div>`).join('');
+            let html = visibleLines.map(line => {
+                const centered = line.centered ? ' c64-center' : '';
+                return `<div class="c64-line${centered}">${line.text}</div>`;
+            }).join('');
             if (addCursor) {
                 html += `<div class="c64-line">${cursorLine}<span class="c64-cursor">█</span></div>`;
             }
@@ -1092,12 +1095,12 @@ class TeamMeter {
         }
         
         // Press enter - add command to history
-        lines.push(loadCmd);
+        lines.push({ text: loadCmd, centered: false });
         updateScreen();
         await this.sleep(400);
         
         // Show SEARCHING message
-        lines.push('SEARCHING FOR SELEKTOR');
+        lines.push({ text: 'SEARCHING FOR SELEKTOR', centered: false });
         updateScreen();
         await this.sleep(400);
         
@@ -1106,9 +1109,9 @@ class TeamMeter {
             const loadingLine = 'LOADING' + '...'.substring(0, j);
             // Update or add loading line
             if (j === 0) {
-                lines.push(loadingLine);
+                lines.push({ text: loadingLine, centered: false });
             } else {
-                lines[lines.length - 1] = loadingLine;
+                lines[lines.length - 1] = { text: loadingLine, centered: false };
             }
             updateScreen();
             await this.sleep(200);
@@ -1116,7 +1119,7 @@ class TeamMeter {
         await this.sleep(300);
         
         // Show READY prompt
-        lines.push('READY.');
+        lines.push({ text: 'READY.', centered: false });
         updateScreen();
         await this.sleep(400);
         

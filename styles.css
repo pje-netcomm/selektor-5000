@@ -1795,6 +1795,10 @@ footer {
     margin: 4px 0;
 }
 
+.c64-line.c64-center {
+    text-align: center;
+}
+
 .c64-cursor {
     display: inline-block;
     animation: c64blink 1s steps(2) infinite;
