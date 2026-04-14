@@ -1,4 +1,0 @@
-Agents must ignore this file.
-
-- show branch name beside version, if not "master"
-
