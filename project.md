@@ -206,3 +206,10 @@ Current version: **v7.1.0**
     - browser page title not updated when title config is changed.
     - Allow selectees to be configured without a URL; no URL is configured, just
       display the name and don't attempt to open a URL when selected.
+## [retro-mode-improvements]
+    - remove "pixel row" effect seen betwen the "game" and the selection celebration
+    - game animation is too short for several game types
+    - pong needs paddles, more random movement.
+    - "Invaders" needs the player shooting at the invaders
+    - pacman looks boring, make it yellow and filled.  Show him moving, and
+      eating larger dots, ghosts and fruit (in a random sequence)
