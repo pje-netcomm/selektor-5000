@@ -8,6 +8,8 @@ class TeamMeter {
         this.contextMenuTarget = null;
         this.fixedConfig = null;
         this.isFixedMode = false;
+        this.testMode = false;
+        this.testModeSequence = '';
         this.init();
     }
 
@@ -101,6 +103,7 @@ class TeamMeter {
         this.setupEventListeners();
         this.createSounds();
         this.setupDebugMode();
+        this.setupTestMode();
         this.switchMode(this.currentMode);
         this.render();
     }
@@ -1014,8 +1017,8 @@ class TeamMeter {
             if (lastUrl) {
                 retroText.textContent = lastUrl.displayName.toUpperCase();
                 retroText.classList.remove('c64-prompt');
-                // Add pixel effect for selected item
-                this.createRetroPixels(6);
+                // Show idle state (keeps celebration, adds message)
+                this.showRetroIdleState();
             }
         } else {
             // No selections yet - show C64 BASIC prompt
@@ -1175,12 +1178,21 @@ class TeamMeter {
             retroDisplay.classList.add('spinning');
             retroScreen.classList.add('retro-shaking');
             
-            // Add random glitch pixels during spin
-            let glitchInterval;
-            if (this.animationDuration > 0) {
-                glitchInterval = setInterval(() => {
-                    this.createRetroGlitchPixels();
-                }, 300);
+            // Start random spin animation
+            const spinAnimType = this.getRandomSpinAnimation();
+            switch (spinAnimType) {
+                case 'pacman':
+                    this.createPacManAnimation();
+                    break;
+                case 'invaders':
+                    this.createSpaceInvadersAnimation();
+                    break;
+                case 'pong':
+                    this.createPongBallAnimation();
+                    break;
+                case 'tetris':
+                    this.createTetrisAnimation();
+                    break;
             }
             
             // Play spinning sound effects
@@ -1206,11 +1218,10 @@ class TeamMeter {
             
             setTimeout(() => {
                 clearInterval(spinTimer);
-                if (glitchInterval) clearInterval(glitchInterval);
                 if (soundTimer) clearInterval(soundTimer);
                 retroDisplay.classList.remove('spinning');
                 retroScreen.classList.remove('retro-shaking');
-                // Clear glitch pixels
+                // Clear spin animation
                 document.getElementById('retroPixels').innerHTML = '';
                 resolve();
             }, spinDuration);
@@ -1295,9 +1306,29 @@ class TeamMeter {
                 this.createRetroPixels(16);
             }, 400);
             
+            // Start random celebration animation (replaces pixel bursts)
+            setTimeout(() => {
+                const celebType = this.getRandomCelebrationAnimation();
+                switch (celebType) {
+                    case 'fireworks':
+                        this.createFireworksAnimation();
+                        break;
+                    case 'trophy':
+                        this.createTrophyAnimation();
+                        break;
+                    case 'scrolling':
+                        this.createScrollingMessageAnimation();
+                        break;
+                    case 'quotes':
+                        this.createRetroQuotesAnimation();
+                        break;
+                }
+            }, 800);
+            
             setTimeout(() => {
                 retroDisplay.classList.remove('selected', 'retro-explosion');
                 retroScreen.classList.remove('retro-pulse');
+                // Do NOT clear retroPixels - keep celebration visible
                 resolve();
             }, this.animationDuration * 1000);
         });
@@ -1364,6 +1395,239 @@ class TeamMeter {
         
         bass.start(bassStart);
         bass.stop(bassStart + 0.4);
+    }
+
+    // Spinning Animation Methods (during selection)
+    createPacManAnimation() {
+        const retroPixels = document.getElementById('retroPixels');
+        retroPixels.innerHTML = '';
+        retroPixels.className = 'retro-pixels retro-pacman-container';
+        
+        // Create Pac-Man
+        const pacman = document.createElement('div');
+        pacman.className = 'retro-pacman';
+        pacman.textContent = 'ᗧ';
+        
+        // Create dots
+        const dotsContainer = document.createElement('div');
+        dotsContainer.className = 'retro-pacman-dots';
+        for (let i = 0; i < 12; i++) {
+            const dot = document.createElement('span');
+            dot.className = 'retro-dot';
+            dot.textContent = '·';
+            dot.style.animationDelay = `${i * 0.1}s`;
+            dotsContainer.appendChild(dot);
+        }
+        
+        retroPixels.appendChild(pacman);
+        retroPixels.appendChild(dotsContainer);
+    }
+
+    createSpaceInvadersAnimation() {
+        const retroPixels = document.getElementById('retroPixels');
+        retroPixels.innerHTML = '';
+        retroPixels.className = 'retro-pixels retro-invaders-container';
+        
+        // Create 3 rows of aliens
+        for (let row = 0; row < 3; row++) {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'retro-invader-row';
+            rowDiv.style.animationDelay = `${row * 0.1}s`;
+            
+            for (let i = 0; i < 6; i++) {
+                const alien = document.createElement('span');
+                alien.className = 'retro-alien';
+                alien.textContent = '👾';
+                alien.style.animationDelay = `${i * 0.05}s`;
+                rowDiv.appendChild(alien);
+            }
+            
+            retroPixels.appendChild(rowDiv);
+        }
+    }
+
+    createPongBallAnimation() {
+        const retroPixels = document.getElementById('retroPixels');
+        retroPixels.innerHTML = '';
+        retroPixels.className = 'retro-pixels retro-pong-container';
+        
+        // Create ball
+        const ball = document.createElement('div');
+        ball.className = 'retro-pong-ball';
+        ball.textContent = '●';
+        
+        retroPixels.appendChild(ball);
+    }
+
+    createTetrisAnimation() {
+        const retroPixels = document.getElementById('retroPixels');
+        retroPixels.innerHTML = '';
+        retroPixels.className = 'retro-pixels retro-tetris-container';
+        
+        // Define actual Tetris tetromino shapes (7 classic pieces)
+        const tetrominos = [
+            { name: 'I', pattern: [[1,1,1,1]], color: '#9bbc0f' },           // ████
+            { name: 'O', pattern: [[1,1],[1,1]], color: '#8bac0f' },         // ██
+                                                                              // ██
+            { name: 'T', pattern: [[1,1,1],[0,1,0]], color: '#7b9c0f' },     // ███
+                                                                              //  █
+            { name: 'S', pattern: [[0,1,1],[1,1,0]], color: '#6b8c0f' },     //  ██
+                                                                              // ██
+            { name: 'Z', pattern: [[1,1,0],[0,1,1]], color: '#9bbc0f' },     // ██
+                                                                              //  ██
+            { name: 'L', pattern: [[1,0],[1,0],[1,1]], color: '#8bac0f' },   // █
+                                                                              // █
+                                                                              // ██
+            { name: 'J', pattern: [[0,1],[0,1],[1,1]], color: '#7b9c0f' }    //  █
+                                                                              //  █
+                                                                              // ██
+        ];
+        
+        // Create 5 falling tetrominoes
+        for (let i = 0; i < 5; i++) {
+            const tetromino = tetrominos[i % tetrominos.length];
+            const piece = document.createElement('div');
+            piece.className = 'retro-tetromino';
+            piece.style.left = `${10 + i * 18}%`;
+            piece.style.animationDelay = `${i * 0.4}s`;
+            piece.style.animationDuration = `${1.8 + Math.random() * 0.6}s`;
+            
+            // Create grid for the tetromino
+            const grid = document.createElement('div');
+            grid.className = 'tetromino-grid';
+            
+            // Build the shape from the pattern
+            tetromino.pattern.forEach(row => {
+                row.forEach(cell => {
+                    const block = document.createElement('div');
+                    block.className = cell ? 'tetromino-block' : 'tetromino-empty';
+                    if (cell) {
+                        block.style.backgroundColor = tetromino.color;
+                    }
+                    grid.appendChild(block);
+                });
+            });
+            
+            // Set grid template based on pattern dimensions
+            const cols = tetromino.pattern[0].length;
+            const rows = tetromino.pattern.length;
+            grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+            
+            piece.appendChild(grid);
+            retroPixels.appendChild(piece);
+        }
+    }
+
+    // Celebration Animation Methods (after selection)
+    createFireworksAnimation() {
+        const retroPixels = document.getElementById('retroPixels');
+        retroPixels.innerHTML = '';
+        retroPixels.className = 'retro-pixels retro-fireworks-container';
+        
+        const symbols = ['*', '✦', '✧', '★', '☆', '✨'];
+        
+        // Create multiple bursts
+        for (let burst = 0; burst < 4; burst++) {
+            setTimeout(() => {
+                for (let i = 0; i < 16; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'retro-firework';
+                    star.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                    star.style.setProperty('--angle', `${(i * 22.5)}deg`);
+                    star.style.animationDelay = `${burst * 0.3}s`;
+                    retroPixels.appendChild(star);
+                }
+            }, burst * 300);
+        }
+    }
+
+    createTrophyAnimation() {
+        const retroPixels = document.getElementById('retroPixels');
+        retroPixels.innerHTML = '';
+        retroPixels.className = 'retro-pixels retro-trophy-container';
+        
+        // Trophy descending
+        const trophy = document.createElement('div');
+        trophy.className = 'retro-trophy';
+        trophy.innerHTML = '🏆';
+        
+        // Sparkles around trophy
+        const sparkles = document.createElement('div');
+        sparkles.className = 'retro-trophy-sparkles';
+        sparkles.innerHTML = '✨ ✨';
+        
+        retroPixels.appendChild(trophy);
+        retroPixels.appendChild(sparkles);
+    }
+
+    createScrollingMessageAnimation() {
+        const retroPixels = document.getElementById('retroPixels');
+        retroPixels.innerHTML = '';
+        retroPixels.className = 'retro-pixels retro-scroll-container';
+        
+        const messages = [
+            '>>> WINNER WINNER CHICKEN DINNER <<<',
+            '>>> SELECTION COMPLETE <<<',
+            '>>> CONGRATULATIONS <<<',
+            '>>> RANDOM CHOICE ACHIEVED <<<',
+            '>>> THE COMPUTER HAS SPOKEN <<<'
+        ];
+        
+        const message = messages[Math.floor(Math.random() * messages.length)];
+        
+        const scrollText = document.createElement('div');
+        scrollText.className = 'retro-scroll-text';
+        scrollText.textContent = message;
+        
+        retroPixels.appendChild(scrollText);
+    }
+
+    createRetroQuotesAnimation() {
+        const retroPixels = document.getElementById('retroPixels');
+        retroPixels.innerHTML = '';
+        retroPixels.className = 'retro-pixels retro-quote-container';
+        
+        const quotes = [
+            '"CONGRATULATIONS!!!"<br>- THE COMPUTER',
+            '"EXCELLENT CHOICE"<br>- SELEKTOR 5000',
+            '"PROBABILITY: 1 IN ' + this.urls.filter(u => !this.usedUrls.has(u.id)).length + '"<br>- MATH',
+            '"TASK FAILED SUCCESSFULLY"<br>- WINDOWS XP',
+            '"MISSION ACCOMPLISHED"<br>- SYSTEM',
+            '"ALL YOUR BASE ARE BELONG TO US"<br>- ZERO WING'
+        ];
+        
+        const quote = quotes[Math.floor(Math.random() * quotes.length)];
+        
+        const quoteDiv = document.createElement('div');
+        quoteDiv.className = 'retro-quote';
+        quoteDiv.innerHTML = quote;
+        
+        retroPixels.appendChild(quoteDiv);
+    }
+
+    // Helper Methods for Random Selection
+    getRandomSpinAnimation() {
+        const animations = ['pacman', 'invaders', 'pong', 'tetris'];
+        return animations[Math.floor(Math.random() * animations.length)];
+    }
+
+    getRandomCelebrationAnimation() {
+        const animations = ['fireworks', 'trophy', 'scrolling', 'quotes'];
+        return animations[Math.floor(Math.random() * animations.length)];
+    }
+
+    showRetroIdleState() {
+        const retroPixels = document.getElementById('retroPixels');
+        
+        // Keep existing celebration animation if it exists
+        // Only add idle message if not already present
+        if (!retroPixels.querySelector('.retro-idle-message')) {
+            const idleMessage = document.createElement('div');
+            idleMessage.className = 'retro-idle-message';
+            idleMessage.textContent = 'Press The Any Key....';
+            retroPixels.appendChild(idleMessage);
+        }
     }
 
 
@@ -1928,6 +2192,178 @@ class TeamMeter {
                 this.openDebugView();
             }
         });
+    }
+
+    setupTestMode() {
+        // Listen for "spispopd" sequence to activate test mode
+        document.addEventListener('keydown', (e) => {
+            // Ignore if in an input field
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return;
+            }
+
+            // Handle Escape key to exit test mode
+            if (e.key === 'Escape' && this.testMode) {
+                this.testMode = false;
+                this.testModeSequence = '';
+                console.log('🎮 Test Mode DEACTIVATED (Escape pressed)');
+                this.hideTestModeUI();
+                return;
+            }
+
+            // Build sequence
+            this.testModeSequence += e.key.toLowerCase();
+            
+            // Keep only last 8 characters
+            if (this.testModeSequence.length > 8) {
+                this.testModeSequence = this.testModeSequence.slice(-8);
+            }
+            
+            // Check for activation sequence
+            if (this.testModeSequence.includes('spispopd')) {
+                this.testMode = !this.testMode;
+                this.testModeSequence = '';
+                
+                if (this.testMode) {
+                    console.log('🎮 Test Mode ACTIVATED');
+                    this.showTestModeUI();
+                } else {
+                    console.log('🎮 Test Mode DEACTIVATED');
+                    this.hideTestModeUI();
+                }
+                return;
+            }
+            
+            // If in test mode and retro UI, handle number keys
+            if (this.testMode && this.uiType === 'retro' && this.currentMode === 'selection') {
+                const num = parseInt(e.key);
+                if (!isNaN(num) && num >= 1 && num <= 8) {
+                    this.triggerTestAnimation(num);
+                }
+            }
+        });
+    }
+
+    showTestModeUI() {
+        if (this.uiType !== 'retro') {
+            alert('Test mode only works in Retro UI mode. Please switch to Retro UI in Settings.');
+            this.testMode = false;
+            return;
+        }
+        
+        const retroText = document.getElementById('retroText');
+        const retroPixels = document.getElementById('retroPixels');
+        
+        retroText.classList.add('c64-prompt');
+        retroText.innerHTML = `
+            <div class="c64-line c64-center">🎮 TEST MODE ACTIVE 🎮</div>
+            <div class="c64-line">PRESS NUMBER TO TEST:</div>
+            <div class="c64-line">1 = PAC-MAN SPIN</div>
+            <div class="c64-line">2 = SPACE INVADERS SPIN</div>
+            <div class="c64-line">3 = PONG BALL SPIN</div>
+            <div class="c64-line">4 = TETRIS SPIN</div>
+            <div class="c64-line">5 = FIREWORKS CELEBRATION</div>
+            <div class="c64-line">6 = TROPHY CELEBRATION</div>
+            <div class="c64-line">7 = SCROLLING MESSAGE</div>
+            <div class="c64-line">8 = RETRO QUOTES</div>
+            <div class="c64-line">TYPE 'spispopd' TO EXIT</div>
+        `;
+        retroPixels.innerHTML = '';
+    }
+
+    hideTestModeUI() {
+        if (this.uiType === 'retro') {
+            this.renderRetro();
+        }
+    }
+
+    triggerTestAnimation(num) {
+        const retroText = document.getElementById('retroText');
+        const retroPixels = document.getElementById('retroPixels');
+        
+        console.log(`🎮 Testing animation ${num}`);
+        
+        // Clear previous animation
+        retroPixels.innerHTML = '';
+        retroText.classList.remove('c64-prompt');
+        
+        // Set up repeating sound effects for spin animations (1-4)
+        let soundInterval;
+        
+        switch(num) {
+            case 1:
+                retroText.textContent = 'PAC-MAN ANIMATION';
+                this.createPacManAnimation();
+                // Play spinning sound repeatedly for spin animations
+                if (this.soundEnabled) {
+                    this.playRetroBlip();
+                    soundInterval = setInterval(() => this.playRetroBlip(), 200);
+                }
+                break;
+            case 2:
+                retroText.textContent = 'SPACE INVADERS ANIMATION';
+                this.createSpaceInvadersAnimation();
+                if (this.soundEnabled) {
+                    this.playRetroBlip();
+                    soundInterval = setInterval(() => this.playRetroBlip(), 200);
+                }
+                break;
+            case 3:
+                retroText.textContent = 'PONG BALL ANIMATION';
+                this.createPongBallAnimation();
+                if (this.soundEnabled) {
+                    this.playRetroBlip();
+                    soundInterval = setInterval(() => this.playRetroBlip(), 200);
+                }
+                break;
+            case 4:
+                retroText.textContent = 'TETRIS ANIMATION';
+                this.createTetrisAnimation();
+                if (this.soundEnabled) {
+                    this.playRetroBlip();
+                    soundInterval = setInterval(() => this.playRetroBlip(), 200);
+                }
+                break;
+            case 5:
+                retroText.textContent = 'FIREWORKS CELEBRATION';
+                this.createFireworksAnimation();
+                // Play celebration sound once for celebration animations
+                if (this.soundEnabled) {
+                    this.playRetroSelectSound();
+                }
+                break;
+            case 6:
+                retroText.textContent = 'TROPHY CELEBRATION';
+                this.createTrophyAnimation();
+                if (this.soundEnabled) {
+                    this.playRetroSelectSound();
+                }
+                break;
+            case 7:
+                retroText.textContent = 'SCROLLING MESSAGE';
+                this.createScrollingMessageAnimation();
+                if (this.soundEnabled) {
+                    this.playRetroSelectSound();
+                }
+                break;
+            case 8:
+                retroText.textContent = 'RETRO QUOTES';
+                this.createRetroQuotesAnimation();
+                if (this.soundEnabled) {
+                    this.playRetroSelectSound();
+                }
+                break;
+        }
+        
+        // Show test menu again after 5 seconds and stop sounds
+        setTimeout(() => {
+            if (soundInterval) {
+                clearInterval(soundInterval);
+            }
+            if (this.testMode) {
+                this.showTestModeUI();
+            }
+        }, 5000);
     }
 
     openDebugView() {

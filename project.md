@@ -194,9 +194,15 @@ Current version: **v7.0.0**
    - When the user clicks to select, the wheel spins and lands on a random segment
    - The wheel should have sound effects and animation for extra engagement.
    - Select this display type in settings in addition to existing display types.
+## [alternate-ui-pacman]
+   - display a pacman game board with selectes as prizes to be eaten by the pacman.
+   - pacman moves around the board and eats selectees until one is randomly
+     chosen as the final selection.
+   - pacman ghosts can appear to affect the pacman's movement and add an element of unpredictability.
 ## [dark-mode]
     - Add a "dark mode" toggle for users who prefer a darker interface,
     - use appropriate color scheme adjustments for readability and aesthetics.
 ## [minor improvements]
-- browser page title not updated when title config is changed.
-- Allow selectees to be configured without a URL; no URL is configured, just display the name and don't attempt to open a URL when selected.
+    - browser page title not updated when title config is changed.
+    - Allow selectees to be configured without a URL; no URL is configured, just
+      display the name and don't attempt to open a URL when selected.

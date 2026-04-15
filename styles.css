@@ -1827,6 +1827,8 @@ footer {
     justify-content: center;
     gap: 4px;
     max-width: 100%;
+    min-height: 150px;
+    flex: 1;
 }
 
 .retro-pixel {
@@ -2037,4 +2039,301 @@ footer {
     }
 }
 
+
+/* Spinning Animation Styles (during selection) */
+
+/* Pac-Man Animation */
+.retro-pacman-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    min-height: 150px;
+    width: 100%;
+}
+
+.retro-pacman {
+    font-size: 48px;
+    animation: pacmanChomp 0.3s infinite, pacmanMove 3s linear infinite;
+}
+
+.retro-pacman-dots {
+    display: flex;
+    gap: 12px;
+}
+
+.retro-dot {
+    font-size: 32px;
+    color: #9bbc0f;
+    animation: dotDisappear 1.2s ease-in forwards;
+}
+
+@keyframes pacmanChomp {
+    0%, 100% { transform: scaleX(1); }
+    50% { transform: scaleX(0.8); }
+}
+
+@keyframes pacmanMove {
+    0% { transform: translateX(-40px); }
+    100% { transform: translateX(40px); }
+}
+
+@keyframes dotDisappear {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0); }
+}
+
+/* Space Invaders Animation */
+.retro-invaders-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 150px;
+    width: 100%;
+    justify-content: center;
+}
+
+.retro-invader-row {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    animation: alienMarch 2s ease-in-out infinite;
+}
+
+.retro-alien {
+    font-size: 32px;
+    animation: alienFrame 0.5s steps(2) infinite;
+}
+
+@keyframes alienMarch {
+    0%, 100% { transform: translateX(-20px); }
+    50% { transform: translateX(20px); }
+}
+
+@keyframes alienFrame {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+/* Pong Ball Animation */
+.retro-pong-container {
+    position: relative;
+    min-height: 150px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.retro-pong-ball {
+    font-size: 36px;
+    color: #9bbc0f;
+    animation: pongBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes pongBounce {
+    0%, 100% { transform: translate(-80px, -30px); }
+    25% { transform: translate(0, 30px); }
+    50% { transform: translate(80px, -30px); }
+    75% { transform: translate(0, 30px); }
+}
+
+/* Tetris Animation */
+.retro-tetris-container {
+    position: relative;
+    min-height: 150px;
+    width: 100%;
+    overflow: hidden; /* Prevent pieces from showing above container */
+}
+
+.retro-tetromino {
+    position: absolute;
+    top: -60px;
+    animation: tetrisFall 2s linear infinite;
+}
+
+.tetromino-grid {
+    display: grid;
+    gap: 2px;
+}
+
+.tetromino-block {
+    width: 16px;
+    height: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.tetromino-empty {
+    width: 16px;
+    height: 16px;
+}
+
+@keyframes tetrisFall {
+    0% { transform: translateY(-60px) rotate(0deg); }
+    100% { transform: translateY(200px) rotate(360deg); }
+}
+
+
+/* Celebration Animation Styles (after selection) */
+
+/* Fireworks Animation */
+.retro-fireworks-container {
+    position: relative;
+    min-height: 150px;
+    width: 100%;
+}
+
+.retro-firework {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    font-size: 28px;
+    color: #9bbc0f;
+    animation: fireworkExpand 1s ease-out forwards;
+}
+
+@keyframes fireworkExpand {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(
+            calc(-50% + cos(var(--angle)) * 90px),
+            calc(-50% + sin(var(--angle)) * 90px)
+        ) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Trophy Animation */
+.retro-trophy-container {
+    position: relative;
+    min-height: 150px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.retro-trophy {
+    font-size: 64px;
+    animation: trophyDescend 1s ease-out forwards;
+}
+
+.retro-trophy-sparkles {
+    font-size: 28px;
+    animation: sparkle 1s ease-in-out infinite;
+}
+
+@keyframes trophyDescend {
+    0% {
+        transform: translateY(-100px) scale(0.5);
+        opacity: 0;
+    }
+    60% {
+        transform: translateY(0) scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        opacity: 0.4;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+/* Scrolling Message Animation */
+.retro-scroll-container {
+    overflow: hidden;
+    min-height: 150px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.retro-scroll-text {
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    font-weight: bold;
+    color: #9bbc0f;
+    white-space: nowrap;
+    animation: marqueeScroll 8s linear infinite;
+}
+
+@keyframes marqueeScroll {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* Retro Quotes Animation */
+.retro-quote-container {
+    min-height: 150px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.retro-quote {
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    font-weight: bold;
+    color: #9bbc0f;
+    text-align: center;
+    line-height: 1.6;
+    animation: quoteFadeIn 0.6s ease-in;
+}
+
+@keyframes quoteFadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* Idle State Styles */
+.retro-idle-message {
+    margin-top: 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+    color: #8bac0f;
+    text-align: center;
+    animation: idleBlink 2s ease-in-out infinite;
+}
+
+@keyframes idleBlink {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
 
