@@ -10,6 +10,12 @@ class TeamMeter {
         this.isFixedMode = false;
         this.testMode = false;
         this.testModeSequence = '';
+        this.testModeInterval = null; // For continuous test mode animations
+        this.testModeSoundInterval = null; // For test mode sound effects
+        this.testModeShowingAnimation = false; // Track if animation is playing or menu is showing
+        this.tetrisAnimationActive = false; // Track if Tetris animation is running
+        this.spinAnimationBag = []; // Shuffle bag for equal distribution
+        this.celebrationAnimationBag = []; // Shuffle bag for equal distribution
         this.init();
     }
 
@@ -1166,7 +1172,7 @@ class TeamMeter {
         
         return new Promise((resolve) => {
             // Retro spin effect - cycle through names quickly
-            const spinDuration = this.animationDuration * 1000; // Convert to ms
+            let spinDuration = this.animationDuration * 1000; // Convert to ms
             const spinInterval = 100; // 8-bit style fast cycling
             let currentIndex = 0;
             
@@ -1192,6 +1198,18 @@ class TeamMeter {
                     break;
                 case 'tetris':
                     this.createTetrisAnimation();
+                    // Extend duration for Tetris to allow all blocks to fall
+                    // Calculate based on number of blocks and fall time
+                    // Each block needs ~1 second to fall + 0.5 second spawn delay
+                    let blockCount;
+                    if (this.animationDuration <= 0.5) blockCount = 2;
+                    else if (this.animationDuration <= 1) blockCount = 4;
+                    else if (this.animationDuration <= 1.5) blockCount = 6;
+                    else blockCount = 8;
+                    
+                    const timePerBlock = 1500; // 1.5 seconds per block (fall + spawn delay)
+                    const tetrisDuration = blockCount * timePerBlock;
+                    spinDuration = Math.max(spinDuration, tetrisDuration);
                     break;
             }
             
@@ -1221,7 +1239,8 @@ class TeamMeter {
                 if (soundTimer) clearInterval(soundTimer);
                 retroDisplay.classList.remove('spinning');
                 retroScreen.classList.remove('retro-shaking');
-                // Clear spin animation
+                // Clear spin animation and stop Tetris if running
+                this.tetrisAnimationActive = false;
                 document.getElementById('retroPixels').innerHTML = '';
                 resolve();
             }, spinDuration);
@@ -1464,39 +1483,89 @@ class TeamMeter {
         retroPixels.innerHTML = '';
         retroPixels.className = 'retro-pixels retro-tetris-container';
         
+        // Set animation as active
+        this.tetrisAnimationActive = true;
+        
+        // Get container dimensions
+        const containerHeight = 150; // min-height from CSS
+        const containerWidth = retroPixels.offsetWidth || 280;
+        
+        // Determine max pieces based on animation speed
+        // 0.5 = Fast → 2 blocks, 1 = Normal → 4 blocks, 1.5 = Slow → 6 blocks, 2 = Very Slow → 8 blocks
+        let maxPieces;
+        if (this.animationDuration <= 0.5) {
+            maxPieces = 2;
+        } else if (this.animationDuration <= 1) {
+            maxPieces = 4;
+        } else if (this.animationDuration <= 1.5) {
+            maxPieces = 6;
+        } else {
+            maxPieces = 8;
+        }
+        
         // Define actual Tetris tetromino shapes (7 classic pieces)
         const tetrominos = [
-            { name: 'I', pattern: [[1,1,1,1]], color: '#9bbc0f' },           // ████
-            { name: 'O', pattern: [[1,1],[1,1]], color: '#8bac0f' },         // ██
-                                                                              // ██
-            { name: 'T', pattern: [[1,1,1],[0,1,0]], color: '#7b9c0f' },     // ███
-                                                                              //  █
-            { name: 'S', pattern: [[0,1,1],[1,1,0]], color: '#6b8c0f' },     //  ██
-                                                                              // ██
-            { name: 'Z', pattern: [[1,1,0],[0,1,1]], color: '#9bbc0f' },     // ██
-                                                                              //  ██
-            { name: 'L', pattern: [[1,0],[1,0],[1,1]], color: '#8bac0f' },   // █
-                                                                              // █
-                                                                              // ██
-            { name: 'J', pattern: [[0,1],[0,1],[1,1]], color: '#7b9c0f' }    //  █
-                                                                              //  █
-                                                                              // ██
+            { name: 'I', pattern: [[1,1,1,1]], color: '#9bbc0f' },
+            { name: 'O', pattern: [[1,1],[1,1]], color: '#8bac0f' },
+            { name: 'T', pattern: [[1,1,1],[0,1,0]], color: '#7b9c0f' },
+            { name: 'S', pattern: [[0,1,1],[1,1,0]], color: '#6b8c0f' },
+            { name: 'Z', pattern: [[1,1,0],[0,1,1]], color: '#9bbc0f' },
+            { name: 'L', pattern: [[1,0],[1,0],[1,1]], color: '#8bac0f' },
+            { name: 'J', pattern: [[0,1],[0,1],[1,1]], color: '#7b9c0f' }
         ];
         
-        // Create 5 falling tetrominoes
-        for (let i = 0; i < 5; i++) {
-            const tetromino = tetrominos[i % tetrominos.length];
-            const piece = document.createElement('div');
-            piece.className = 'retro-tetromino';
-            piece.style.left = `${10 + i * 18}%`;
-            piece.style.animationDelay = `${i * 0.4}s`;
-            piece.style.animationDuration = `${1.8 + Math.random() * 0.6}s`;
+        const landedPieces = []; // Track all landed pieces with their positions
+        let activePiece = null;
+        let pieceCount = 0;
+        
+        // Helper function to calculate piece dimensions
+        const getPieceDimensions = (pattern) => {
+            return {
+                width: pattern[0].length * 18, // 16px block + 2px gap
+                height: pattern.length * 18
+            };
+        };
+        
+        // Check if piece collides with landed pieces or bottom
+        const checkCollision = (piece, newY) => {
+            const pieceRect = {
+                left: piece.x,
+                right: piece.x + piece.width,
+                top: newY,
+                bottom: newY + piece.height
+            };
             
-            // Create grid for the tetromino
+            // Check bottom collision
+            if (pieceRect.bottom >= containerHeight) {
+                return true;
+            }
+            
+            // Check collision with landed pieces
+            for (const landed of landedPieces) {
+                const landedRect = {
+                    left: landed.x,
+                    right: landed.x + landed.width,
+                    top: landed.y,
+                    bottom: landed.y + landed.height
+                };
+                
+                // Check if rectangles overlap
+                if (pieceRect.left < landedRect.right &&
+                    pieceRect.right > landedRect.left &&
+                    pieceRect.top < landedRect.bottom &&
+                    pieceRect.bottom > landedRect.top) {
+                    return true;
+                }
+            }
+            
+            return false;
+        };
+        
+        // Create visual element for piece
+        const createPieceElement = (tetromino, rotation) => {
             const grid = document.createElement('div');
             grid.className = 'tetromino-grid';
             
-            // Build the shape from the pattern
             tetromino.pattern.forEach(row => {
                 row.forEach(cell => {
                     const block = document.createElement('div');
@@ -1508,15 +1577,111 @@ class TeamMeter {
                 });
             });
             
-            // Set grid template based on pattern dimensions
             const cols = tetromino.pattern[0].length;
             const rows = tetromino.pattern.length;
             grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
             grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
             
-            piece.appendChild(grid);
-            retroPixels.appendChild(piece);
-        }
+            const pieceElement = document.createElement('div');
+            pieceElement.className = 'retro-tetromino-js';
+            pieceElement.style.transform = `rotate(${rotation}deg)`;
+            pieceElement.appendChild(grid);
+            
+            return pieceElement;
+        };
+        
+        // Animate falling piece
+        const animatePiece = (piece) => {
+            const fallSpeed = 2.5; // pixels per frame (increased from 1)
+            const rotationInterval = 500; // ms between rotations (decreased from 800)
+            let lastRotationTime = Date.now();
+            let currentRotation = 0;
+            const maxRotations = Math.floor(Math.random() * 4); // 0-3 rotations
+            let rotationCount = 0;
+            
+            const fall = () => {
+                // Stop if animation is no longer active
+                if (!this.tetrisAnimationActive) return;
+                if (!activePiece || activePiece !== piece) return;
+                
+                const newY = piece.y + fallSpeed;
+                
+                // Check for rotation
+                const now = Date.now();
+                if (rotationCount < maxRotations && now - lastRotationTime >= rotationInterval) {
+                    currentRotation += 90;
+                    piece.element.style.transform = `rotate(${currentRotation}deg)`;
+                    piece.rotation = currentRotation;
+                    rotationCount++;
+                    lastRotationTime = now;
+                }
+                
+                // Check collision
+                if (checkCollision(piece, newY)) {
+                    // Land the piece
+                    piece.element.classList.add('tetromino-landed');
+                    landedPieces.push({
+                        x: piece.x,
+                        y: piece.y,
+                        width: piece.width,
+                        height: piece.height
+                    });
+                    activePiece = null;
+                    
+                    // Spawn next piece after delay (only if animation still active)
+                    if (pieceCount < maxPieces && this.tetrisAnimationActive) {
+                        setTimeout(() => {
+                            if (this.tetrisAnimationActive) {
+                                spawnPiece();
+                            }
+                        }, 400 + Math.random() * 300);
+                    }
+                } else {
+                    // Continue falling
+                    piece.y = newY;
+                    piece.element.style.top = `${piece.y}px`;
+                    requestAnimationFrame(fall);
+                }
+            };
+            
+            requestAnimationFrame(fall);
+        };
+        
+        // Spawn a new piece
+        const spawnPiece = () => {
+            if (pieceCount >= maxPieces || !this.tetrisAnimationActive) return;
+            
+            const tetromino = tetrominos[Math.floor(Math.random() * tetrominos.length)];
+            const dims = getPieceDimensions(tetromino.pattern);
+            
+            // Random horizontal position
+            const maxX = containerWidth - dims.width;
+            const x = Math.max(0, Math.random() * maxX);
+            
+            const element = createPieceElement(tetromino, 0);
+            element.style.position = 'absolute';
+            element.style.left = `${x}px`;
+            element.style.top = '-60px';
+            
+            const piece = {
+                element: element,
+                tetromino: tetromino,
+                x: x,
+                y: -60,
+                width: dims.width,
+                height: dims.height,
+                rotation: 0
+            };
+            
+            retroPixels.appendChild(element);
+            activePiece = piece;
+            pieceCount++;
+            
+            animatePiece(piece);
+        };
+        
+        // Start spawning pieces
+        spawnPiece();
     }
 
     // Celebration Animation Methods (after selection)
@@ -1608,13 +1773,29 @@ class TeamMeter {
 
     // Helper Methods for Random Selection
     getRandomSpinAnimation() {
-        const animations = ['pacman', 'invaders', 'pong', 'tetris'];
-        return animations[Math.floor(Math.random() * animations.length)];
+        if (this.spinAnimationBag.length === 0) {
+            // Refill and shuffle bag
+            this.spinAnimationBag = ['pacman', 'invaders', 'pong', 'tetris'];
+            this.shuffleArray(this.spinAnimationBag);
+        }
+        return this.spinAnimationBag.pop();
     }
 
     getRandomCelebrationAnimation() {
-        const animations = ['fireworks', 'trophy', 'scrolling', 'quotes'];
-        return animations[Math.floor(Math.random() * animations.length)];
+        if (this.celebrationAnimationBag.length === 0) {
+            // Refill and shuffle bag
+            this.celebrationAnimationBag = ['fireworks', 'trophy', 'scrolling', 'quotes'];
+            this.shuffleArray(this.celebrationAnimationBag);
+        }
+        return this.celebrationAnimationBag.pop();
+    }
+    
+    shuffleArray(array) {
+        // Fisher-Yates shuffle algorithm
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
     }
 
     showRetroIdleState() {
@@ -2202,12 +2383,29 @@ class TeamMeter {
                 return;
             }
 
-            // Handle Escape key to exit test mode
+            // Handle Escape key in test mode
             if (e.key === 'Escape' && this.testMode) {
-                this.testMode = false;
-                this.testModeSequence = '';
-                console.log('🎮 Test Mode DEACTIVATED (Escape pressed)');
-                this.hideTestModeUI();
+                if (this.testModeShowingAnimation) {
+                    // Animation is playing - stop it and return to menu
+                    console.log('🎮 Stopping animation, returning to menu');
+                    // Clear any running intervals
+                    if (this.testModeInterval) {
+                        clearInterval(this.testModeInterval);
+                        this.testModeInterval = null;
+                    }
+                    if (this.testModeSoundInterval) {
+                        clearInterval(this.testModeSoundInterval);
+                        this.testModeSoundInterval = null;
+                    }
+                    this.testModeShowingAnimation = false;
+                    this.showTestModeUI();
+                } else {
+                    // Menu is showing - exit test mode completely
+                    console.log('🎮 Test Mode DEACTIVATED (Escape pressed)');
+                    this.testMode = false;
+                    this.testModeSequence = '';
+                    this.hideTestModeUI();
+                }
                 return;
             }
 
@@ -2235,7 +2433,7 @@ class TeamMeter {
             }
             
             // If in test mode and retro UI, handle number keys
-            if (this.testMode && this.uiType === 'retro' && this.currentMode === 'selection') {
+            if (this.testMode && this.uiType === 'retro') {
                 const num = parseInt(e.key);
                 if (!isNaN(num) && num >= 1 && num <= 8) {
                     this.triggerTestAnimation(num);
@@ -2250,6 +2448,8 @@ class TeamMeter {
             this.testMode = false;
             return;
         }
+        
+        this.testModeShowingAnimation = false; // Menu is showing, not animation
         
         const retroText = document.getElementById('retroText');
         const retroPixels = document.getElementById('retroPixels');
@@ -2266,7 +2466,7 @@ class TeamMeter {
             <div class="c64-line">6 = TROPHY CELEBRATION</div>
             <div class="c64-line">7 = SCROLLING MESSAGE</div>
             <div class="c64-line">8 = RETRO QUOTES</div>
-            <div class="c64-line">TYPE 'spispopd' TO EXIT</div>
+            <div class="c64-line">ESC = EXIT TEST MODE</div>
         `;
         retroPixels.innerHTML = '';
     }
@@ -2283,87 +2483,86 @@ class TeamMeter {
         
         console.log(`🎮 Testing animation ${num}`);
         
+        this.testModeShowingAnimation = true; // Animation is now showing
+        
+        // Clear any existing intervals
+        if (this.testModeInterval) {
+            clearInterval(this.testModeInterval);
+            this.testModeInterval = null;
+        }
+        if (this.testModeSoundInterval) {
+            clearInterval(this.testModeSoundInterval);
+            this.testModeSoundInterval = null;
+        }
+        
         // Clear previous animation
         retroPixels.innerHTML = '';
         retroText.classList.remove('c64-prompt');
         
-        // Set up repeating sound effects for spin animations (1-4)
-        let soundInterval;
+        // Function to run animation continuously
+        const runAnimation = () => {
+            retroPixels.innerHTML = ''; // Clear before each run
+            
+            switch(num) {
+                case 1:
+                    retroText.textContent = 'PAC-MAN ANIMATION (ESC TO MENU)';
+                    this.createPacManAnimation();
+                    break;
+                case 2:
+                    retroText.textContent = 'SPACE INVADERS ANIMATION (ESC TO MENU)';
+                    this.createSpaceInvadersAnimation();
+                    break;
+                case 3:
+                    retroText.textContent = 'PONG BALL ANIMATION (ESC TO MENU)';
+                    this.createPongBallAnimation();
+                    break;
+                case 4:
+                    retroText.textContent = 'TETRIS ANIMATION (ESC TO MENU)';
+                    this.createTetrisAnimation();
+                    break;
+                case 5:
+                    retroText.textContent = 'FIREWORKS CELEBRATION (ESC TO MENU)';
+                    this.createFireworksAnimation();
+                    break;
+                case 6:
+                    retroText.textContent = 'TROPHY CELEBRATION (ESC TO MENU)';
+                    this.createTrophyAnimation();
+                    break;
+                case 7:
+                    retroText.textContent = 'SCROLLING MESSAGE (ESC TO MENU)';
+                    this.createScrollingMessageAnimation();
+                    break;
+                case 8:
+                    retroText.textContent = 'RETRO QUOTES (ESC TO MENU)';
+                    this.createRetroQuotesAnimation();
+                    break;
+            }
+        };
         
-        switch(num) {
-            case 1:
-                retroText.textContent = 'PAC-MAN ANIMATION';
-                this.createPacManAnimation();
-                // Play spinning sound repeatedly for spin animations
-                if (this.soundEnabled) {
-                    this.playRetroBlip();
-                    soundInterval = setInterval(() => this.playRetroBlip(), 200);
-                }
-                break;
-            case 2:
-                retroText.textContent = 'SPACE INVADERS ANIMATION';
-                this.createSpaceInvadersAnimation();
-                if (this.soundEnabled) {
-                    this.playRetroBlip();
-                    soundInterval = setInterval(() => this.playRetroBlip(), 200);
-                }
-                break;
-            case 3:
-                retroText.textContent = 'PONG BALL ANIMATION';
-                this.createPongBallAnimation();
-                if (this.soundEnabled) {
-                    this.playRetroBlip();
-                    soundInterval = setInterval(() => this.playRetroBlip(), 200);
-                }
-                break;
-            case 4:
-                retroText.textContent = 'TETRIS ANIMATION';
-                this.createTetrisAnimation();
-                if (this.soundEnabled) {
-                    this.playRetroBlip();
-                    soundInterval = setInterval(() => this.playRetroBlip(), 200);
-                }
-                break;
-            case 5:
-                retroText.textContent = 'FIREWORKS CELEBRATION';
-                this.createFireworksAnimation();
-                // Play celebration sound once for celebration animations
-                if (this.soundEnabled) {
-                    this.playRetroSelectSound();
-                }
-                break;
-            case 6:
-                retroText.textContent = 'TROPHY CELEBRATION';
-                this.createTrophyAnimation();
-                if (this.soundEnabled) {
-                    this.playRetroSelectSound();
-                }
-                break;
-            case 7:
-                retroText.textContent = 'SCROLLING MESSAGE';
-                this.createScrollingMessageAnimation();
-                if (this.soundEnabled) {
-                    this.playRetroSelectSound();
-                }
-                break;
-            case 8:
-                retroText.textContent = 'RETRO QUOTES';
-                this.createRetroQuotesAnimation();
-                if (this.soundEnabled) {
-                    this.playRetroSelectSound();
-                }
-                break;
+        // Run animation immediately
+        runAnimation();
+        
+        // Set up sound effects for spin animations (1-4)
+        if (num >= 1 && num <= 4 && this.soundEnabled) {
+            this.playRetroBlip();
+            this.testModeSoundInterval = setInterval(() => this.playRetroBlip(), 200);
         }
         
-        // Show test menu again after 5 seconds and stop sounds
-        setTimeout(() => {
-            if (soundInterval) {
-                clearInterval(soundInterval);
+        // For celebration animations (5-8), play sound once
+        if (num >= 5 && num <= 8 && this.soundEnabled) {
+            this.playRetroSelectSound();
+        }
+        
+        // For Tetris, restart animation every 20 seconds (enough time for all pieces to fall)
+        // For other animations, restart every 5 seconds
+        const restartDelay = (num === 4) ? 20000 : 5000;
+        this.testModeInterval = setInterval(() => {
+            runAnimation();
+            // Play sound again for celebration animations
+            if (num >= 5 && num <= 8 && this.soundEnabled) {
+                this.playRetroSelectSound();
             }
-            if (this.testMode) {
-                this.showTestModeUI();
-            }
-        }, 5000);
+        }, restartDelay);
     }
 
     openDebugView() {

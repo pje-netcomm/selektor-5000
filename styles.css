@@ -2143,13 +2143,16 @@ footer {
     position: relative;
     min-height: 150px;
     width: 100%;
-    overflow: hidden; /* Prevent pieces from showing above container */
+    overflow: hidden;
 }
 
-.retro-tetromino {
+.retro-tetromino-js {
     position: absolute;
-    top: -60px;
-    animation: tetrisFall 2s linear infinite;
+    transition: none; /* No CSS transitions, JS controls everything */
+}
+
+.tetromino-landed {
+    /* Piece has landed - no special styling needed, position is set by JS */
 }
 
 .tetromino-grid {
@@ -2167,11 +2170,6 @@ footer {
 .tetromino-empty {
     width: 16px;
     height: 16px;
-}
-
-@keyframes tetrisFall {
-    0% { transform: translateY(-60px) rotate(0deg); }
-    100% { transform: translateY(200px) rotate(360deg); }
 }
 
 

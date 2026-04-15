@@ -2,6 +2,36 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v7.1.0 - Enhanced Retro Animations (2026-04-15)
+
+### Tetris Animation Improvements 🎮
+- Complete refactor of Tetris animation with proper physics
+- Blocks fall vertically from random positions
+- Rotate 0-3 times in 90-degree increments during fall
+- Proper collision detection (blocks stack on each other and bottom)
+- Speed-based block counts: 2/4/6/8 for fast/normal/slow/very-slow
+- Animation duration automatically extends to show all blocks
+
+### Animation Distribution System 🎲
+- Implemented shuffle bag algorithm for fair animation distribution
+- Each animation (Pac-Man, Space Invaders, Pong, Tetris) appears exactly once every 4 selections
+- No repetition within a cycle, but order is randomized
+- Separate bags for spin and celebration animations
+
+### Test Mode Enhancements 🧪
+- Test mode now works from any screen (including initial C64 prompt)
+- Animations run continuously until Escape is pressed
+- Two-level Escape: first press returns to menu, second exits test mode
+- Added "ESC TO MENU" prompts during animations
+- Sound effects continue properly in test mode
+
+### Bug Fixes 🐛
+- Fixed Tetris blocks continuing to fall after spin animation completes
+- Fixed Tetris pieces overlapping with name display
+- Improved animation cleanup and state management
+
+---
+
 ## v7.0.0 - Retro 8-Bit UI Mode (2026-04-14)
 
 ### New Retro UI Mode 🎮
