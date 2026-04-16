@@ -2062,7 +2062,7 @@ footer {
 
 .maze-wall-segment {
     position: absolute;
-    background: #306230;
+    background: transparent;
 }
 
 .retro-pacman {
