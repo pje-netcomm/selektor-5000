@@ -2091,8 +2091,9 @@ footer {
     border-style: solid;
     border-width: 14px 0 14px 20px;
     border-color: transparent transparent transparent #0f380f;
-    right: 0;
-    top: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-100%, -50%);
     animation: mouthChomp 0.2s ease-in-out infinite;
 }
 
