@@ -1485,7 +1485,7 @@ class TeamMeter {
         // Create Pac-Man character
         const pacman = document.createElement('div');
         pacman.className = 'retro-pacman';
-        pacman.innerHTML = '<span class="pacman-char">ᗧ</span>';
+        pacman.innerHTML = '<span class="pacman-char"></span>';
         
         // Define Pac-Man's path through the maze (series of waypoints)
         // Path goes: start left → right along top corridor → down → left along bottom → up → right to center
