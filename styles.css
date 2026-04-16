@@ -2085,12 +2085,15 @@ footer {
 
 /* Space Invaders Animation */
 .retro-invaders-container {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    min-height: 150px;
+    gap: 10px;
+    min-height: 200px;
     width: 100%;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-top: 10px;
+    padding-bottom: 50px;
 }
 
 .retro-invader-row {
@@ -2115,27 +2118,127 @@ footer {
     50% { transform: translateY(-4px); }
 }
 
+.retro-invader-player {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 28px;
+    animation: playerMove 4s ease-in-out infinite;
+}
+
+@keyframes playerMove {
+    0%, 100% { 
+        left: 10%;
+        transform: translateX(0);
+    }
+    50% { 
+        left: 90%;
+        transform: translateX(-100%);
+    }
+}
+
+.retro-invader-laser {
+    position: absolute;
+    font-size: 20px;
+    font-weight: bold;
+    color: #9bbc0f;
+    /* Position controlled by JavaScript */
+}
+
 /* Pong Ball Animation */
 .retro-pong-container {
     position: relative;
     min-height: 150px;
-    width: 100%;
+    width: 280px;
+    max-width: 100%;
+    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-left: 2px solid transparent;
+    border-right: 2px solid transparent;
+}
+
+.retro-pong-boundary {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: monospace;
+    font-size: 14px;
+    color: #8bac0f;
+    line-height: 1;
+}
+
+.retro-pong-top {
+    top: 15px;
+}
+
+.retro-pong-bottom {
+    bottom: 15px;
+}
+
+.retro-pong-paddle {
+    position: absolute;
+    font-size: 48px;
+    color: #9bbc0f;
+    top: 50%;
+    line-height: 1;
+}
+
+.retro-pong-left {
+    left: -5px;
+    transform: translateY(-50%);
+    animation: paddleLeft 2s ease-in-out infinite;
+}
+
+.retro-pong-right {
+    right: -5px;
+    transform: translateY(-50%);
+    animation: paddleRight 2.3s ease-in-out infinite;
 }
 
 .retro-pong-ball {
-    font-size: 36px;
+    font-size: 24px;
     color: #9bbc0f;
-    animation: pongBounce 1.5s ease-in-out infinite;
+    position: absolute;
+    animation: pongBounce 2s ease-in-out infinite;
 }
 
 @keyframes pongBounce {
-    0%, 100% { transform: translate(-80px, -30px); }
-    25% { transform: translate(0, 30px); }
-    50% { transform: translate(80px, -30px); }
-    75% { transform: translate(0, 30px); }
+    /* Start at left paddle */
+    0% { transform: translate(-140px, -30px); }
+    /* Move toward top boundary */
+    12% { transform: translate(-90px, -55px); }
+    /* Bounce off top boundary, move right */
+    25% { transform: translate(-30px, -50px); }
+    /* Continue right toward right paddle */
+    37% { transform: translate(70px, -20px); }
+    /* Hit right paddle */
+    50% { transform: translate(140px, 10px); }
+    /* Bounce back, move toward bottom boundary */
+    62% { transform: translate(80px, 50px); }
+    /* Bounce off bottom boundary */
+    75% { transform: translate(10px, 55px); }
+    /* Move back toward left paddle */
+    87% { transform: translate(-70px, 30px); }
+    /* Return to left paddle */
+    100% { transform: translate(-140px, -30px); }
+}
+
+@keyframes paddleLeft {
+    0%, 100% { transform: translateY(-80%); }
+    25% { transform: translateY(-40%); }
+    50% { transform: translateY(-20%); }
+    75% { transform: translateY(-70%); }
+}
+
+@keyframes paddleRight {
+    0%, 100% { transform: translateY(-30%); }
+    30% { transform: translateY(-60%); }
+    60% { transform: translateY(-20%); }
+    90% { transform: translateY(-45%); }
 }
 
 /* Tetris Animation */

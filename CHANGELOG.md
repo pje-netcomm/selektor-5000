@@ -2,6 +2,35 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v7.1.1 - Retro Animation Polish (2026-04-16)
+
+### Animation Improvements 🎮
+- **Extended animation durations** for better visibility:
+  - Pac-Man: minimum 3.5 seconds
+  - Space Invaders: minimum 4 seconds  
+  - Pong: minimum 3 seconds
+- **Enhanced Pong animation**:
+  - Added paddles at left and right edges
+  - Added top and bottom court boundaries
+  - Ball bounces realistically off paddles and boundaries
+  - More complex ball trajectory with 9 waypoints
+- **Enhanced Space Invaders animation**:
+  - Added player ship at bottom with horizontal patrol
+  - Added dynamic laser shooting from ship position
+  - Lasers shoot straight up from ship's current location
+  - JavaScript-driven laser animation for accurate positioning
+  - Ship and aliens properly separated with clear spacing
+
+### Visual Fixes 🎨
+- Removed pixel square effects between game animations and celebrations
+- Fixed celebration layout so "Press The Any Key" always appears below text
+- Improved vertical spacing in all retro animations
+
+### Documentation 📖
+- Added comprehensive test mode documentation to README
+- Documented "spispopd" activation sequence
+- Listed all 8 test mode animation options
+
 ## v7.1.0 - Enhanced Retro Animations (2026-04-15)
 
 ### Tetris Animation Improvements 🎮

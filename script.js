@@ -1189,12 +1189,18 @@ class TeamMeter {
             switch (spinAnimType) {
                 case 'pacman':
                     this.createPacManAnimation();
+                    // Pac-Man animation: 3s for full movement + 1.2s for dots to disappear
+                    spinDuration = Math.max(spinDuration, 3500);
                     break;
                 case 'invaders':
                     this.createSpaceInvadersAnimation();
+                    // Space Invaders: 2s for alien march cycle x 2 for better effect
+                    spinDuration = Math.max(spinDuration, 4000);
                     break;
                 case 'pong':
                     this.createPongBallAnimation();
+                    // Pong: 1.5s per bounce cycle x 2 for better visibility
+                    spinDuration = Math.max(spinDuration, 3000);
                     break;
                 case 'tetris':
                     this.createTetrisAnimation();
@@ -1241,6 +1247,11 @@ class TeamMeter {
                 retroScreen.classList.remove('retro-shaking');
                 // Clear spin animation and stop Tetris if running
                 this.tetrisAnimationActive = false;
+                // Clear invader intervals
+                if (this.invaderIntervals) {
+                    this.invaderIntervals.forEach(interval => clearInterval(interval));
+                    this.invaderIntervals = [];
+                }
                 document.getElementById('retroPixels').innerHTML = '';
                 resolve();
             }, spinDuration);
@@ -1450,6 +1461,77 @@ class TeamMeter {
             
             retroPixels.appendChild(rowDiv);
         }
+        
+        // Create player ship at bottom
+        const player = document.createElement('div');
+        player.className = 'retro-invader-player';
+        player.textContent = '🚀';
+        retroPixels.appendChild(player);
+        
+        // Create single laser element
+        const laser = document.createElement('div');
+        laser.className = 'retro-invader-laser';
+        laser.textContent = '|';
+        laser.style.display = 'none';
+        retroPixels.appendChild(laser);
+        
+        // Active laser shooting logic
+        let laserActive = false;
+        let laserY = 40;
+        let laserX = 0;
+        const shipCycle = 4000; // 4 seconds
+        const shootInterval = 1500; // Fire every 1.5 seconds
+        
+        // Function to calculate ship's current horizontal position
+        const getShipPosition = () => {
+            const elapsed = Date.now() % shipCycle;
+            const progress = elapsed / shipCycle;
+            
+            if (progress <= 0.5) {
+                // Moving right: 10% to 90%
+                return 10 + (80 * progress * 2);
+            } else {
+                // Moving left: 90% to 10%
+                return 90 - (80 * (progress - 0.5) * 2);
+            }
+        };
+        
+        // Laser update loop
+        const updateLaser = () => {
+            if (laserActive) {
+                laserY += 3; // Move up 3px per frame
+                laser.style.bottom = laserY + 'px';
+                
+                if (laserY >= 180) {
+                    // Laser reached top, hide it
+                    laserActive = false;
+                    laser.style.display = 'none';
+                }
+            }
+        };
+        
+        // Fire laser periodically
+        const fireLaser = () => {
+            if (!laserActive) {
+                laserActive = true;
+                laserY = 40;
+                laserX = getShipPosition();
+                laser.style.left = laserX + '%';
+                laser.style.bottom = laserY + 'px';
+                laser.style.display = 'block';
+            }
+        };
+        
+        // Start laser animation
+        const laserInterval = setInterval(updateLaser, 16); // ~60fps
+        const fireInterval = setInterval(fireLaser, shootInterval);
+        
+        // Fire first shot immediately
+        fireLaser();
+        
+        // Store intervals for cleanup
+        if (!this.invaderIntervals) this.invaderIntervals = [];
+        this.invaderIntervals.push(laserInterval, fireInterval);
     }
 
     createPongBallAnimation() {
@@ -1457,11 +1539,38 @@ class TeamMeter {
         retroPixels.innerHTML = '';
         retroPixels.className = 'retro-pixels retro-pong-container';
         
-        // Create ball
+        // Create court boundaries (top and bottom)
+        const topBoundary = document.createElement('div');
+        topBoundary.className = 'retro-pong-boundary retro-pong-top';
+        topBoundary.textContent = '━'.repeat(20);
+        
+        const bottomBoundary = document.createElement('div');
+        bottomBoundary.className = 'retro-pong-boundary retro-pong-bottom';
+        bottomBoundary.textContent = '━'.repeat(20);
+        
+        // Create left paddle
+        const leftPaddle = document.createElement('div');
+        leftPaddle.className = 'retro-pong-paddle retro-pong-left';
+        leftPaddle.textContent = '║';
+        
+        // Create right paddle
+        const rightPaddle = document.createElement('div');
+        rightPaddle.className = 'retro-pong-paddle retro-pong-right';
+        rightPaddle.textContent = '║';
+        
+        // Create ball with random trajectory
         const ball = document.createElement('div');
         ball.className = 'retro-pong-ball';
         ball.textContent = '●';
         
+        // Add random variation to ball animation
+        const randomDelay = Math.random() * 0.3;
+        ball.style.animationDelay = `${randomDelay}s`;
+        
+        retroPixels.appendChild(topBoundary);
+        retroPixels.appendChild(bottomBoundary);
+        retroPixels.appendChild(leftPaddle);
+        retroPixels.appendChild(rightPaddle);
         retroPixels.appendChild(ball);
     }
 
