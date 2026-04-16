@@ -1452,41 +1452,74 @@ class TeamMeter {
         retroPixels.innerHTML = '';
         retroPixels.className = 'retro-pixels retro-pacman-container';
         
-        // Create Pac-Man (yellow filled circle with mouth)
+        // Create simple maze structure
+        const maze = document.createElement('div');
+        maze.className = 'retro-pacman-maze';
+        
+        // Maze layout (simple path with corners)
+        const mazeHTML = `
+            <div class="maze-wall top"></div>
+            <div class="maze-wall bottom"></div>
+            <div class="maze-wall left"></div>
+            <div class="maze-wall right"></div>
+        `;
+        maze.innerHTML = mazeHTML;
+        
+        // Create Pac-Man character (using Pac-Man character)
         const pacman = document.createElement('div');
         pacman.className = 'retro-pacman';
-        pacman.textContent = '●';
+        pacman.innerHTML = '<span class="pacman-char">ᗧ</span>';
         
-        // Create items to eat: dots, power pellets, ghosts, and fruit
-        const itemsContainer = document.createElement('div');
-        itemsContainer.className = 'retro-pacman-items';
-        
-        // Randomize sequence of items
-        const itemSequence = [
-            { type: 'dot', char: '·', className: 'retro-dot' },
-            { type: 'dot', char: '·', className: 'retro-dot' },
-            { type: 'pellet', char: '●', className: 'retro-power-pellet' },
-            { type: 'dot', char: '·', className: 'retro-dot' },
-            { type: 'ghost', char: '👻', className: 'retro-ghost' },
-            { type: 'dot', char: '·', className: 'retro-dot' },
-            { type: 'fruit', char: '🍒', className: 'retro-fruit' },
-            { type: 'dot', char: '·', className: 'retro-dot' },
-            { type: 'ghost', char: '👻', className: 'retro-ghost' },
-            { type: 'dot', char: '·', className: 'retro-dot' },
-            { type: 'pellet', char: '●', className: 'retro-power-pellet' },
-            { type: 'dot', char: '·', className: 'retro-dot' }
+        // Create items along the path Pac-Man will follow
+        // Pac-Man takes 3.5s to traverse 95% of width, so calculate when each item gets eaten
+        const items = [
+            { x: 15, y: 50, type: 'dot', char: '·' },
+            { x: 25, y: 50, type: 'dot', char: '·' },
+            { x: 35, y: 50, type: 'pellet', char: '●' },
+            { x: 45, y: 50, type: 'dot', char: '·' },
+            { x: 55, y: 50, type: 'ghost', char: '👻' },
+            { x: 65, y: 50, type: 'dot', char: '·' },
+            { x: 75, y: 50, type: 'fruit', char: '🍒' },
+            { x: 85, y: 50, type: 'dot', char: '·' }
         ];
         
-        itemSequence.forEach((item, i) => {
-            const element = document.createElement('span');
-            element.className = item.className;
+        items.forEach((item, i) => {
+            const element = document.createElement('div');
+            element.className = `retro-pacman-item ${item.type}`;
             element.textContent = item.char;
-            element.style.animationDelay = `${i * 0.25}s`;
-            itemsContainer.appendChild(element);
+            element.style.left = item.x + '%';
+            element.style.top = item.y + '%';
+            
+            // Calculate when Pac-Man reaches this item (0-45% of animation = 0-1.575s)
+            // Item at x% gets eaten at (x/95) * 1.575s
+            const eatTime = (item.x / 95) * 1.575;
+            const eatPercent = (eatTime / 3.5) * 100;
+            
+            // Create custom animation for this specific item
+            const animName = `itemEat${i}`;
+            element.style.animationName = animName;
+            
+            // Inject custom keyframe for this item
+            const styleSheet = document.styleSheets[0];
+            const keyframes = `
+                @keyframes ${animName} {
+                    0%, ${eatPercent}% {
+                        opacity: 1;
+                        transform: translate(-50%, -50%) scale(1);
+                    }
+                    ${eatPercent + 0.5}%, 100% {
+                        opacity: 0;
+                        transform: translate(-50%, -50%) scale(0);
+                    }
+                }
+            `;
+            styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+            
+            maze.appendChild(element);
         });
         
+        retroPixels.appendChild(maze);
         retroPixels.appendChild(pacman);
-        retroPixels.appendChild(itemsContainer);
     }
 
     createSpaceInvadersAnimation() {
