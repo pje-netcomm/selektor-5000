@@ -1435,16 +1435,16 @@ class TeamMeter {
         });
         
         // Add bass note for depth (C3)
-        const bass = audioContext.createOscillator();
-        const bassGain = audioContext.createGain();
+        const bass = this.audioContext.createOscillator();
+        const bassGain = this.audioContext.createGain();
         
         bass.connect(bassGain);
-        bassGain.connect(audioContext.destination);
+        bassGain.connect(this.audioContext.destination);
         
         bass.type = 'square';
         bass.frequency.value = 130.81; // C3
         
-        const bassStart = audioContext.currentTime + 0.3;
+        const bassStart = this.audioContext.currentTime + 0.3;
         bassGain.gain.setValueAtTime(this.soundVolume * 0.15, bassStart);
         bassGain.gain.exponentialRampToValueAtTime(0.01, bassStart + 0.4);
         
