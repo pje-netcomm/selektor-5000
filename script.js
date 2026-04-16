@@ -1488,10 +1488,6 @@ class TeamMeter {
         retroPixels.appendChild(pacman);
         retroPixels.appendChild(itemsContainer);
     }
-        
-        retroPixels.appendChild(pacman);
-        retroPixels.appendChild(dotsContainer);
-    }
 
     createSpaceInvadersAnimation() {
         const retroPixels = document.getElementById('retroPixels');
