@@ -598,7 +598,14 @@ class TeamMeter {
         }
 
         const displayBox = document.getElementById('displayBox');
-        if ((displayBox.classList.contains('disabled') || this.isSelecting) && this.uiType !== 'retro') {
+        
+        // Prevent multiple simultaneous selections in all UI modes
+        if (this.isSelecting) {
+            return;
+        }
+        
+        // Additional checks for non-retro modes
+        if (this.uiType !== 'retro' && displayBox.classList.contains('disabled')) {
             return;
         }
         
@@ -617,10 +624,26 @@ class TeamMeter {
         this.skipAnimation = false;
         const skipHandler = (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
                 this.skipAnimation = true;
             }
         };
+        const clickSkipHandler = (e) => {
+            // Skip animation on click during animation
+            this.skipAnimation = true;
+        };
+        
         document.addEventListener('keydown', skipHandler);
+        if (this.uiType === 'retro') {
+            // In retro mode, clicking the screen should skip animation
+            const retroDisplay = document.getElementById('retroDisplay');
+            if (retroDisplay) {
+                retroDisplay.addEventListener('click', clickSkipHandler);
+            }
+        } else {
+            // In other modes, clicking displayBox should skip
+            displayBox.addEventListener('click', clickSkipHandler);
+        }
 
         // Skip animation if duration is 0 or if only 1 URL available
         if (availableUrls.length > 1 && this.animationDuration > 0) {
@@ -631,7 +654,16 @@ class TeamMeter {
             }
         }
         
+        // Remove event listeners
         document.removeEventListener('keydown', skipHandler);
+        if (this.uiType === 'retro') {
+            const retroDisplay = document.getElementById('retroDisplay');
+            if (retroDisplay) {
+                retroDisplay.removeEventListener('click', clickSkipHandler);
+            }
+        } else {
+            displayBox.removeEventListener('click', clickSkipHandler);
+        }
         
         // Make final random selection AFTER animation
         // Add extra randomization by using current timestamp
@@ -1420,21 +1452,42 @@ class TeamMeter {
         retroPixels.innerHTML = '';
         retroPixels.className = 'retro-pixels retro-pacman-container';
         
-        // Create Pac-Man
+        // Create Pac-Man (yellow filled circle with mouth)
         const pacman = document.createElement('div');
         pacman.className = 'retro-pacman';
-        pacman.textContent = 'ᗧ';
+        pacman.textContent = '●';
         
-        // Create dots
-        const dotsContainer = document.createElement('div');
-        dotsContainer.className = 'retro-pacman-dots';
-        for (let i = 0; i < 12; i++) {
-            const dot = document.createElement('span');
-            dot.className = 'retro-dot';
-            dot.textContent = '·';
-            dot.style.animationDelay = `${i * 0.1}s`;
-            dotsContainer.appendChild(dot);
-        }
+        // Create items to eat: dots, power pellets, ghosts, and fruit
+        const itemsContainer = document.createElement('div');
+        itemsContainer.className = 'retro-pacman-items';
+        
+        // Randomize sequence of items
+        const itemSequence = [
+            { type: 'dot', char: '·', className: 'retro-dot' },
+            { type: 'dot', char: '·', className: 'retro-dot' },
+            { type: 'pellet', char: '●', className: 'retro-power-pellet' },
+            { type: 'dot', char: '·', className: 'retro-dot' },
+            { type: 'ghost', char: '👻', className: 'retro-ghost' },
+            { type: 'dot', char: '·', className: 'retro-dot' },
+            { type: 'fruit', char: '🍒', className: 'retro-fruit' },
+            { type: 'dot', char: '·', className: 'retro-dot' },
+            { type: 'ghost', char: '👻', className: 'retro-ghost' },
+            { type: 'dot', char: '·', className: 'retro-dot' },
+            { type: 'pellet', char: '●', className: 'retro-power-pellet' },
+            { type: 'dot', char: '·', className: 'retro-dot' }
+        ];
+        
+        itemSequence.forEach((item, i) => {
+            const element = document.createElement('span');
+            element.className = item.className;
+            element.textContent = item.char;
+            element.style.animationDelay = `${i * 0.25}s`;
+            itemsContainer.appendChild(element);
+        });
+        
+        retroPixels.appendChild(pacman);
+        retroPixels.appendChild(itemsContainer);
+    }
         
         retroPixels.appendChild(pacman);
         retroPixels.appendChild(dotsContainer);

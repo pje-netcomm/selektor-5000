@@ -2043,44 +2043,117 @@ footer {
 /* Spinning Animation Styles (during selection) */
 
 /* Pac-Man Animation */
+/* Pac-Man Animation */
 .retro-pacman-container {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 15px;
+    gap: 20px;
     min-height: 150px;
     width: 100%;
 }
 
 .retro-pacman {
     font-size: 48px;
-    animation: pacmanChomp 0.3s infinite, pacmanMove 3s linear infinite;
+    color: #ffcc00;
+    /* Yellow filled Pac-Man */
+    animation: pacmanChomp 0.2s steps(2) infinite, pacmanMove 3.5s ease-in-out infinite;
+    z-index: 10;
+    position: relative;
 }
 
-.retro-pacman-dots {
+.retro-pacman-items {
     display: flex;
-    gap: 12px;
+    gap: 18px;
+    flex-wrap: wrap;
+    max-width: 250px;
+    justify-content: center;
 }
 
 .retro-dot {
-    font-size: 32px;
+    font-size: 24px;
     color: #9bbc0f;
-    animation: dotDisappear 1.2s ease-in forwards;
+    animation: itemEaten 3s ease-out forwards;
+}
+
+.retro-power-pellet {
+    font-size: 20px;
+    color: #fff;
+    animation: itemEaten 3s ease-out forwards, pelletBlink 0.3s infinite;
+}
+
+.retro-ghost {
+    font-size: 32px;
+    animation: itemEaten 3s ease-out forwards, ghostFloat 0.5s ease-in-out infinite;
+}
+
+.retro-fruit {
+    font-size: 32px;
+    animation: itemEaten 3s ease-out forwards, fruitSpin 1s linear infinite;
 }
 
 @keyframes pacmanChomp {
-    0%, 100% { transform: scaleX(1); }
-    50% { transform: scaleX(0.8); }
+    0%, 100% { 
+        transform: scaleY(1);
+        filter: brightness(1);
+    }
+    50% { 
+        transform: scaleY(0.8);
+        filter: brightness(1.2);
+    }
 }
 
 @keyframes pacmanMove {
-    0% { transform: translateX(-40px); }
-    100% { transform: translateX(40px); }
+    0% { 
+        transform: translateX(-60px) rotate(0deg);
+    }
+    25% {
+        transform: translateX(0px) rotate(5deg);
+    }
+    50% { 
+        transform: translateX(60px) rotate(0deg);
+    }
+    75% {
+        transform: translateX(0px) rotate(-5deg);
+    }
+    100% { 
+        transform: translateX(-60px) rotate(0deg);
+    }
 }
 
-@keyframes dotDisappear {
-    0% { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: scale(0); }
+@keyframes itemEaten {
+    0% { 
+        opacity: 1; 
+        transform: scale(1);
+    }
+    70% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    85% { 
+        opacity: 0.3; 
+        transform: scale(0.3);
+    }
+    100% { 
+        opacity: 0; 
+        transform: scale(0);
+    }
+}
+
+@keyframes pelletBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+@keyframes ghostFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes fruitSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Space Invaders Animation */
