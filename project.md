@@ -206,5 +206,8 @@ Current version: **v7.1.1**
     - browser page title not updated when title config is changed.
     - Allow selectees to be configured without a URL; no URL is configured, just
       display the name and don't attempt to open a URL when selected.
-
+## [retro-mode-improvements2]
+    - add more funny quotes and scrolling messages
+    - remove "probability" retro quote
+    - simple maze boundary for pacman
 

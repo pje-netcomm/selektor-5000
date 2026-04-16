@@ -629,12 +629,7 @@ class TeamMeter {
             displayBox.classList.remove('clickable');
         }
 
-        // C64 BASIC loading simulation on first selection in retro mode
-        const isFirstSelection = this.uiType === 'retro' && this.usedUrls.size === 0;
-        if (isFirstSelection && this.animationDuration > 0) {
-            await this.simulateC64Loading();
-        }
-
+        // Set up skip handlers BEFORE any animations start
         this.skipAnimation = false;
         const skipHandler = (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -657,6 +652,12 @@ class TeamMeter {
         } else {
             // In other modes, clicking displayBox should skip
             displayBox.addEventListener('click', clickSkipHandler);
+        }
+
+        // C64 BASIC loading simulation on first selection in retro mode
+        const isFirstSelection = this.uiType === 'retro' && this.usedUrls.size === 0;
+        if (isFirstSelection && this.animationDuration > 0) {
+            await this.simulateC64Loading();
         }
 
         // Skip animation if duration is 0 or if only 1 URL available
