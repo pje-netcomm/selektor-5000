@@ -1372,21 +1372,18 @@ class TeamMeter {
             }
             
             // Add pulsing effect
-            const pulseTimeout = setTimeout(() => {
-                if (this.skipAnimation) return;
+            setTimeout(() => {
                 retroScreen.classList.add('retro-pulse');
             }, 200);
             
             // Final celebration flash
-            const flashTimeout = setTimeout(() => {
-                if (this.skipAnimation) return;
+            setTimeout(() => {
                 retroScreen.classList.add('retro-flash');
                 setTimeout(() => retroScreen.classList.remove('retro-flash'), 100);
             }, 600);
             
             // Start random celebration animation (replaces pixel bursts)
-            const celebTimeout = setTimeout(() => {
-                if (this.skipAnimation) return;
+            setTimeout(() => {
                 const celebType = this.getRandomCelebrationAnimation();
                 switch (celebType) {
                     case 'fireworks':
@@ -1404,24 +1401,7 @@ class TeamMeter {
                 }
             }, 800);
             
-            // Check for skip every 100ms
-            const checkSkip = setInterval(() => {
-                if (this.skipAnimation) {
-                    clearInterval(checkSkip);
-                    clearTimeout(pulseTimeout);
-                    clearTimeout(flashTimeout);
-                    clearTimeout(celebTimeout);
-                    retroDisplay.classList.remove('selected', 'retro-explosion');
-                    retroScreen.classList.remove('retro-pulse');
-                    resolve();
-                }
-            }, 100);
-            
             setTimeout(() => {
-                clearInterval(checkSkip);
-                clearTimeout(pulseTimeout);
-                clearTimeout(flashTimeout);
-                clearTimeout(celebTimeout);
                 retroDisplay.classList.remove('selected', 'retro-explosion');
                 retroScreen.classList.remove('retro-pulse');
                 // Do NOT clear retroPixels - keep celebration visible
