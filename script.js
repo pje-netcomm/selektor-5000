@@ -605,6 +605,14 @@ class TeamMeter {
 
         const displayBox = document.getElementById('displayBox');
         
+        // Clear previous celebration in retro mode before starting new selection
+        if (this.uiType === 'retro') {
+            const retroPixels = document.getElementById('retroPixels');
+            if (retroPixels) {
+                retroPixels.innerHTML = '';
+            }
+        }
+        
         // Prevent multiple simultaneous selections in all UI modes
         if (this.isSelecting) {
             return;
