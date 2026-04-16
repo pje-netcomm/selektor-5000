@@ -658,6 +658,8 @@ class TeamMeter {
         const isFirstSelection = this.uiType === 'retro' && this.usedUrls.size === 0;
         if (isFirstSelection && this.animationDuration > 0) {
             await this.simulateC64Loading();
+            // Reset skip flag after C64 intro so game animation starts fresh
+            this.skipAnimation = false;
         }
 
         // Skip animation if duration is 0 or if only 1 URL available
