@@ -207,14 +207,11 @@ Current version: **v7.1.1**
     - Allow selectees to be configured without a URL; no URL is configured, just
       display the name and don't attempt to open a URL when selected.
 ## [retro-mode-improvements]
-    - game animation is too short for several game types
-    - pong needs paddles, more random movement, and could boundaries.
-    - "Invaders" needs the player shooting at the invaders
-    - pacman looks boring, make it yellow and filled.  Show him moving, and
-      eating larger dots, ghosts and fruit (in a random sequence)
-    - clicking the mouse during the initial retro-mode starting animation
-      appears to make multiple parallel selection process start. Don't start
-      the sequence if it's already running.
-    - pressing space or clicking the mouse during any animation sequence should
-      make the sequence complete immediately
+    ✅ COMPLETED in v7.1.1:
+    - Extended game animation durations (Pac-Man: 3.5s, Invaders: 4s, Pong: 3s)
+    - Enhanced Pong with paddles, boundaries, and realistic ball physics
+    - Added Space Invaders player ship with dynamic laser shooting
+    - Enhanced Pac-Man: yellow filled, moving, eating dots/pellets/ghosts/fruit
+    - Fixed multiple parallel selections by applying isSelecting to all UI modes
+    - Added click-to-skip animation (space/enter/click skips animation)
 
