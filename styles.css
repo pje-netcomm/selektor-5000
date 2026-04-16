@@ -2056,53 +2056,22 @@ footer {
 .retro-pacman-maze {
     position: relative;
     width: 280px;
-    height: 100px;
+    height: 140px;
     background: #0f380f;
     border: 2px solid #306230;
     border-radius: 4px;
 }
 
-.maze-wall {
+.maze-wall-segment {
     position: absolute;
     background: #306230;
 }
 
-.maze-wall.top {
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-}
-
-.maze-wall.bottom {
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-}
-
-.maze-wall.left {
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 3px;
-}
-
-.maze-wall.right {
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: 3px;
-}
-
 .retro-pacman {
     position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translate(0, -50%);
-    font-size: 32px;
+    font-size: 28px;
     z-index: 10;
-    animation: pacmanMaze 3.5s linear infinite;
+    animation: pacmanMazePath 4.5s linear infinite;
 }
 
 .pacman-char {
@@ -2114,33 +2083,27 @@ footer {
 .retro-pacman-item {
     position: absolute;
     transform: translate(-50%, -50%);
-    animation-duration: 3.5s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 }
 
 .retro-pacman-item.dot {
-    font-size: 20px;
+    font-size: 18px;
     color: #9bbc0f;
 }
 
 .retro-pacman-item.pellet {
-    font-size: 16px;
+    font-size: 14px;
     color: #fff;
-    animation-duration: 3.5s;
-}
-
-.retro-pacman-item.pellet::before {
-    content: '';
     animation: pelletBlink 0.3s infinite;
 }
 
 .retro-pacman-item.ghost {
-    font-size: 24px;
+    font-size: 22px;
 }
 
 .retro-pacman-item.fruit {
-    font-size: 24px;
+    font-size: 22px;
 }
 
 @keyframes pacmanChomp {
@@ -2149,29 +2112,6 @@ footer {
     }
     50% { 
         content: 'ᗤ';
-    }
-}
-
-@keyframes pacmanMaze {
-    0% { 
-        left: 0%;
-        transform: translate(0, -50%) scaleX(1);
-    }
-    45% {
-        left: 95%;
-        transform: translate(-100%, -50%) scaleX(1);
-    }
-    50% {
-        left: 95%;
-        transform: translate(-100%, -50%) scaleX(-1);
-    }
-    95% {
-        left: 0%;
-        transform: translate(0, -50%) scaleX(-1);
-    }
-    100% {
-        left: 0%;
-        transform: translate(0, -50%) scaleX(1);
     }
 }
 

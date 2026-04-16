@@ -1452,54 +1452,95 @@ class TeamMeter {
         retroPixels.innerHTML = '';
         retroPixels.className = 'retro-pixels retro-pacman-container';
         
-        // Create simple maze structure
+        // Create complex maze structure with branching paths
         const maze = document.createElement('div');
         maze.className = 'retro-pacman-maze';
         
-        // Maze layout (simple path with corners)
-        const mazeHTML = `
-            <div class="maze-wall top"></div>
-            <div class="maze-wall bottom"></div>
-            <div class="maze-wall left"></div>
-            <div class="maze-wall right"></div>
-        `;
-        maze.innerHTML = mazeHTML;
+        // Create maze walls (horizontal and vertical segments)
+        const walls = [
+            // Outer walls
+            { x: 0, y: 0, w: 100, h: 3, type: 'h' },
+            { x: 0, y: 97, w: 100, h: 3, type: 'h' },
+            { x: 0, y: 0, w: 3, h: 100, type: 'v' },
+            { x: 97, y: 0, w: 3, h: 100, type: 'v' },
+            // Internal walls creating paths
+            { x: 20, y: 20, w: 3, h: 30, type: 'v' },
+            { x: 40, y: 30, w: 3, h: 40, type: 'v' },
+            { x: 60, y: 20, w: 3, h: 30, type: 'v' },
+            { x: 80, y: 30, w: 3, h: 40, type: 'v' },
+            { x: 20, y: 50, w: 20, h: 3, type: 'h' },
+            { x: 60, y: 50, w: 20, h: 3, type: 'h' }
+        ];
         
-        // Create Pac-Man character (using Pac-Man character)
+        walls.forEach(wall => {
+            const wallEl = document.createElement('div');
+            wallEl.className = 'maze-wall-segment';
+            wallEl.style.left = wall.x + '%';
+            wallEl.style.top = wall.y + '%';
+            wallEl.style.width = wall.w + '%';
+            wallEl.style.height = wall.h + '%';
+            maze.appendChild(wallEl);
+        });
+        
+        // Create Pac-Man character
         const pacman = document.createElement('div');
         pacman.className = 'retro-pacman';
         pacman.innerHTML = '<span class="pacman-char">ᗧ</span>';
         
-        // Create items along the path Pac-Man will follow
-        // Pac-Man takes 3.5s to traverse 95% of width, so calculate when each item gets eaten
+        // Define Pac-Man's path through the maze (series of waypoints)
+        // Path goes: start left → right along top corridor → down → left along bottom → up → right to center
+        const path = [
+            { x: 5, y: 10, dir: 'right' },
+            { x: 15, y: 10, dir: 'right' },
+            { x: 28, y: 10, dir: 'right' },
+            { x: 35, y: 10, dir: 'down' },
+            { x: 35, y: 25, dir: 'down' },
+            { x: 35, y: 40, dir: 'right' },
+            { x: 48, y: 40, dir: 'right' },
+            { x: 58, y: 40, dir: 'down' },
+            { x: 58, y: 60, dir: 'right' },
+            { x: 68, y: 60, dir: 'right' },
+            { x: 78, y: 60, dir: 'up' },
+            { x: 78, y: 40, dir: 'left' },
+            { x: 68, y: 40, dir: 'left' },
+            { x: 55, y: 40, dir: 'up' },
+            { x: 55, y: 25, dir: 'left' },
+            { x: 45, y: 25, dir: 'left' }
+        ];
+        
+        // Create items along the path
         const items = [
-            { x: 15, y: 50, type: 'dot', char: '·' },
-            { x: 25, y: 50, type: 'dot', char: '·' },
-            { x: 35, y: 50, type: 'pellet', char: '●' },
-            { x: 45, y: 50, type: 'dot', char: '·' },
-            { x: 55, y: 50, type: 'ghost', char: '👻' },
-            { x: 65, y: 50, type: 'dot', char: '·' },
-            { x: 75, y: 50, type: 'fruit', char: '🍒' },
-            { x: 85, y: 50, type: 'dot', char: '·' }
+            { pathIndex: 0, type: 'dot', char: '·' },
+            { pathIndex: 1, type: 'dot', char: '·' },
+            { pathIndex: 2, type: 'pellet', char: '●' },
+            { pathIndex: 4, type: 'dot', char: '·' },
+            { pathIndex: 6, type: 'ghost', char: '👻' },
+            { pathIndex: 8, type: 'dot', char: '·' },
+            { pathIndex: 10, type: 'fruit', char: '🍒' },
+            { pathIndex: 12, type: 'dot', char: '·' },
+            { pathIndex: 14, type: 'pellet', char: '●' },
+            { pathIndex: 15, type: 'dot', char: '·' }
         ];
         
         items.forEach((item, i) => {
+            const pathPoint = path[item.pathIndex];
             const element = document.createElement('div');
             element.className = `retro-pacman-item ${item.type}`;
             element.textContent = item.char;
-            element.style.left = item.x + '%';
-            element.style.top = item.y + '%';
+            element.style.left = pathPoint.x + '%';
+            element.style.top = pathPoint.y + '%';
             
-            // Calculate when Pac-Man reaches this item (0-45% of animation = 0-1.575s)
-            // Item at x% gets eaten at (x/95) * 1.575s
-            const eatTime = (item.x / 95) * 1.575;
-            const eatPercent = (eatTime / 3.5) * 100;
+            // Calculate eat timing (each waypoint is reached at intervals)
+            const totalDuration = 4.5; // seconds
+            const eatTime = (item.pathIndex / path.length) * totalDuration;
+            const eatPercent = (eatTime / totalDuration) * 100;
             
-            // Create custom animation for this specific item
+            // Create custom animation for this item
             const animName = `itemEat${i}`;
             element.style.animationName = animName;
+            element.style.animationDuration = totalDuration + 's';
             
-            // Inject custom keyframe for this item
+            // Inject keyframe
             const styleSheet = document.styleSheets[0];
             const keyframes = `
                 @keyframes ${animName} {
@@ -1507,19 +1548,53 @@ class TeamMeter {
                         opacity: 1;
                         transform: translate(-50%, -50%) scale(1);
                     }
-                    ${eatPercent + 0.5}%, 100% {
+                    ${eatPercent + 1}%, 100% {
                         opacity: 0;
                         transform: translate(-50%, -50%) scale(0);
                     }
                 }
             `;
-            styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+            try {
+                styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+            } catch (e) {
+                // Ignore if already exists
+            }
             
             maze.appendChild(element);
         });
         
+        // Create path animation for Pac-Man
+        this.createPacmanPathAnimation(path, 4.5);
+        
         retroPixels.appendChild(maze);
         retroPixels.appendChild(pacman);
+    }
+    
+    createPacmanPathAnimation(path, duration) {
+        const styleSheet = document.styleSheets[0];
+        const step = 100 / path.length;
+        
+        let keyframesStr = '@keyframes pacmanMazePath {\n';
+        
+        path.forEach((point, i) => {
+            const percent = (i / path.length) * 100;
+            const scaleX = (point.dir === 'left') ? -1 : 1;
+            const rotation = point.dir === 'down' ? 90 : (point.dir === 'up' ? -90 : 0);
+            
+            keyframesStr += `    ${percent.toFixed(1)}% {
+                left: ${point.x}%;
+                top: ${point.y}%;
+                transform: translate(-50%, -50%) scaleX(${scaleX}) rotate(${rotation}deg);
+            }\n`;
+        });
+        
+        keyframesStr += '}';
+        
+        try {
+            styleSheet.insertRule(keyframesStr, styleSheet.cssRules.length);
+        } catch (e) {
+            // Ignore if already exists
+        }
     }
 
     createSpaceInvadersAnimation() {
