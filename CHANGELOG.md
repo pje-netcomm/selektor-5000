@@ -2,6 +2,41 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v7.1.2 - Pac-Man & Animation Polish (2026-04-16)
+
+### Pac-Man Improvements 🟡
+- **Complete Pac-Man redesign**:
+  - Yellow circular body with animated triangular mouth
+  - Mouth opens and closes while moving
+  - Complex maze with branching paths (16 waypoints)
+  - Pac-Man rotates to face movement direction
+  - Items: dots, power pellets, ghosts, fruit
+  - Maze walls invisible but define navigation
+- Fixed Pac-Man appearance: proper yellow body with transparent mouth cutout
+- Fixed Pac-Man movement direction to face forward
+
+### Audio Fixes 🔊
+- Fixed AudioContext error by using single shared instance
+- Prevents "AudioContext encountered an error" console warnings
+- All sound functions now reuse same AudioContext
+
+### Skip Animation Enhancements ⏭️
+- **C64 intro fully skippable**: Space/Enter/Click skips loading sequence
+- **Game animations skippable**: Skip Pac-Man, Space Invaders, Pong, Tetris
+- **Independent skip control**: Can skip C64 intro but watch game, or vice versa
+- **Celebration preserved**: Always shows after skipping (not skippable)
+- Fixed skip flag persistence between animation phases
+
+### Celebration Persistence 🎉
+- Celebrations remain visible until next selection starts
+- Scrolling messages, quotes, trophies persist on idle screen
+- Cleared only when starting new selection round
+
+### Bug Fixes 🐛
+- Fixed syntax error from duplicate code lines
+- Fixed remaining audioContext references in bass note section
+- Fixed celebration layout with proper vertical spacing
+
 ## v7.1.1 - Retro Animation Polish (2026-04-16)
 
 ### Animation Improvements 🎮

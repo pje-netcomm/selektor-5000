@@ -2,7 +2,7 @@
 
 A beautiful single-page application for random URL selection with multiple profiles, customizable branding, and persistent state.
 
-![Version](https://img.shields.io/badge/version-7.1.1-purple)
+![Version](https://img.shields.io/badge/version-7.1.2-purple)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![No Dependencies](https://img.shields.io/badge/dependencies-none-green)
 
