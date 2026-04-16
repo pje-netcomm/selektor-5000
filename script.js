@@ -337,41 +337,47 @@ class TeamMeter {
     }
 
     createSounds() {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        // Create a single shared AudioContext to avoid multiple context errors
+        try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            console.warn('AudioContext not available:', e);
+            this.audioContext = null;
+        }
         
         this.spinSound = () => {
-            if (!this.soundEnabled) return;
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
+            if (!this.soundEnabled || !this.audioContext) return;
+            const oscillator = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
             
             oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+            gainNode.connect(this.audioContext.destination);
             
             oscillator.frequency.value = 400;
             oscillator.type = 'sine';
             
             const volume = 0.1 * this.soundVolume;
-            gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, volume * 0.1), audioContext.currentTime + 0.05);
+            gainNode.gain.setValueAtTime(volume, this.audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, volume * 0.1), this.audioContext.currentTime + 0.05);
             
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.05);
+            oscillator.start(this.audioContext.currentTime);
+            oscillator.stop(this.audioContext.currentTime + 0.05);
         };
         
         this.celebrationSound = () => {
-            if (!this.soundEnabled) return;
+            if (!this.soundEnabled || !this.audioContext) return;
             const notes = [523.25, 659.25, 783.99];
             notes.forEach((freq, index) => {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
                 
                 oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
+                gainNode.connect(this.audioContext.destination);
                 
                 oscillator.frequency.value = freq;
                 oscillator.type = 'sine';
                 
-                const startTime = audioContext.currentTime + (index * 0.1);
+                const startTime = this.audioContext.currentTime + (index * 0.1);
                 const volume = 0.15 * this.soundVolume;
                 gainNode.gain.setValueAtTime(volume, startTime);
                 gainNode.gain.exponentialRampToValueAtTime(Math.max(0.001, volume * 0.067), startTime + 0.3);
@@ -1309,17 +1315,17 @@ class TeamMeter {
     
     playRetroBlip() {
         // Quick blip sound during spinning
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+        if (!this.audioContext) return;
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
         
         oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
+        gainNode.connect(this.audioContext.destination);
         
         oscillator.type = 'square';
         oscillator.frequency.value = 440; // A4 note
         
-        const startTime = audioContext.currentTime;
+        const startTime = this.audioContext.currentTime;
         const duration = 0.05; // Very short blip
         
         gainNode.gain.setValueAtTime(this.soundVolume * 0.1, startTime);
@@ -1399,7 +1405,7 @@ class TeamMeter {
     
     playRetroSelectSound() {
         // Create 8-bit style victory fanfare
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (!this.audioContext) return;
         
         // Victory jingle: C5, E5, G5, C6 (arpeggio up)
         const notes = [
@@ -1410,16 +1416,16 @@ class TeamMeter {
         ];
         
         notes.forEach((note) => {
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
+            const oscillator = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
             
             oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+            gainNode.connect(this.audioContext.destination);
             
             oscillator.type = 'square'; // 8-bit style square wave
             oscillator.frequency.value = note.freq;
             
-            const startTime = audioContext.currentTime + note.time;
+            const startTime = this.audioContext.currentTime + note.time;
             
             gainNode.gain.setValueAtTime(this.soundVolume * 0.25, startTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + note.duration);
