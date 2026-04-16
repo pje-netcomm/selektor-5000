@@ -168,6 +168,27 @@ Features:
 - Auto-expands first 2 levels
 - Copy formatted JSON to clipboard
 
+### Test Mode (Retro UI)
+Type **"spispopd"** anywhere (outside input fields) to activate test mode:
+- **Only works in Retro UI mode** - switch to Retro UI in Settings first
+- Provides an interactive menu to test all retro animations
+- Press number keys (1-8) to trigger different animations:
+  - **1** - Pac-Man spin animation
+  - **2** - Space Invaders spin animation
+  - **3** - Pong ball spin animation
+  - **4** - Tetris spin animation
+  - **5** - Fireworks celebration
+  - **6** - Trophy celebration
+  - **7** - Scrolling message
+  - **8** - Retro quotes
+- **Escape** - Exit animation and return to menu (press again to exit test mode)
+- Type "spispopd" again to toggle test mode off
+
+Perfect for:
+- Testing retro animations during development
+- Previewing different animation styles
+- Debugging animation timing and effects
+
 ### Keyboard Shortcuts
 - **Enter** - Select random item (in selection mode)
 - **Enter** - Skip animation (during spin)

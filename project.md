@@ -207,9 +207,14 @@ Current version: **v7.1.0**
     - Allow selectees to be configured without a URL; no URL is configured, just
       display the name and don't attempt to open a URL when selected.
 ## [retro-mode-improvements]
-    - remove "pixel row" effect seen betwen the "game" and the selection celebration
     - game animation is too short for several game types
-    - pong needs paddles, more random movement.
+    - pong needs paddles, more random movement, and could boundaries.
     - "Invaders" needs the player shooting at the invaders
     - pacman looks boring, make it yellow and filled.  Show him moving, and
       eating larger dots, ghosts and fruit (in a random sequence)
+    - clicking the mouse during the initial retro-mode starting animation
+      appears to make multiple parallel selection process start. Don't start
+      the sequence if it's already running.
+    - pressing space or clicking the mouse during any animation sequence should
+      make the sequence complete immediately
+

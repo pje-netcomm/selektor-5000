@@ -1296,9 +1296,6 @@ class TeamMeter {
             retroText.textContent = selectedUrl.displayName.toUpperCase();
             retroDisplay.classList.add('selected', 'retro-explosion');
             
-            // Initial pixel burst
-            this.createRetroPixels(12);
-            
             // Play 8-bit select sound if enabled
             if (this.soundEnabled) {
                 this.playRetroSelectSound();
@@ -1309,21 +1306,11 @@ class TeamMeter {
                 retroScreen.classList.add('retro-pulse');
             }, 200);
             
-            // Starfield effect - pixels expanding outward
-            setTimeout(() => {
-                this.createRetroStarfield();
-            }, 300);
-            
             // Final celebration flash
             setTimeout(() => {
                 retroScreen.classList.add('retro-flash');
                 setTimeout(() => retroScreen.classList.remove('retro-flash'), 100);
             }, 600);
-            
-            // Multiple pixel bursts for extra effect
-            setTimeout(() => {
-                this.createRetroPixels(16);
-            }, 400);
             
             // Start random celebration animation (replaces pixel bursts)
             setTimeout(() => {

@@ -2182,6 +2182,12 @@ footer {
     width: 100%;
 }
 
+/* Ensure idle message appears below fireworks */
+.retro-fireworks-container .retro-idle-message {
+    position: relative;
+    margin-top: 150px;
+}
+
 .retro-firework {
     position: absolute;
     left: 50%;
@@ -2262,6 +2268,7 @@ footer {
     min-height: 150px;
     width: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
@@ -2288,6 +2295,7 @@ footer {
     min-height: 150px;
     width: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 20px;
