@@ -1261,11 +1261,13 @@ class TeamMeter {
             let soundTimer;
             if (this.soundEnabled) {
                 soundTimer = setInterval(() => {
+                    if (this.skipAnimation) return;
                     this.playRetroBlip();
                 }, 200);
             }
             
             const spinTimer = setInterval(() => {
+                if (this.skipAnimation) return;
                 retroText.textContent = availableUrls[currentIndex % availableUrls.length].displayName.toUpperCase();
                 retroText.classList.add('animating');
                 setTimeout(() => retroText.classList.remove('animating'), 100);
@@ -1278,7 +1280,26 @@ class TeamMeter {
                 }
             }, spinInterval);
             
+            // Check for skip every 100ms
+            const checkSkip = setInterval(() => {
+                if (this.skipAnimation) {
+                    clearInterval(checkSkip);
+                    clearInterval(spinTimer);
+                    if (soundTimer) clearInterval(soundTimer);
+                    retroDisplay.classList.remove('spinning');
+                    retroScreen.classList.remove('retro-shaking');
+                    this.tetrisAnimationActive = false;
+                    if (this.invaderIntervals) {
+                        this.invaderIntervals.forEach(interval => clearInterval(interval));
+                        this.invaderIntervals = [];
+                    }
+                    document.getElementById('retroPixels').innerHTML = '';
+                    resolve();
+                }
+            }, 100);
+            
             setTimeout(() => {
+                clearInterval(checkSkip);
                 clearInterval(spinTimer);
                 if (soundTimer) clearInterval(soundTimer);
                 retroDisplay.classList.remove('spinning');
@@ -1351,18 +1372,21 @@ class TeamMeter {
             }
             
             // Add pulsing effect
-            setTimeout(() => {
+            const pulseTimeout = setTimeout(() => {
+                if (this.skipAnimation) return;
                 retroScreen.classList.add('retro-pulse');
             }, 200);
             
             // Final celebration flash
-            setTimeout(() => {
+            const flashTimeout = setTimeout(() => {
+                if (this.skipAnimation) return;
                 retroScreen.classList.add('retro-flash');
                 setTimeout(() => retroScreen.classList.remove('retro-flash'), 100);
             }, 600);
             
             // Start random celebration animation (replaces pixel bursts)
-            setTimeout(() => {
+            const celebTimeout = setTimeout(() => {
+                if (this.skipAnimation) return;
                 const celebType = this.getRandomCelebrationAnimation();
                 switch (celebType) {
                     case 'fireworks':
@@ -1380,7 +1404,24 @@ class TeamMeter {
                 }
             }, 800);
             
+            // Check for skip every 100ms
+            const checkSkip = setInterval(() => {
+                if (this.skipAnimation) {
+                    clearInterval(checkSkip);
+                    clearTimeout(pulseTimeout);
+                    clearTimeout(flashTimeout);
+                    clearTimeout(celebTimeout);
+                    retroDisplay.classList.remove('selected', 'retro-explosion');
+                    retroScreen.classList.remove('retro-pulse');
+                    resolve();
+                }
+            }, 100);
+            
             setTimeout(() => {
+                clearInterval(checkSkip);
+                clearTimeout(pulseTimeout);
+                clearTimeout(flashTimeout);
+                clearTimeout(celebTimeout);
                 retroDisplay.classList.remove('selected', 'retro-explosion');
                 retroScreen.classList.remove('retro-pulse');
                 // Do NOT clear retroPixels - keep celebration visible

@@ -206,12 +206,5 @@ Current version: **v7.1.1**
     - browser page title not updated when title config is changed.
     - Allow selectees to be configured without a URL; no URL is configured, just
       display the name and don't attempt to open a URL when selected.
-## [retro-mode-improvements]
-    ✅ COMPLETED in v7.1.1:
-    - Extended game animation durations (Pac-Man: 3.5s, Invaders: 4s, Pong: 3s)
-    - Enhanced Pong with paddles, boundaries, and realistic ball physics
-    - Added Space Invaders player ship with dynamic laser shooting
-    - Enhanced Pac-Man: yellow filled, moving, eating dots/pellets/ghosts/fruit
-    - Fixed multiple parallel selections by applying isSelecting to all UI modes
-    - Added click-to-skip animation (space/enter/click skips animation)
+
 
