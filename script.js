@@ -1578,13 +1578,15 @@ class TeamMeter {
         
         path.forEach((point, i) => {
             const percent = (i / path.length) * 100;
-            const scaleX = (point.dir === 'left') ? -1 : 1;
-            const rotation = point.dir === 'down' ? 90 : (point.dir === 'up' ? -90 : 0);
+            // Mouth opens to the right, so rotate to face movement direction
+            const rotation = point.dir === 'down' ? 90 : 
+                            (point.dir === 'up' ? -90 : 
+                            (point.dir === 'left' ? 180 : 0));
             
             keyframesStr += `    ${percent.toFixed(1)}% {
                 left: ${point.x}%;
                 top: ${point.y}%;
-                transform: translate(-50%, -50%) scaleX(${scaleX}) rotate(${rotation}deg);
+                transform: translate(-50%, -50%) rotate(${rotation}deg);
             }\n`;
         });
         
