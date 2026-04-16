@@ -1136,10 +1136,20 @@ class TeamMeter {
         // Show initial cursor
         updateScreen(true, '');
         await this.sleep(300);
+        if (this.skipAnimation) {
+            retroText.innerHTML = '';
+            retroText.classList.remove('c64-prompt');
+            return;
+        }
         
         // Type LOAD command character by character
         const loadCmd = 'LOAD "SELEKTOR",8,1';
         for (let i = 0; i <= loadCmd.length; i++) {
+            if (this.skipAnimation) {
+                retroText.innerHTML = '';
+                retroText.classList.remove('c64-prompt');
+                return;
+            }
             updateScreen(true, loadCmd.substring(0, i));
             await this.sleep(80 + Math.random() * 40);
         }
@@ -1148,14 +1158,29 @@ class TeamMeter {
         lines.push({ text: loadCmd, centered: false });
         updateScreen();
         await this.sleep(400);
+        if (this.skipAnimation) {
+            retroText.innerHTML = '';
+            retroText.classList.remove('c64-prompt');
+            return;
+        }
         
         // Show SEARCHING message
         lines.push({ text: 'SEARCHING FOR SELEKTOR', centered: false });
         updateScreen();
         await this.sleep(400);
+        if (this.skipAnimation) {
+            retroText.innerHTML = '';
+            retroText.classList.remove('c64-prompt');
+            return;
+        }
         
         // Show LOADING with dots
         for (let j = 0; j <= 3; j++) {
+            if (this.skipAnimation) {
+                retroText.innerHTML = '';
+                retroText.classList.remove('c64-prompt');
+                return;
+            }
             const loadingLine = 'LOADING' + '...'.substring(0, j);
             // Update or add loading line
             if (j === 0) {
@@ -1167,19 +1192,39 @@ class TeamMeter {
             await this.sleep(200);
         }
         await this.sleep(300);
+        if (this.skipAnimation) {
+            retroText.innerHTML = '';
+            retroText.classList.remove('c64-prompt');
+            return;
+        }
         
         // Show READY prompt
         lines.push({ text: 'READY.', centered: false });
         updateScreen();
         await this.sleep(400);
+        if (this.skipAnimation) {
+            retroText.innerHTML = '';
+            retroText.classList.remove('c64-prompt');
+            return;
+        }
         
         // Show cursor for RUN command
         updateScreen(true, '');
         await this.sleep(300);
+        if (this.skipAnimation) {
+            retroText.innerHTML = '';
+            retroText.classList.remove('c64-prompt');
+            return;
+        }
         
         // Type RUN command
         const runCmd = 'RUN';
         for (let i = 0; i <= runCmd.length; i++) {
+            if (this.skipAnimation) {
+                retroText.innerHTML = '';
+                retroText.classList.remove('c64-prompt');
+                return;
+            }
             updateScreen(true, runCmd.substring(0, i));
             await this.sleep(80 + Math.random() * 40);
         }
