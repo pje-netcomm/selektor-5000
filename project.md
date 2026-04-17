@@ -210,4 +210,5 @@ Current version: **v7.1.2**
     - add more funny quotes and scrolling messages
     - remove "probability" retro quote
     - simple maze boundary for pacman
+    - space invaders: hide aliens hit by laser shots
 
