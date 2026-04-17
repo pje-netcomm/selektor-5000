@@ -2,6 +2,10 @@
 
 All notable changes to Selektor 5000 will be documented in this file.
 
+## v7.1.3 - Maintenance Release (2026-04-17)
+
+Minor maintenance and stability improvements.
+
 ## v7.1.2 - Pac-Man & Animation Polish (2026-04-16)
 
 ### Pac-Man Improvements 🟡
