@@ -16,7 +16,7 @@ Deny from all
 </FilesMatch>
 
 # And other files.
-<FilesMatch "^(CHANGELOG\.md)$">
+<FilesMatch "^(CHANGELOG\.md|robots\.txt)$">
     Allow from all
 </FilesMatch>
 
